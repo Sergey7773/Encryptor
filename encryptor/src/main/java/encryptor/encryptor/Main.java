@@ -4,43 +4,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import encryptor.encryptor.InputParser.Action;
+import encryptor.encryptor.InputParser.ParamsMode;
+
 
 public class Main {
 
-	private static final String enterParams = "-s";
-	private static final String loadParams = "-l";
-	private static final String changeSavedParams = "-c";
-
 	public static void main(String[] args) {
-		String paramsMode = args[0];
-		String filepath = args[1];
-		String action = args[2];
 
-		if(!paramsMode.matches("(-s)|(-l)|(-c)")) {
-			System.out.println("Bad input");
-			System.out.println("Enter <-s|-l|-c> <filepath> <ENCRYPT|DECRYPT>");
-			System.exit(1);
-		}
-
-		if(!action.matches("(DECRYPT)|(ENCRYPT)")) {
-			System.out.println("Bad input");
-			System.out.println("Enter <-s|-l|-c> <filepath> <ENCRYPT|DECRYPT>");
-			System.exit(1);
-		}
-
-		File f = new File(filepath);
-		Scanner s = new Scanner(System.in);
-		while(!f.exists()) {
-			System.out.println("Incorrect filepath, enter filepath again");
-			filepath = s.nextLine();
-			f = new File(filepath);
-		}
-		s.close();
+		InputParser parser = new InputParser();
+		ParamsMode paramsMode =  parser.parseParamsMode(args[0]); //for future use
+		Action action =  parser.parseActionParam(args[1]);
+		File file = parser.parseFile(args[2]);
+		
+		
 		try {
-			if(action.equals("ENCRYPT")) {
-				new SimulationEncryptor().encrypt(f);
+			if(action.equals(Action.ENCRYPT)) {
+				new SimulationEncryptor().encrypt(file);
 			} else {
-				new SimulationDecryptor().Decrypt(f);
+				new SimulationDecryptor().Decrypt(file);
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
