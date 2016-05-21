@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.Scanner;
 
 public class InputParser {
-	private static final String enterParams = "-s";
+	private static final String enterParams = "-e";
 	private static final String loadParams = "-l";
 	private static final String changeSavedParams = "-c";
 	
 	private static final String BAD_PARAMS_STRING = 
-			"Bad input\n Enter <-s|-l|-c> <filepath> <ENCRYPT|DECRYPT>";
+			"Bad input\nEnter <-e|-l|-c> <filepath> <ENCRYPT|DECRYPT>";
 	private static final String BAD_FILE = "Incorrect filepath, enter filepath again";
 	
 	public enum ParamsMode {ENTER_NEW,LOAD,CHANGE_SAVED};
@@ -17,12 +17,12 @@ public class InputParser {
 	
 	
 	private void onBadParams() {
-		System.out.println(BAD_PARAMS_STRING);
-		System.exit(1);
+		System.err.println(BAD_PARAMS_STRING);
+		throw new IllegalArgumentException();
 	}
 	
 	private void onBadFile() {
-		System.out.println(BAD_FILE);
+		System.err.println(BAD_FILE);
 	}
 	
 	public ParamsMode parseParamsMode(String paramsMode) {
@@ -42,13 +42,11 @@ public class InputParser {
 	
 	public File parseFile(String filename) {
 		File f = new File(filename);
-		Scanner s = new Scanner(System.in);
-		while(!f.exists()) {
+		if(!f.exists()) 
+		{
 			onBadFile();
-			filename = s.nextLine();
-			f = new File(filename);
+			return null;
 		}
-		s.close();
 		return f;
 	}
 	

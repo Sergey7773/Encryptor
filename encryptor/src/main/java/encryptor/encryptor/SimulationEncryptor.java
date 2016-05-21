@@ -8,6 +8,6 @@ public class SimulationEncryptor {
 	
 	public void encrypt(File f) throws IOException {
 		System.out.println("Encrypting:"+f.getPath().toString());
-		new EchoStreamer().stream(new FileInputStream(f));
+		new EchoStreamer().stream(new FileInputStream(f),System.out);
 	}
 }

@@ -15,7 +15,14 @@ public class Main {
 		InputParser parser = new InputParser();
 		ParamsMode paramsMode =  parser.parseParamsMode(args[0]); //for future use
 		Action action =  parser.parseActionParam(args[1]);
-		File file = parser.parseFile(args[2]);
+		String filepath = args[2];
+		File file=parser.parseFile(filepath);
+		while(file==null) {
+			Scanner s = new Scanner(System.in);
+			filepath = s.nextLine();
+			s.close();
+			file = parser.parseFile(filepath);
+		}
 		
 		
 		try {

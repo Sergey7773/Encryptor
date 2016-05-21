@@ -8,7 +8,7 @@ public class SimulationDecryptor {
 	
 	public void Decrypt(File f) throws IOException {
 		System.out.println("Decrypting:"+f.toPath().toString());
-		new EchoStreamer().stream(new FileInputStream(f));
+		new EchoStreamer().stream(new FileInputStream(f),System.out);
 	}
 
 }
