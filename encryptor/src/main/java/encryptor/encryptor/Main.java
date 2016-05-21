@@ -27,9 +27,9 @@ public class Main {
 		
 		try {
 			if(action.equals(Action.ENCRYPT)) {
-				new SimulationEncryptor().encrypt(file);
+				new SimulationEncryptor().encrypt(file,System.out);
 			} else {
-				new SimulationDecryptor().Decrypt(file);
+				new SimulationDecryptor().decrypt(file,System.out);
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
