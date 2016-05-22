@@ -1,4 +1,4 @@
-package encryptor.encryptor;
+package encryptor.encryptor.simulation;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import encryptor.encryptor.simulation.SimulationDecryptor;
 
 public class SimulationDecryptorTest {
 	private SimulationDecryptor $;

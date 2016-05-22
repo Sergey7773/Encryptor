@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 import encryptor.encryptor.InputParser.Action;
 import encryptor.encryptor.InputParser.ParamsMode;
+import encryptor.encryptor.simulation.SimulationDecryptor;
+import encryptor.encryptor.simulation.SimulationEncryptor;
 
 
 public class Main {

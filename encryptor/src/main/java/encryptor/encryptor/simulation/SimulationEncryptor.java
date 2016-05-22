@@ -1,18 +1,17 @@
-package encryptor.encryptor;
+package encryptor.encryptor.simulation;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class SimulationDecryptor {
+public class SimulationEncryptor {
 	
-	public void decrypt(File f,OutputStream os) throws IOException {
+	public void encrypt(File f,OutputStream os) throws IOException {
 		if(f == null || os == null) {
 			throw new IllegalArgumentException();
 		}
-		System.out.println("Decrypting:"+f.toPath().toString());
+		System.out.println("Encrypting:"+f.getPath().toString());
 		new EchoStreamer().stream(new FileInputStream(f),os);
 	}
-
 }

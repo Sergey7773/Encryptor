@@ -1,4 +1,4 @@
-package encryptor.encryptor;
+package encryptor.encryptor.simulation;
 
 import java.io.File;
 import java.io.FileInputStream;

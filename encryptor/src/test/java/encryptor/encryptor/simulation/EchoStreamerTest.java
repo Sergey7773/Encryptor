@@ -1,4 +1,4 @@
-package encryptor.encryptor;
+package encryptor.encryptor.simulation;
 
 import static org.junit.Assert.*;
 
@@ -11,6 +11,8 @@ import java.io.PrintStream;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import encryptor.encryptor.simulation.EchoStreamer;
 
 
 public class EchoStreamerTest {
