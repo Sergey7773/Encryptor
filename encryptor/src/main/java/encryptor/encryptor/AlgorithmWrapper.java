@@ -11,20 +11,24 @@ public class AlgorithmWrapper {
 	
 	private EncryptionAlgorithm m_encryptionAlgorithm;
 	
+	private static final String ENCRYPTED_FORMAT = ".encrypted";
+	private static final String DECRYPTED_FORMAT = ".decrypted";
+	private static final String DECRYPTED_EXTENTION = "_decrypted";
+	
 	public AlgorithmWrapper(EncryptionAlgorithm algorithm) {
 		m_encryptionAlgorithm = algorithm;
 	}
 	
 	private String appedEncryptedToFilename(File f) {
-		return f.getName()+".encrypted";
+		return f.getPath()+ENCRYPTED_FORMAT;
 	}
 	
 	private String appedDecryptedToFilename(File f) {
 		String $ = f.getName();
-		$=$.replace(".encrypted", "");
+		$=$.replace(ENCRYPTED_FORMAT, "");
 		int lastDot = $.lastIndexOf('.');
-		if(lastDot==-1) return $+".decrypted";
-		$=$.substring(0, lastDot)+"_decrypted"+$.substring(lastDot, $.length());
+		if(lastDot==-1) return $+DECRYPTED_FORMAT;
+		$=$.substring(0, lastDot)+DECRYPTED_EXTENTION+$.substring(lastDot, $.length());
 		return $;
 	}
 	
@@ -36,6 +40,7 @@ public class AlgorithmWrapper {
 	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
 		byte[] key = new byte[1];
 		new Random().nextBytes(key);
+		userOutputStream.write(key);
 		File outputFile = new File(appedEncryptedToFilename(f));
 		doAction(f, outputFile, userOutputStream, new DecryptionApplier(m_encryptionAlgorithm, key[0]));
 	}
