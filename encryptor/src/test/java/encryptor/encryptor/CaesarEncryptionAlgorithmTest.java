@@ -19,15 +19,18 @@ public class CaesarEncryptionAlgorithmTest {
 	public void setup() {
 		$ = new CaesarEncryptionAlgorithm();
 		
-		Random randGen = new Random(System.currentTimeMillis());
-		plainValues = new byte[20];
-		randGen.nextBytes(plainValues);
-		testKey = new byte[1];
-		randGen.nextBytes(testKey);
+		plainValues = new byte[]{Byte.MIN_VALUE+10,0,Byte.MAX_VALUE-10};
+		testKey = new byte[]{15};
+		cypheredValues = new byte[]{Byte.MIN_VALUE+25,15,Byte.MIN_VALUE+5};
 		
-		cypheredValues = new byte[20];
+		
 		for(int i=0;i<plainValues.length;i++) {
-			cypheredValues[i] = (byte) (plainValues[i]+testKey[0]);
+			if(plainValues[i]+testKey[0]>Byte.MAX_VALUE){
+				cypheredValues[i]=(byte) 
+						(Byte.MIN_VALUE+(plainValues[i]+testKey[0]-Byte.MAX_VALUE));
+			} else {
+				cypheredValues[i] = (byte) (plainValues[i]+testKey[0]);
+			}
 		}
 	}
 	
@@ -43,6 +46,13 @@ public class CaesarEncryptionAlgorithmTest {
 	public void removeKeyFromValueWithOverflowOnDecrypion() {
 		for(int i=0;i<plainValues.length;i++) {
 			assertEquals($.decrypt(cypheredValues[i], testKey[0]),plainValues[i]);
+		}
+	}
+	
+	@Test
+	public void encryptThenDecryptPlainRetainsValue() {
+		for(int i=0;i<plainValues.length;i++) {
+			assertEquals($.decrypt($.encrypt(plainValues[i], testKey[0]), testKey[0]),plainValues[i]);
 		}
 	}
 }
