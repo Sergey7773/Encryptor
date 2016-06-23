@@ -12,7 +12,6 @@ public class AlgorithmWrapper {
 	private EncryptionAlgorithm m_encryptionAlgorithm;
 	
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
-	private static final String DECRYPTED_FORMAT = ".decrypted";
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 	
 	public AlgorithmWrapper(EncryptionAlgorithm algorithm) {
@@ -24,17 +23,17 @@ public class AlgorithmWrapper {
 	}
 	
 	private String appedDecryptedToFilename(File f) {
-		String $ = f.getName();
+		String $ = f.getPath();
 		$=$.replace(ENCRYPTED_FORMAT, "");
 		int lastDot = $.lastIndexOf('.');
-		if(lastDot==-1) return $+DECRYPTED_FORMAT;
+		if(lastDot==-1) return $+DECRYPTED_EXTENTION;
 		$=$.substring(0, lastDot)+DECRYPTED_EXTENTION+$.substring(lastDot, $.length());
 		return $;
 	}
 	
 	public void decrypt(File f,OutputStream userOutputStream, byte key) throws IOException {
 		File outputFile = new File(appedDecryptedToFilename(f));
-		doAction(f, outputFile, userOutputStream, new EncryptionApplier(m_encryptionAlgorithm, key));
+		doAction(f, outputFile, userOutputStream, new DecryptionApplier(m_encryptionAlgorithm, key));
 	}
 	
 	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
@@ -42,7 +41,7 @@ public class AlgorithmWrapper {
 		new Random().nextBytes(key);
 		userOutputStream.write(key);
 		File outputFile = new File(appedEncryptedToFilename(f));
-		doAction(f, outputFile, userOutputStream, new DecryptionApplier(m_encryptionAlgorithm, key[0]));
+		doAction(f, outputFile, userOutputStream, new EncryptionApplier(m_encryptionAlgorithm, key[0]));
 	}
 	
 	private void doAction(File f,File outputFile,OutputStream userOutputStream,Applier<Byte,Byte> function) throws IOException {
