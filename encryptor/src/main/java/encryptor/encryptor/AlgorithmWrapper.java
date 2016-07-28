@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class AlgorithmWrapper {
@@ -14,8 +16,16 @@ public class AlgorithmWrapper {
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 	
+	private List<Observer> encryptionObservers;
+	private List<Observer> decryptionObservers;
+	
 	public AlgorithmWrapper(EncryptionAlgorithm algorithm) {
 		m_encryptionAlgorithm = algorithm;
+		encryptionObservers = new ArrayList<Observer>();
+		decryptionObservers = new ArrayList<Observer>();
+		
+		encryptionObservers.add(new ActionObserver("Encryption started.", "Encryption ended."));
+		decryptionObservers.add(new ActionObserver("Decryption started", "Decryption ended"));
 	}
 	
 	private String appedEncryptedToFilename(File f) {
@@ -33,7 +43,9 @@ public class AlgorithmWrapper {
 	
 	public void decrypt(File f,OutputStream userOutputStream, byte key) throws IOException {
 		File outputFile = new File(appedDecryptedToFilename(f));
+		notifyObserversOnStart(decryptionObservers);
 		doAction(f, outputFile, userOutputStream, new DecryptionApplier(m_encryptionAlgorithm, key));
+		notifyObserversOnEnd(decryptionObservers);
 	}
 	
 	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
@@ -41,7 +53,9 @@ public class AlgorithmWrapper {
 		new Random().nextBytes(key);
 		userOutputStream.write(key);
 		File outputFile = new File(appedEncryptedToFilename(f));
+		notifyObserversOnStart(encryptionObservers);
 		doAction(f, outputFile, userOutputStream, new EncryptionApplier(m_encryptionAlgorithm, key[0]));
+		notifyObserversOnEnd(encryptionObservers);
 	}
 	
 	private void doAction(File f,File outputFile,OutputStream userOutputStream,Applier<Byte,Byte> function) throws IOException {
@@ -58,5 +72,15 @@ public class AlgorithmWrapper {
 		
 		fis.close();
 		fos.close();
+	}
+	
+	private void notifyObserversOnStart(List<Observer> observers) {
+		for(Observer observer : observers) 
+			observer.onStart();
+	}
+	
+	private void notifyObserversOnEnd(List<Observer> observers) {
+		for(Observer observer : observers) 
+			observer.onEnd();
 	}
 }
