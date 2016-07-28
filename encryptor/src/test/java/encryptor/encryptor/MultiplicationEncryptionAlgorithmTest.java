@@ -18,6 +18,7 @@ public class MultiplicationEncryptionAlgorithmTest {
 		$ = new MultiplicationEncryptionAlgorithm();
 		plainText = new byte[]{Byte.MIN_VALUE, -75,0,75,Byte.MAX_VALUE};
 		key = new byte[1];
+		cypheredText = new byte[plainText.length];
 		do {
 			new Random(System.currentTimeMillis()).nextBytes(key);
 		} while(key[0]==0 || key[0]==2);
