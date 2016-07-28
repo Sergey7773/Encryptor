@@ -14,4 +14,8 @@ public class xorEncryptionAlgorithm implements EncryptionAlgorithm {
 		return (byte) (val1 ^ val2);
 	}
 
+	public boolean isValidKey(byte key) {
+		return true;
+	}
+
 }

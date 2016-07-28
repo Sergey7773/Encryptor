@@ -11,10 +11,14 @@ public class MultiplicationEncryptionAlgorithm implements EncryptionAlgorithm{
 	}
 	
 	public byte encrypt(byte value, byte key) {
+		if(!isValidKey(key))
+			throw new IllegalArgumentException();
 		return MWO(value,key);
 	}
 
 	public byte decrypt(byte value, byte key) {
+		if(!isValidKey(key))
+			throw new IllegalArgumentException();
 		if(lastKey!=key) {
 			lastKey=key;
 			decKey = findNewDecKey();
@@ -32,6 +36,11 @@ public class MultiplicationEncryptionAlgorithm implements EncryptionAlgorithm{
 				return k;
 		}
 		return -1;
+	}
+
+	public boolean isValidKey(byte key) {
+		if(key == 0 || key == 2) return false;
+		return true;
 	}
 
 }

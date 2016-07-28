@@ -18,4 +18,8 @@ public class CaesarEncryptionAlgorithm implements EncryptionAlgorithm {
 		return (byte)(value-key);
 	}
 
+	public boolean isValidKey(byte key) {
+		return true;
+	}
+
 }

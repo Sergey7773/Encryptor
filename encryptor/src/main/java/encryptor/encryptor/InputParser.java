@@ -12,6 +12,12 @@ public class InputParser {
 			"Bad input\nEnter <-e|-l|-c> <filepath> <ENCRYPT|DECRYPT>";
 	private static final String BAD_FILE = "Incorrect filepath, enter filepath again";
 	
+	private static String[] algorithms = new String[] {"caesar,xor,mul"}; 
+	
+	private static final String ALG_SELECTION_STRING = 
+			"Enter the index of the algorithm you wish to use (starts at 0):\n"
+			+ algorithms.toString();
+	
 	public enum ParamsMode {ENTER_NEW,LOAD,CHANGE_SAVED};
 	public enum Action {ENCRYPT,DECRYPT};
 	
@@ -48,6 +54,18 @@ public class InputParser {
 			return null;
 		}
 		return f;
+	}
+	
+	public EncryptionAlgorithm parseAlgorithmSelection(int index) {
+		if(index<0 || index>=algorithms.length) {
+			throw new IllegalArgumentException();
+		}
+		switch(index) {
+			case 0: return new CaesarEncryptionAlgorithm();
+			case 1: return new xorEncryptionAlgorithm();
+			case 2: return new MultiplicationEncryptionAlgorithm();
+			default: return null;
+		}
 	}
 	
 	
