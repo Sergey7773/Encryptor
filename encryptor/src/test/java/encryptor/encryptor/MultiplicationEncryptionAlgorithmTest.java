@@ -39,4 +39,25 @@ public class MultiplicationEncryptionAlgorithmTest {
 			assertEquals(plainText[i],$.decrypt(cypheredText[i], key[0]));
 		}
 	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void throwsExceptionWhenKeyEqualsZeroAndDecrypting() {
+		$.decrypt((byte)100, (byte)0);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void throwsExceptionWhenKeyEqualsTwoAndDecrypting() {
+		$.decrypt((byte)100, (byte)2);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void throwsExceptionWhenKeyEqualsZeroAndEncrypting() {
+		$.encrypt((byte)100, (byte)0);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void throwsExceptionWhenKeyEqualsTwoAndEncrypting() {
+		$.encrypt((byte)100, (byte)2);
+	}
+	
 }
