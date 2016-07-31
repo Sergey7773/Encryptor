@@ -74,7 +74,7 @@ public class AlgorithmWrapperTest {
 		
 		byte key = (byte) is.read();
 		for(int i=0;i<plainText.length;i++) {
-			Mockito.verify($).encrypt(plainText[i], key);
+			Mockito.verify($).encrypt(plainText[i], new SingleValueKey(key));
 		}
 		inputFile.delete();
 		os.close();
@@ -90,7 +90,7 @@ public class AlgorithmWrapperTest {
 		
 		$.encrypt(inputFile, userOutput);
 		byte key = (byte)(is.read());
-		$.decrypt(new File(inputFile.getPath()+".encrypted"), userOutput, key);
+		$.decrypt(new File(inputFile.getPath()+".encrypted"), userOutput, new SingleValueKey(key));
 		File decrypted = new File(inputFile.getParentFile().getPath()+"\\file1_decrypted.txt");
 		assertTrue(decrypted.exists());
 	}
@@ -108,9 +108,9 @@ public class AlgorithmWrapperTest {
 		os.write(cypheredText);
 		os.close();
 		
-		$.decrypt(inputFile, userOutput, (byte)0);
+		$.decrypt(inputFile, userOutput, new SingleValueKey((byte)0));
 		for(int i=0;i<cypheredText.length;i++) {
-			Mockito.verify($).decrypt(cypheredText[i], (byte)0);
+			Mockito.verify($).decrypt(cypheredText[i], new SingleValueKey((byte)0));
 		}
 	}
 	
@@ -150,7 +150,7 @@ public class AlgorithmWrapperTest {
 		os.write(cypheredText);
 		os.close();
 		
-		$.decrypt(inputFile, userOutput, (byte)0);
+		$.decrypt(inputFile, userOutput, new SingleValueKey((byte)0));
 		
 		File decryptedFile = new File(inputFile.getParentFile().getPath()+"\\file1_decrypted.txt");
 		FileInputStream fis = new FileInputStream(decryptedFile);

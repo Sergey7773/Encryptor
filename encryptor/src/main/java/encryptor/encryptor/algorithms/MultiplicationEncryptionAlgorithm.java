@@ -1,5 +1,8 @@
 package encryptor.encryptor.algorithms;
 
+import encryptor.encryptor.Key;
+import encryptor.encryptor.SingleValueKey;
+
 public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 	
 	private byte lastKey;
@@ -10,17 +13,19 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 		decKey=1;
 	}
 	
-	public byte encrypt(byte value, byte key) {
+	public byte encrypt(byte value, Key key) {
 		if(!isValidKey(key))
 			throw new IllegalArgumentException();
-		return MWO(value,key);
+		byte valueOfKey = ((SingleValueKey)key).getValue();
+		return MWO(value,valueOfKey);
 	}
 
-	public byte decrypt(byte value, byte key) {
+	public byte decrypt(byte value, Key key) {
 		if(!isValidKey(key))
 			throw new IllegalArgumentException();
-		if(lastKey!=key) {
-			lastKey=key;
+		byte valueOfKey = ((SingleValueKey)key).getValue();
+		if(lastKey!=valueOfKey) {
+			lastKey=valueOfKey;
 			decKey = findNewDecKey();
 		}
 		return MWO(value,decKey);
@@ -38,8 +43,9 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 		return -1;
 	}
 
-	public boolean isValidKey(byte key) {
-		if(key == 0 || key == 2) return false;
+	public boolean isValidKey(Key key) {
+		byte valueOfKey = ((SingleValueKey)key).getValue();
+		if(valueOfKey == 0 || valueOfKey == 2) return false;
 		return true;
 	}
 

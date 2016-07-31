@@ -40,21 +40,25 @@ public class CaesarEncryptionAlgorithmTest {
 	public void addKeyToValueWithOverflowOnEncryption() {
 
 		for(int i=0;i<plainValues.length;i++) {
-			assertEquals($.encrypt(plainValues[i], testKey[0]),cypheredValues[i]);
+			assertEquals($.encrypt(plainValues[i],
+					new SingleValueKey(testKey[0])),cypheredValues[i]);
 		}
 	}
 	
 	@Test
 	public void removeKeyFromValueWithOverflowOnDecrypion() {
 		for(int i=0;i<plainValues.length;i++) {
-			assertEquals($.decrypt(cypheredValues[i], testKey[0]),plainValues[i]);
+			assertEquals($.decrypt(cypheredValues[i], 
+					new SingleValueKey(testKey[0])),plainValues[i]);
 		}
 	}
 	
 	@Test
 	public void encryptThenDecryptPlainRetainsValue() {
 		for(int i=0;i<plainValues.length;i++) {
-			assertEquals($.decrypt($.encrypt(plainValues[i], testKey[0]), testKey[0]),plainValues[i]);
+			assertEquals($.decrypt($.encrypt(plainValues[i], 
+					new SingleValueKey(testKey[0])),
+					new SingleValueKey(testKey[0])),plainValues[i]);
 		}
 	}
 }

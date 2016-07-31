@@ -31,13 +31,13 @@ public class xorEncryptionAlgorithmTest {
 	@Test
 	public void AppliesXorOnEncryptedValues() {
 		for(int i=0;i<plainText.length;i++)
-			assertEquals(cypheredText[i],$.encrypt(plainText[i], key[0]));
+			assertEquals(cypheredText[i],$.encrypt(plainText[i], new SingleValueKey(key[0])));
 	}
 	
 	@Test
 	public void AppliesXorOnDecryptedValues() {
 		for(int i=0;i<cypheredText.length;i++)
-			assertEquals(plainText[i],$.encrypt(cypheredText[i], key[0]));
+			assertEquals(plainText[i],$.encrypt(cypheredText[i], new SingleValueKey(key[0])));
 	}
 	
 }

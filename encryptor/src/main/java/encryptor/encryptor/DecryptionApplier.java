@@ -5,8 +5,8 @@ import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 public class DecryptionApplier implements Applier<Byte, Byte> {
 
 	private EncryptionAlgorithm m_algorithm;
-	private byte key;
-	public DecryptionApplier(EncryptionAlgorithm alg,byte key) {
+	private Key key;
+	public DecryptionApplier(EncryptionAlgorithm alg,Key key) {
 		this.key=key;
 		this.m_algorithm=alg;
 	}

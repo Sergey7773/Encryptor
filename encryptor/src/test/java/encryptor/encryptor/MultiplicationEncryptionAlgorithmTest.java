@@ -32,34 +32,34 @@ public class MultiplicationEncryptionAlgorithmTest {
 	@Test
 	public void applyingMWOOnEncryptedBytes() {
 		for(int i=0;i<plainText.length;i++)
-			assertEquals(cypheredText[i],$.encrypt(plainText[i], key[0]));
+			assertEquals(cypheredText[i],$.encrypt(plainText[i], new SingleValueKey(key[0])));
 	}
 	
 	@Test
 	public void correctlyDecrypting() {
 		for(int i=0;i<plainText.length;i++) {
-			assertEquals(plainText[i],$.decrypt(cypheredText[i], key[0]));
+			assertEquals(plainText[i],$.decrypt(cypheredText[i], new SingleValueKey(key[0])));
 		}
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void throwsExceptionWhenKeyEqualsZeroAndDecrypting() {
-		$.decrypt((byte)100, (byte)0);
+		$.decrypt((byte)100, new SingleValueKey((byte)0));
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void throwsExceptionWhenKeyEqualsTwoAndDecrypting() {
-		$.decrypt((byte)100, (byte)2);
+		$.decrypt((byte)100, new SingleValueKey((byte)2));
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void throwsExceptionWhenKeyEqualsZeroAndEncrypting() {
-		$.encrypt((byte)100, (byte)0);
+		$.encrypt((byte)100, new SingleValueKey((byte)0));
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void throwsExceptionWhenKeyEqualsTwoAndEncrypting() {
-		$.encrypt((byte)100, (byte)2);
+		$.encrypt((byte)100, new SingleValueKey((byte)2));
 	}
 	
 }

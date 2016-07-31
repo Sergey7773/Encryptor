@@ -13,8 +13,10 @@ import encryptor.encryptor.ActionObserver;
 import encryptor.encryptor.Applier;
 import encryptor.encryptor.DecryptionApplier;
 import encryptor.encryptor.EncryptionApplier;
+import encryptor.encryptor.Key;
 import encryptor.encryptor.MillisClock;
 import encryptor.encryptor.Observer;
+import encryptor.encryptor.SingleValueKey;
 
 public abstract class EncryptionAlgorithm {
 	
@@ -47,24 +49,22 @@ public abstract class EncryptionAlgorithm {
 		return $;
 	}
 	
-	public void decrypt(File f,OutputStream userOutputStream, byte key) throws IOException {
+	public void decrypt(File f,OutputStream userOutputStream, Key key) throws IOException {
 		File outputFile = new File(appedDecryptedToFilename(f));
 		notifyObserversOnStart(decryptionObservers);
 		doAction(f, outputFile, userOutputStream, new DecryptionApplier(this, key));
 		notifyObserversOnEnd(decryptionObservers);
 	}
 	
-	public abstract byte encrypt(byte value, byte key);
-	public abstract byte decrypt(byte value, byte key);
-	public abstract boolean isValidKey(byte key);
+	public abstract byte encrypt(byte value, Key key);
+	public abstract byte decrypt(byte value, Key key);
+	public abstract boolean isValidKey(Key key);
 	
 	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
-		byte[] key = new byte[1];
-		new Random().nextBytes(key);
-		userOutputStream.write(key);
+		SingleValueKey key = SingleValueKey.generate();
 		File outputFile = new File(appedEncryptedToFilename(f));
 		notifyObserversOnStart(encryptionObservers);
-		doAction(f, outputFile, userOutputStream, new EncryptionApplier(this, key[0]));
+		doAction(f, outputFile, userOutputStream, new EncryptionApplier(this, key));
 		notifyObserversOnEnd(encryptionObservers);
 	}
 	
