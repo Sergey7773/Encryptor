@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import encryptor.encryptor.InputParser.Action;
 import encryptor.encryptor.InputParser.ParamsMode;
+import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.simulation.SimulationDecryptor;
 import encryptor.encryptor.simulation.SimulationEncryptor;
 
@@ -26,12 +27,13 @@ public class Main {
 			file = parser.parseFile(filepath);
 		}
 		
+		EncryptionAlgorithm alg = parser.parseAlgorithmSelection();
 		
 		try {
 			if(action.equals(Action.ENCRYPT)) {
-				new SimulationEncryptor().encrypt(file,System.out);
+				alg.encrypt(file,System.out);
 			} else {
-				new SimulationDecryptor().decrypt(file,System.out);
+				alg.decrypt(file,System.out,(byte)0);
 			}
 		} catch(IOException e) {
 			e.printStackTrace();

@@ -1,5 +1,7 @@
 package encryptor.encryptor;
 
+import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+
 public class EncryptionApplier implements Applier<Byte,Byte> {
 
 	private EncryptionAlgorithm m_algorithm;

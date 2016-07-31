@@ -1,6 +1,6 @@
-package encryptor.encryptor;
+package encryptor.encryptor.algorithms;
 
-public class xorEncryptionAlgorithm implements EncryptionAlgorithm {
+public class xorEncryptionAlgorithm extends EncryptionAlgorithm {
 
 	public byte encrypt(byte value, byte key) {
 		return xor(value,key);

@@ -7,6 +7,8 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import encryptor.encryptor.algorithms.MultiplicationEncryptionAlgorithm;
+
 public class MultiplicationEncryptionAlgorithmTest {
 	private MultiplicationEncryptionAlgorithm $;
 	private byte[] plainText;

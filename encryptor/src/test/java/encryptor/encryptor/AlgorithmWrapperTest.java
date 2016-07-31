@@ -19,17 +19,17 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+
 public class AlgorithmWrapperTest {
-	private AlgorithmWrapper $;
-	private EncryptionAlgorithm mockAlgorithm;
+	private EncryptionAlgorithm $;
 	
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 	
 	@Before
 	public void setup() {
-		mockAlgorithm = Mockito.mock(EncryptionAlgorithm.class);
-		$ = new AlgorithmWrapper(mockAlgorithm);
+		$ = Mockito.mock(EncryptionAlgorithm.class);
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class AlgorithmWrapperTest {
 		
 		byte key = (byte) is.read();
 		for(int i=0;i<plainText.length;i++) {
-			Mockito.verify(mockAlgorithm).encrypt(plainText[i], key);
+			Mockito.verify($).encrypt(plainText[i], key);
 		}
 		inputFile.delete();
 		os.close();
@@ -110,7 +110,7 @@ public class AlgorithmWrapperTest {
 		
 		$.decrypt(inputFile, userOutput, (byte)0);
 		for(int i=0;i<cypheredText.length;i++) {
-			Mockito.verify(mockAlgorithm).decrypt(cypheredText[i], (byte)0);
+			Mockito.verify($).decrypt(cypheredText[i], (byte)0);
 		}
 	}
 	

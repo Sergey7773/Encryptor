@@ -1,6 +1,6 @@
-package encryptor.encryptor;
+package encryptor.encryptor.algorithms;
 
-public class CaesarEncryptionAlgorithm implements EncryptionAlgorithm {
+public class CaesarEncryptionAlgorithm extends EncryptionAlgorithm {
 
 	public byte encrypt(byte value, byte key) {
 		int delta = Byte.MAX_VALUE-value-key;

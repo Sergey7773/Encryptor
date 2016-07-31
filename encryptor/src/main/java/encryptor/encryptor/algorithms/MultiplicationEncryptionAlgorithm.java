@@ -1,6 +1,6 @@
-package encryptor.encryptor;
+package encryptor.encryptor.algorithms;
 
-public class MultiplicationEncryptionAlgorithm implements EncryptionAlgorithm{
+public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 	
 	private byte lastKey;
 	private byte decKey;
