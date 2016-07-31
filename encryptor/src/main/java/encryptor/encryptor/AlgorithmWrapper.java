@@ -24,8 +24,10 @@ public class AlgorithmWrapper {
 		encryptionObservers = new ArrayList<Observer>();
 		decryptionObservers = new ArrayList<Observer>();
 		
-		encryptionObservers.add(new ActionObserver("Encryption started.", "Encryption ended."));
-		decryptionObservers.add(new ActionObserver("Decryption started", "Decryption ended"));
+		encryptionObservers.add(new ActionObserver("Encryption started.",
+				"Encryption ended.", new MillisClock()));
+		decryptionObservers.add(new ActionObserver("Decryption started",
+				"Decryption ended", new MillisClock()));
 	}
 	
 	private String appedEncryptedToFilename(File f) {
