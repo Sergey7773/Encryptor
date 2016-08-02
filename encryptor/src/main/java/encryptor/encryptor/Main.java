@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import encryptor.encryptor.algorithms.CaesarEncryptionAlgorithm;
+import encryptor.encryptor.algorithms.DoubleAlgorithm;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.algorithms.MultiplicationEncryptionAlgorithm;
+import encryptor.encryptor.algorithms.ReverseAlgorithm;
+import encryptor.encryptor.algorithms.SplitAlgorithm;
 import encryptor.encryptor.algorithms.xorEncryptionAlgorithm;
 
 
@@ -42,7 +45,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		console = System.console();
-		ParamsMode paramsMode =  parseParamsMode(args[0]); //for future use
+		//ParamsMode paramsMode =  parseParamsMode(args[0]); //for future use
 		Key tmpKey = null;
 		console.format(actionRequestString, encryptionAction, decryptionAction);
 		Action action = parseActionParam(console.readLine());
@@ -120,7 +123,39 @@ public class Main {
 			case 0: return new CaesarEncryptionAlgorithm();
 			case 1: return new xorEncryptionAlgorithm();
 			case 2: return new MultiplicationEncryptionAlgorithm();
-			default: return null;
+			default: return parseAlgorithmSelectionRecursive(index,1);
 		}
+	}
+	
+	private static EncryptionAlgorithm parseAlgorithmSelectionRecursive(int index, int depth) {
+		switch(index) {
+		case 3: return parseBiArgAlgorithm(depth);
+		
+		case 4: return parseSingleArgAlgorithm(4,depth+1);
+		case 5: return parseSingleArgAlgorithm(5,depth+1);
+		}
+		return null;
+		
+	}
+	
+	private static EncryptionAlgorithm parseBiArgAlgorithm(int depth) {
+		console.format("Please Enter the index of the first algorithm.");
+		EncryptionAlgorithm first = parseAlgorithmSelectionRecursive(
+				Integer.parseInt(console.readLine()), depth+1);
+		console.format("please Enter the index of the second algorithm");
+		EncryptionAlgorithm second = parseAlgorithmSelectionRecursive(
+				Integer.parseInt(console.readLine()), depth+1);
+		return new DoubleAlgorithm(first, second);
+	}
+	
+	private static EncryptionAlgorithm parseSingleArgAlgorithm(int index, int depth) {
+		console.format("Please enter the index of the nested algorithm");
+		EncryptionAlgorithm nested = parseAlgorithmSelectionRecursive(
+				Integer.parseInt(console.readLine()), depth+1);
+		switch(index) {
+		case 4: return new ReverseAlgorithm(nested);
+		case 5: return new SplitAlgorithm(nested);
+		}
+		return null;
 	}
 }
