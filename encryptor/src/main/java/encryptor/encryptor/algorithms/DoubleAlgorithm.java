@@ -3,13 +3,12 @@ package encryptor.encryptor.algorithms;
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.Key;
 
-public class DoubleAlgorithm<T extends EncryptionAlgorithm, S extends EncryptionAlgorithm> 
-	extends EncryptionAlgorithm {
+public class DoubleAlgorithm extends EncryptionAlgorithm {
 	
-	private T firstAlgorithm;
-	private S secondAlgorithm;
+	private EncryptionAlgorithm firstAlgorithm;
+	private EncryptionAlgorithm secondAlgorithm;
 	
-	public DoubleAlgorithm(T firstAlg, S secondAlg) {
+	public DoubleAlgorithm(EncryptionAlgorithm firstAlg, EncryptionAlgorithm secondAlg) {
 		firstAlgorithm=firstAlg;
 		secondAlgorithm=secondAlg;
 	}
