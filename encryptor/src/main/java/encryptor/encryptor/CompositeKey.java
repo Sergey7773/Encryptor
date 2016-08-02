@@ -1,7 +1,7 @@
 package encryptor.encryptor;
 
 
-public class CompositeKey {
+public class CompositeKey implements Key {
 	private Key first,second;
 	
 	public CompositeKey(Key first,Key second) {
@@ -13,7 +13,7 @@ public class CompositeKey {
 		return this.first;
 	}
 	
-	public Key getSeconKey() {
+	public Key getSecondKey() {
 		return this.second;
 	}
 }

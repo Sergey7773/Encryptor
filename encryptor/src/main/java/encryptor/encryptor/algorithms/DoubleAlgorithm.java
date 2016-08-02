@@ -17,13 +17,13 @@ public class DoubleAlgorithm extends EncryptionAlgorithm {
 	public byte encrypt(byte value, Key key) {
 		Key firstKey = ((CompositeKey)key).getFirstKey();
 		byte firstValue = firstAlgorithm.encrypt(value, firstKey);
-		Key secondKey = ((CompositeKey)key).getSeconKey();
+		Key secondKey = ((CompositeKey)key).getSecondKey();
 		return secondAlgorithm.encrypt(firstValue, secondKey);
 	}
 
 	@Override
 	public byte decrypt(byte value, Key key) {
-		Key secondKey = ((CompositeKey)key).getSeconKey();
+		Key secondKey = ((CompositeKey)key).getSecondKey();
 		byte firstValue = secondAlgorithm.decrypt(value, secondKey);
 		Key firstKey = ((CompositeKey)key).getFirstKey();
 		return firstAlgorithm.decrypt(firstValue, firstKey);
