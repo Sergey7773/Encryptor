@@ -23,8 +23,8 @@ public abstract class EncryptionAlgorithm {
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 	
-	private List<Observer> encryptionObservers;
-	private List<Observer> decryptionObservers;
+	protected List<Observer> encryptionObservers;
+	protected List<Observer> decryptionObservers;
 	
 	public EncryptionAlgorithm() {
 		encryptionObservers = new ArrayList<Observer>();
@@ -36,7 +36,7 @@ public abstract class EncryptionAlgorithm {
 				"Decryption ended", new MillisClock()));
 	}
 	
-	private String appedEncryptedToFilename(File f) {
+	protected String appedEncryptedToFilename(File f) {
 		return f.getPath()+ENCRYPTED_FORMAT;
 	}
 	
@@ -84,12 +84,12 @@ public abstract class EncryptionAlgorithm {
 		fos.close();
 	}
 	
-	private void notifyObserversOnStart(List<Observer> observers) {
+	protected void notifyObserversOnStart(List<Observer> observers) {
 		for(Observer observer : observers) 
 			observer.onStart();
 	}
 	
-	private void notifyObserversOnEnd(List<Observer> observers) {
+	protected void notifyObserversOnEnd(List<Observer> observers) {
 		for(Observer observer : observers) 
 			observer.onEnd();
 	}
