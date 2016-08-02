@@ -1,5 +1,7 @@
 package encryptor.encryptor;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -22,8 +24,8 @@ public class DoubleAlgorithmTest {
 		$ = new DoubleAlgorithm(firstMock, secondMock);
 		testKey = new CompositeKey(new SingleValueKey((byte)1), new SingleValueKey((byte)2));
 		testValue = (byte)16;
-		Mockito.doReturn((byte)1).when(firstMock).decrypt(Mockito.anyByte(), Mockito.any());
-		Mockito.doReturn((byte)2).when(secondMock).decrypt(Mockito.anyByte(), Mockito.any());
+		Mockito.doReturn((byte)3).when(firstMock).decrypt(Mockito.anyByte(), Mockito.any());
+		Mockito.doReturn((byte)4).when(secondMock).decrypt(Mockito.anyByte(), Mockito.any());
 		Mockito.doReturn((byte)1).when(firstMock).encrypt(Mockito.anyByte(), Mockito.any());
 		Mockito.doReturn((byte)2).when(secondMock).encrypt(Mockito.anyByte(), Mockito.any());
 		
@@ -88,7 +90,13 @@ public class DoubleAlgorithmTest {
 	public void WhenDecryptingApplyingFirstAlgOnResultOfSecondWithFirstSubKeyOnce() {
 		$.decrypt(testValue, testKey);
 		
-		Mockito.verify(firstMock, Mockito.times(1)).decrypt((byte)2, testKey.getFirstKey());
+		Mockito.verify(firstMock, Mockito.times(1)).decrypt((byte)4, testKey.getFirstKey());
+	}
+	
+	@Test
+	public void returnCorrectValuesOnEcryptionAndDecryption() {
+		assertEquals(2,$.encrypt(testValue, testKey));
+		assertEquals(3,$.decrypt(testValue, testKey));
 	}
 	
 	
