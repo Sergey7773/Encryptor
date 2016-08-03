@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -21,8 +22,7 @@ import encryptor.encryptor.SingleValueKey;
 
 public abstract class EncryptionAlgorithm {
 	
-	private static final String ENCRYPTED_FORMAT = ".encrypted";
-	private static final String DECRYPTED_EXTENTION = "_decrypted";
+	
 	
 	protected List<Observer> encryptionObservers;
 	protected List<Observer> decryptionObservers;
@@ -37,23 +37,11 @@ public abstract class EncryptionAlgorithm {
 				"Decryption ended", new MillisClock()));
 	}
 	
-	protected String appedEncryptedToFilename(File f) {
-		return f.getPath()+ENCRYPTED_FORMAT;
-	}
 	
-	private String appedDecryptedToFilename(File f) {
-		String $ = f.getPath();
-		$=$.replace(ENCRYPTED_FORMAT, "");
-		int lastDot = $.lastIndexOf('.');
-		if(lastDot==-1) return $+DECRYPTED_EXTENTION;
-		$=$.substring(0, lastDot)+DECRYPTED_EXTENTION+$.substring(lastDot, $.length());
-		return $;
-	}
 	
-	public void decrypt(File f, Key key) throws IOException {
-		File outputFile = new File(appedDecryptedToFilename(f));
+	public void decrypt(InputStream is,OutputStream os, Key key) throws IOException {
 		notifyObserversOnStart(decryptionObservers);
-		doAction(f, outputFile, new DecryptionApplier(this, key));
+		doAction(is, os, new DecryptionApplier(this, key));
 		notifyObserversOnEnd(decryptionObservers);
 	}
 	
@@ -61,7 +49,7 @@ public abstract class EncryptionAlgorithm {
 	public abstract byte decrypt(byte value, Key key);
 	public abstract boolean isValidKey(Key key);
 	
-	public void encrypt(File f) throws IOException {
+	public void encrypt(InputStream inputFile,OutputStream outputFile) throws IOException {
 		SingleValueKey key = SingleValueKey.generate();
 		File keyFile = new File("key.bin");
 		if(!keyFile.exists()) {
@@ -72,26 +60,19 @@ public abstract class EncryptionAlgorithm {
 		oos.writeObject(key);
 		oos.close();
 		
-		File outputFile = new File(appedEncryptedToFilename(f));
 		notifyObserversOnStart(encryptionObservers);
-		doAction(f, outputFile, new EncryptionApplier(this, key));
+		doAction(inputFile, outputFile, new EncryptionApplier(this, key));
 		notifyObserversOnEnd(encryptionObservers);
 	}
 	
-	private void doAction(File f,File outputFile,Applier<Byte,Byte> function) throws IOException {
-		FileInputStream fis = new FileInputStream(f);
-		FileOutputStream fos = new FileOutputStream(outputFile);
-		
+	private void doAction(InputStream is,OutputStream os,Applier<Byte,Byte> function) throws IOException {
 		byte plain[] = new byte[1];
 		byte cyphered[] = new byte[1];
-		while(fis.available()>0) {
-			fis.read(plain);
+		while(is.available()>0) {
+			is.read(plain);
 			cyphered[0]=function.apply(plain[0]);
-			fos.write(cyphered);
+			os.write(cyphered);
 		}
-		
-		fis.close();
-		fos.close();
 	}
 	
 	protected void notifyObserversOnStart(List<Observer> observers) {
