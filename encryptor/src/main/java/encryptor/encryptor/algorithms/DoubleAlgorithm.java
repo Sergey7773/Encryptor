@@ -36,4 +36,9 @@ public class DoubleAlgorithm extends EncryptionAlgorithm {
 		return true;
 	}
 
+	@Override
+	public Key generateKey() {
+		return new CompositeKey(firstAlgorithm.generateKey(), secondAlgorithm.generateKey());
+	}
+
 }

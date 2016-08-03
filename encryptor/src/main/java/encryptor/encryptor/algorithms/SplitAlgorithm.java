@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+import encryptor.encryptor.Applier;
+import encryptor.encryptor.BiApplier;
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.EncryptionApplier;
 import encryptor.encryptor.Key;
@@ -37,35 +39,48 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	}
 	
 	@Override
-	public void encrypt(InputStream is,OutputStream os) throws IOException {
-		SingleValueKey firstKey = SingleValueKey.generate();
-		SingleValueKey secondKey = SingleValueKey.generate();
-		CompositeKey composite = new CompositeKey(firstKey, secondKey);
-		
-		File keyFile = new File("key.bin");
-		if(!keyFile.exists()) {
-			keyFile.createNewFile();
+	public void encrypt(InputStream is,OutputStream os,Key key) throws IOException {
+		doAction(is, os, key, new BiApplier<Byte, Byte, Key>() {
+
+			@Override
+			public Byte apply(Byte t, Key u) {
+				return encrypt(t,u);
+			}
+		});
+	}
+	
+	@Override
+	public void decrypt(InputStream is,OutputStream os,Key key) throws IOException {
+		doAction(is, os, key, new BiApplier<Byte, Byte, Key>() {
+
+			@Override
+			public Byte apply(Byte t, Key u) {
+				return decrypt(t,u);
+			}
+		});
+	}
+	
+	private void doAction(InputStream is,OutputStream os,Key key,
+			BiApplier<Byte, Byte, Key> biApplier) throws IOException {
+		if(!isValidKey(key)) {
+			throw new IllegalArgumentException();
 		}
-		FileOutputStream kfos = new FileOutputStream(keyFile);
-		ObjectOutputStream oos = new ObjectOutputStream(kfos);
-		oos.writeObject(composite);
-		oos.close();
-		
-		notifyObserversOnStart(encryptionObservers);
-		
-		byte plain[] = new byte[1];
-		byte cyphered[] = new byte[1];
+		CompositeKey composite = (CompositeKey)key;
+		byte in[] = new byte[1];
+		byte out[] = new byte[1];
 		int counter = 0;
-		SingleValueKey encKey;
+		Key currKey;
 		while(is.available()>0) {
-			encKey = (counter % 2 ==0) ? firstKey : secondKey;
-			cyphered[0] = this.encrypt(plain[0], encKey);
-			os.write(cyphered);
+			currKey = (counter % 2 ==0) ? composite.getFirstKey() : composite.getSecondKey();
+			out[0] = biApplier.apply(in[0], currKey);
+			os.write(out);
 			counter++;
 		}
-		
-		
-		notifyObserversOnEnd(encryptionObservers);
+	}
+
+	@Override
+	public Key generateKey() {
+		return new CompositeKey(nestedAlgorithm.generateKey(), nestedAlgorithm.generateKey());
 	}
 
 }

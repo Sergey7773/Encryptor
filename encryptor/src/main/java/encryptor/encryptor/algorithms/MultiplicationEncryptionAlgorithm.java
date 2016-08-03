@@ -1,5 +1,8 @@
 package encryptor.encryptor.algorithms;
 
+import java.util.Arrays;
+
+import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
 
@@ -47,6 +50,11 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 		byte valueOfKey = ((SingleValueKey)key).getValue();
 		if(valueOfKey == 0 || valueOfKey == 2) return false;
 		return true;
+	}
+
+	@Override
+	public Key generateKey() {
+		return SingleValueKey.generate(Arrays.asList((byte)0, (byte)2));
 	}
 
 }

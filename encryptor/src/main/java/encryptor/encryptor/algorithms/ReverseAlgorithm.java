@@ -24,4 +24,9 @@ public class ReverseAlgorithm extends EncryptionAlgorithm {
 	public boolean isValidKey(Key key) {
 		return nestedAlgorithm.isValidKey(key);
 	}
+
+	@Override
+	public Key generateKey() {
+		return nestedAlgorithm.generateKey();
+	}
 }

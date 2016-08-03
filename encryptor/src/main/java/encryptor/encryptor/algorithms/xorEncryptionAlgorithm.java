@@ -23,4 +23,9 @@ public class xorEncryptionAlgorithm extends EncryptionAlgorithm {
 		return true;
 	}
 
+	@Override
+	public Key generateKey() {
+		return SingleValueKey.generate();
+	}
+
 }

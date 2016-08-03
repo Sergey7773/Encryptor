@@ -27,4 +27,9 @@ public class CaesarEncryptionAlgorithm extends EncryptionAlgorithm {
 		return true;
 	}
 
+	@Override
+	public Key generateKey() {
+		return SingleValueKey.generate();
+	}
+
 }
