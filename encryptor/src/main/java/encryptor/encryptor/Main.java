@@ -40,13 +40,11 @@ public class Main {
 	private static final String BAD_FILE = 
 			"Incorrect filepath, enter filepath again";
 
-	private static final String ENCRYPTED_FORMAT = ".encrypted";
-	private static final String DECRYPTED_EXTENTION = "_decrypted";
 
 	private static String[] algorithms = new String[] {"caesar,xor,mul"}; 
 
 	private enum ParamsMode {ENTER_NEW,LOAD,CHANGE_SAVED};
-	private enum Action {ENCRYPT,DECRYPT};
+	public enum Action {ENCRYPT,DECRYPT};
 
 	private static Console console;
 
@@ -71,60 +69,15 @@ public class Main {
 		console.format(ALGORITHM_INDEX_REQUEST_STRING
 				+ algorithms.toString());
 		EncryptionAlgorithm alg = parseAlgorithmSelection(console.readLine());
-
-		if(file.isFile())
-			performActionOnSingleFile(alg,file,key,action);
-		else 
-			performActionOnDirectory(alg, file, key, action);
+		
+		EncryptionAlgorithmExecutor executor = new EncryptionAlgorithmExecutor();
+		if(action.equals(Action.ENCRYPT)) 
+			executor.executeEncyption(alg, file);
+		else
+			executor.executeDecryption(alg, file, key);
 	}
 
-	private static void performActionOnSingleFile(EncryptionAlgorithm alg,
-			File inputFile,Key key, Action actionType) throws FileNotFoundException {
-		String outputFilePath = (actionType.equals(Action.ENCRYPT)) ?
-				appedEncryptedToFilename(inputFile) : appedDecryptedToFilename(inputFile);
-		FileOutputStream fos = new FileOutputStream(new File(outputFilePath));
-		FileInputStream fis = new FileInputStream(inputFile);
-		
-		try {
-			if(actionType.equals(Action.ENCRYPT)) {
-				alg.encrypt(fis,fos);
-			} else {
-				alg.decrypt(fis,fos,key);
-			}
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void performActionOnDirectory(EncryptionAlgorithm alg,
-			File inputDir, Key key, Action actionType) throws FileNotFoundException {
-		String outputDirPath = (actionType.equals(Action.ENCRYPT)) ?
-				inputDir.getPath()+"/encrypted" : inputDir.getPath() + "/decrypted";
-		File outputDir = new File(outputDirPath);
-		File[] filesInDir = inputDir.listFiles(new FileFilter() {
-			
-			@Override
-			public boolean accept(File pathname) {
-				return !pathname.isDirectory();
-			}
-		});
-		for(int i=0;i<filesInDir.length;i++) {
-			FileInputStream fis = new FileInputStream(filesInDir[i]);
-			FileOutputStream fos = new FileOutputStream(
-					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
-			try {
-				if(actionType.equals(Action.ENCRYPT)) {
-					alg.encrypt(fis,fos);
-				} else {
-					alg.decrypt(fis,fos,key);
-				}
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-	}
+	
 
 	private static void onBadParams() {
 		System.err.println(BAD_PARAMS_STRING);
@@ -214,19 +167,6 @@ public class Main {
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		Key $ = (Key)ois.readObject();
 		ois.close();
-		return $;
-	}
-
-	private static String appedEncryptedToFilename(File f) {
-		return f.getPath()+ENCRYPTED_FORMAT;
-	}
-
-	private static String appedDecryptedToFilename(File f) {
-		String $ = f.getPath();
-		$=$.replace(ENCRYPTED_FORMAT, "");
-		int lastDot = $.lastIndexOf('.');
-		if(lastDot==-1) return $+DECRYPTED_EXTENTION;
-		$=$.substring(0, lastDot)+DECRYPTED_EXTENTION+$.substring(lastDot, $.length());
 		return $;
 	}
 }
