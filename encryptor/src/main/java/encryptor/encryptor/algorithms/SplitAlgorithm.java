@@ -36,12 +36,15 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	}
 	
 	@Override
-	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
+	public void encrypt(File f) throws IOException {
 		SingleValueKey firstKey = SingleValueKey.generate();
 		SingleValueKey secondKey = SingleValueKey.generate();
 		CompositeKey composite = new CompositeKey(firstKey, secondKey);
 		
 		File keyFile = new File("key.bin");
+		if(!keyFile.exists()) {
+			keyFile.createNewFile();
+		}
 		FileOutputStream kfos = new FileOutputStream(keyFile);
 		ObjectOutputStream oos = new ObjectOutputStream(kfos);
 		oos.writeObject(composite);

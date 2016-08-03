@@ -50,10 +50,10 @@ public abstract class EncryptionAlgorithm {
 		return $;
 	}
 	
-	public void decrypt(File f,OutputStream userOutputStream, Key key) throws IOException {
+	public void decrypt(File f, Key key) throws IOException {
 		File outputFile = new File(appedDecryptedToFilename(f));
 		notifyObserversOnStart(decryptionObservers);
-		doAction(f, outputFile, userOutputStream, new DecryptionApplier(this, key));
+		doAction(f, outputFile, new DecryptionApplier(this, key));
 		notifyObserversOnEnd(decryptionObservers);
 	}
 	
@@ -61,7 +61,7 @@ public abstract class EncryptionAlgorithm {
 	public abstract byte decrypt(byte value, Key key);
 	public abstract boolean isValidKey(Key key);
 	
-	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
+	public void encrypt(File f) throws IOException {
 		SingleValueKey key = SingleValueKey.generate();
 		File keyFile = new File("key.bin");
 		if(!keyFile.exists()) {
@@ -74,11 +74,11 @@ public abstract class EncryptionAlgorithm {
 		
 		File outputFile = new File(appedEncryptedToFilename(f));
 		notifyObserversOnStart(encryptionObservers);
-		doAction(f, outputFile, userOutputStream, new EncryptionApplier(this, key));
+		doAction(f, outputFile, new EncryptionApplier(this, key));
 		notifyObserversOnEnd(encryptionObservers);
 	}
 	
-	private void doAction(File f,File outputFile,OutputStream userOutputStream,Applier<Byte,Byte> function) throws IOException {
+	private void doAction(File f,File outputFile,Applier<Byte,Byte> function) throws IOException {
 		FileInputStream fis = new FileInputStream(f);
 		FileOutputStream fos = new FileOutputStream(outputFile);
 		

@@ -57,7 +57,6 @@ public class Main {
 			console.format("Please provide the decryption key file");
 			File keyFile = parseFilepathFromCMD(); 			
 			tmpKey = readKeyFromFile(keyFile);
-			
 		}
 		
 		console.format(FILEPATH_REQUEST_STRING,
@@ -70,9 +69,9 @@ public class Main {
 		
 		try {
 			if(action.equals(Action.ENCRYPT)) {
-				alg.encrypt(file,System.out);
+				alg.encrypt(file);
 			} else {
-				alg.decrypt(file,System.out,tmpKey);
+				alg.decrypt(file,tmpKey);
 			}
 		} catch(IOException e) {
 			e.printStackTrace();

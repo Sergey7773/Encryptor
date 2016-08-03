@@ -38,7 +38,7 @@ public class AlgorithmWrapperTest {
 		PipedOutputStream pos = new PipedOutputStream(is);
 		PrintStream userOutput = new PrintStream(pos);
 		File inputFile = folder.newFile("file1.txt");
-		$.encrypt(inputFile, userOutput);
+		$.encrypt(inputFile);
 		assertTrue(is.available()>0);
 		is.close();
 		userOutput.close();
@@ -52,7 +52,7 @@ public class AlgorithmWrapperTest {
 		if(resultFile.exists()){
 			resultFile.delete();
 		}
-		$.encrypt(inputFile, userOutput);
+		$.encrypt(inputFile);
 		assertTrue(resultFile.exists());
 		resultFile.delete();
 		userOutput.close();
@@ -70,7 +70,7 @@ public class AlgorithmWrapperTest {
 		PipedOutputStream pos = new PipedOutputStream(is);
 		PrintStream userOutput = new PrintStream(pos);
 		
-		$.encrypt(inputFile, userOutput);
+		$.encrypt(inputFile);
 		
 		byte key = (byte) is.read();
 		for(int i=0;i<plainText.length;i++) {
@@ -88,9 +88,9 @@ public class AlgorithmWrapperTest {
 		PipedOutputStream pos = new PipedOutputStream(is);
 		PrintStream userOutput = new PrintStream(pos);
 		
-		$.encrypt(inputFile, userOutput);
+		$.encrypt(inputFile);
 		byte key = (byte)(is.read());
-		$.decrypt(new File(inputFile.getPath()+".encrypted"), userOutput, new SingleValueKey(key));
+		$.decrypt(new File(inputFile.getPath()+".encrypted"), new SingleValueKey(key));
 		File decrypted = new File(inputFile.getParentFile().getPath()+"\\file1_decrypted.txt");
 		assertTrue(decrypted.exists());
 	}
@@ -108,7 +108,7 @@ public class AlgorithmWrapperTest {
 		os.write(cypheredText);
 		os.close();
 		
-		$.decrypt(inputFile, userOutput, new SingleValueKey((byte)0));
+		$.decrypt(inputFile, new SingleValueKey((byte)0));
 		for(int i=0;i<cypheredText.length;i++) {
 			Mockito.verify($).decrypt(cypheredText[i], new SingleValueKey((byte)0));
 		}
@@ -127,7 +127,7 @@ public class AlgorithmWrapperTest {
 		os.write(plainText);
 		os.close();
 		
-		$.encrypt(inputFile, userOutput);
+		$.encrypt(inputFile);
 		
 		File encyptedFile = new File(inputFile.getPath()+".encrypted");
 		FileInputStream fis = new FileInputStream(encyptedFile);
@@ -150,7 +150,7 @@ public class AlgorithmWrapperTest {
 		os.write(cypheredText);
 		os.close();
 		
-		$.decrypt(inputFile, userOutput, new SingleValueKey((byte)0));
+		$.decrypt(inputFile, new SingleValueKey((byte)0));
 		
 		File decryptedFile = new File(inputFile.getParentFile().getPath()+"\\file1_decrypted.txt");
 		FileInputStream fis = new FileInputStream(decryptedFile);
