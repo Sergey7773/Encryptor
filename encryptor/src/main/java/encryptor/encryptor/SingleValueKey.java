@@ -1,10 +1,13 @@
 package encryptor.encryptor;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-public class SingleValueKey implements Key {
+public class SingleValueKey implements Key, Serializable {
 	
+
+	private static final long serialVersionUID = -6300576333626322453L;
 	private byte value;
 	
 	public SingleValueKey(byte value) {

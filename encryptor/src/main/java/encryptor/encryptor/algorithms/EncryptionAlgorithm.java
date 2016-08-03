@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,15 @@ public abstract class EncryptionAlgorithm {
 	
 	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
 		SingleValueKey key = SingleValueKey.generate();
+		File keyFile = new File("key.bin");
+		if(!keyFile.exists()) {
+			keyFile.createNewFile();
+		}
+		FileOutputStream fos = new FileOutputStream(keyFile);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(key);
+		oos.close();
+		
 		File outputFile = new File(appedEncryptedToFilename(f));
 		notifyObserversOnStart(encryptionObservers);
 		doAction(f, outputFile, userOutputStream, new EncryptionApplier(this, key));

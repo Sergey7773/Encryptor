@@ -2,7 +2,10 @@ package encryptor.encryptor;
 
 import java.io.Console;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Scanner;
 
 import encryptor.encryptor.algorithms.CaesarEncryptionAlgorithm;
@@ -42,7 +45,7 @@ public class Main {
 	
 	private static Console console;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
 
 		console = System.console();
 		//ParamsMode paramsMode =  parseParamsMode(args[0]); //for future use
@@ -52,8 +55,8 @@ public class Main {
 		
 		if(action.equals(Action.DECRYPT)) {
 			console.format("Please provide the decryption key file");
-			File keyFile = parseFilepathFromCMD(); 
-			tmpKey = new SingleValueKey((byte)0); //TODO: read the key from the file
+			File keyFile = parseFilepathFromCMD(); 			
+			tmpKey = readKeyFromFile(keyFile);
 			
 		}
 		
@@ -157,5 +160,13 @@ public class Main {
 		case 5: return new SplitAlgorithm(nested);
 		}
 		return null;
+	}
+	
+	private static Key readKeyFromFile(File f) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(f);
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		Key $ = (Key)ois.readObject();
+		ois.close();
+		return $;
 	}
 }

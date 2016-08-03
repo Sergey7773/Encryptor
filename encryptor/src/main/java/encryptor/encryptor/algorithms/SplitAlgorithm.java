@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import encryptor.encryptor.CompositeKey;
@@ -38,6 +39,13 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	public void encrypt(File f,OutputStream userOutputStream) throws IOException {
 		SingleValueKey firstKey = SingleValueKey.generate();
 		SingleValueKey secondKey = SingleValueKey.generate();
+		CompositeKey composite = new CompositeKey(firstKey, secondKey);
+		
+		File keyFile = new File("key.bin");
+		FileOutputStream kfos = new FileOutputStream(keyFile);
+		ObjectOutputStream oos = new ObjectOutputStream(kfos);
+		oos.writeObject(composite);
+		oos.close();
 		
 		File outputFile = new File(appedEncryptedToFilename(f));
 		notifyObserversOnStart(encryptionObservers);

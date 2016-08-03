@@ -1,7 +1,13 @@
 package encryptor.encryptor;
 
+import java.io.Serializable;
 
-public class CompositeKey implements Key {
+
+public class CompositeKey implements Key, Serializable {
+
+	
+	private static final long serialVersionUID = 2040477221440359777L;
+	
 	private Key first,second;
 	
 	public CompositeKey(Key first,Key second) {
