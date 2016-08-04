@@ -86,11 +86,14 @@ public class EncryptionAlgorithmExecutor {
 
 	//Async execution
 	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) {
-
+		Key key = algorithm.generateKey();
+		//TODO: save key to file
+		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
+		
 	}
 
-	public void executeDecryptionAsync(EncryptionAlgorithm algorithm,File inputFile, Key key) {
-		
+	public void executeDecryptionAsync(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
+		executeAsync(algorithm,inputFile,key,Action.DECRYPT);
 	}
 
 	private void executeAsync(EncryptionAlgorithm algorithm,File inputFile,
