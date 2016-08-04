@@ -34,6 +34,4 @@ public abstract class EncryptionAlgorithm {
 			os.write(cyphered);
 		}
 	}
-	
-	
 }

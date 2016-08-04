@@ -19,27 +19,29 @@ public class EncryptionAlgorithmExecutor {
 
 	protected List<Observer> encryptionObservers;
 	protected List<Observer> decryptionObservers;
-	
+
 	public EncryptionAlgorithmExecutor() {
 		encryptionObservers = new ArrayList<Observer>();
 		decryptionObservers = new ArrayList<Observer>();
-		
+
 		encryptionObservers.add(new ActionObserver("Encryption started.",
 				"Encryption ended.", new MillisClock()));
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended", new MillisClock()));
 	}
-
+	
+	//Sync execution
 	public void executeEncyption(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
 		//TODO: save key to file
 		execute(algorithm, inputFile, key, Action.ENCRYPT);
 	}
-	
+
 	public void executeDecryption(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
 		execute(algorithm, inputFile, key, Action.DECRYPT);
 	}
-	
+
+
 	private void execute(EncryptionAlgorithm algorithm,File inputFile,
 			Key key, Action actionType) throws IOException {
 		List<Observer> toNotify = (actionType.equals(Action.ENCRYPT)) ?
@@ -54,22 +56,20 @@ public class EncryptionAlgorithmExecutor {
 
 	private void performActionOnSingleFile(EncryptionAlgorithm algorithm,File inputFile,
 			Key key, Action actionType) 
-			throws IOException {
+					throws IOException {
 		String outputFilePath = (actionType.equals(Action.ENCRYPT)) ?
 				appedEncryptedToFilename(inputFile) : appedDecryptedToFilename(inputFile);
 				FileOutputStream fos = new FileOutputStream(new File(outputFilePath));
 				FileInputStream fis = new FileInputStream(inputFile);
 				performAction(algorithm, actionType, fis, fos, key);
 	}
-	
+
 	private void performActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
 			Key key, Action actionType) 
-			throws IOException {
-		String outputDirPath = (actionType.equals(Action.ENCRYPT)) ?
-				inputDir.getPath()+"/encrypted" : inputDir.getPath() + "/decrypted";
-		File outputDir = new File(outputDirPath);
+					throws IOException {
+		File outputDir = createOutputDirectory(inputDir, actionType);
 		File[] filesInDir = inputDir.listFiles(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File pathname) {
 				return !pathname.isDirectory();
@@ -83,6 +83,45 @@ public class EncryptionAlgorithmExecutor {
 		}
 	}
 
+
+	//Async execution
+	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) {
+
+	}
+
+	public void executeDecryptionAsync(EncryptionAlgorithm algorithm,File inputFile, Key key) {
+		
+	}
+
+	private void executeAsync(EncryptionAlgorithm algorithm,File inputFile,
+			Key key, Action actionType) throws IOException {
+		List<Observer> toNotify = (actionType.equals(Action.ENCRYPT)) ?
+				encryptionObservers : decryptionObservers;
+		notifyObserversOnStart(toNotify);
+		if(inputFile.isFile()) {
+			performActionOnSingleFile(algorithm, inputFile, key, actionType);
+		} else {
+			performAsyncActionOnDirectory(algorithm,inputFile,key,actionType);
+		}
+		notifyObserversOnEnd(toNotify);
+	}
+
+	private void performAsyncActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
+			Key key, Action actionType) throws IOException {
+		File outputDir = createOutputDirectory(inputDir, actionType);
+		File[] filesInDir = inputDir.listFiles(new FileFilter() {
+
+			@Override
+			public boolean accept(File pathname) {
+				return !pathname.isDirectory();
+			}
+		});
+
+		new EncryptionExecutorAsyncService().execute(outputDir, filesInDir, algorithm, actionType, key);
+		
+	}
+
+	//Utility functions
 	private String appedEncryptedToFilename(File f) {
 		return f.getPath()+ENCRYPTED_FORMAT;
 	}
@@ -95,7 +134,7 @@ public class EncryptionAlgorithmExecutor {
 		$=$.substring(0, lastDot)+DECRYPTED_EXTENTION+$.substring(lastDot, $.length());
 		return $;
 	}
-	
+
 	private void performAction(EncryptionAlgorithm algorithm, Action actionType,
 			FileInputStream fis, FileOutputStream fos,Key key) throws IOException {
 		if(actionType.equals(Action.ENCRYPT)) {
@@ -104,14 +143,24 @@ public class EncryptionAlgorithmExecutor {
 			algorithm.decrypt(fis,fos,key);
 		}
 	}
-	
-	protected void notifyObserversOnStart(List<Observer> observers) {
+
+	private void notifyObserversOnStart(List<Observer> observers) {
 		for(Observer observer : observers) 
 			observer.onStart();
 	}
-	
-	protected void notifyObserversOnEnd(List<Observer> observers) {
+
+	private void notifyObserversOnEnd(List<Observer> observers) {
 		for(Observer observer : observers) 
 			observer.onEnd();
 	}
+	
+	private File createOutputDirectory(File inputDir, Action action) throws IOException {
+		String outputDirPath = (action.equals(Action.ENCRYPT)) ?
+				inputDir.getPath()+"/encrypted" : inputDir.getPath() + "/decrypted";
+		File outputDir = new File(outputDirPath);
+		outputDir.createNewFile();
+		return outputDir;
+	}
+	
+	
 }
