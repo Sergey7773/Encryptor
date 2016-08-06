@@ -1,9 +1,14 @@
 package encryptor.encryptor.algorithms;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
 
-public class xorEncryptionAlgorithm extends EncryptionAlgorithm {
+@XmlRootElement
+@XmlType(name = "XorEncryptionAlgorithm")
+public class XorEncryptionAlgorithm extends EncryptionAlgorithm {
 
 	public byte encrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();

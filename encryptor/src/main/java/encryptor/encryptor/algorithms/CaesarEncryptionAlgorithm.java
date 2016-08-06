@@ -1,8 +1,13 @@
 package encryptor.encryptor.algorithms;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
 
+@XmlRootElement
+@XmlType(name = "CaesarEncryptionAlgorithm")
 public class CaesarEncryptionAlgorithm extends EncryptionAlgorithm {
 
 	public byte encrypt(byte value, Key key) {

@@ -1,12 +1,23 @@
 package encryptor.encryptor.algorithms;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.Key;
 
+@XmlRootElement
+@XmlType(name="DoubleAlgorithm")
 public class DoubleAlgorithm extends EncryptionAlgorithm {
-	
+	@XmlElement
 	private EncryptionAlgorithm firstAlgorithm;
+	@XmlElement
 	private EncryptionAlgorithm secondAlgorithm;
+
+	public DoubleAlgorithm() {
+		firstAlgorithm = secondAlgorithm = null;
+	}
 	
 	public DoubleAlgorithm(EncryptionAlgorithm firstAlg, EncryptionAlgorithm secondAlg) {
 		firstAlgorithm=firstAlg;

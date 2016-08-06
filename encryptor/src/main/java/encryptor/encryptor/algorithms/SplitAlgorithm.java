@@ -8,6 +8,10 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.Applier;
 import encryptor.encryptor.BiApplier;
 import encryptor.encryptor.CompositeKey;
@@ -15,9 +19,12 @@ import encryptor.encryptor.EncryptionApplier;
 import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
 
+@XmlRootElement
+@XmlType(name = "SplitAlgorithm")
 public class SplitAlgorithm extends EncryptionAlgorithm {
 
-	public EncryptionAlgorithm nestedAlgorithm;
+	@XmlElement
+	private EncryptionAlgorithm nestedAlgorithm;
 	
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
 		this.nestedAlgorithm = nested;

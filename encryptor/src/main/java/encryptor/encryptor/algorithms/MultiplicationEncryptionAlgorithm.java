@@ -2,10 +2,15 @@ package encryptor.encryptor.algorithms;
 
 import java.util.Arrays;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
 
+@XmlRootElement
+@XmlType(name = "MultiplicationEncryptionAlgorithm")
 public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 	
 	private byte lastKey;

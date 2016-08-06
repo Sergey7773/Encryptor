@@ -1,9 +1,16 @@
 package encryptor.encryptor.algorithms;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.Key;
 
+@XmlRootElement
+@XmlType(name = "ReverseAlgorithm")
 public class ReverseAlgorithm extends EncryptionAlgorithm {
 
+	@XmlElement
 	private EncryptionAlgorithm nestedAlgorithm;
 	
 	public ReverseAlgorithm(EncryptionAlgorithm nested) {

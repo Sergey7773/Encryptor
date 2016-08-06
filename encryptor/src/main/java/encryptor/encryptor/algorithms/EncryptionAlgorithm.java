@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import encryptor.encryptor.Applier;
 import encryptor.encryptor.DecryptionApplier;
 import encryptor.encryptor.EncryptionApplier;
 import encryptor.encryptor.Key;
 
+@XmlRootElement
+@XmlType(name = "EncryptionAlgorithm")
 public abstract class EncryptionAlgorithm {
 	
 	

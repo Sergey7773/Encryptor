@@ -85,7 +85,7 @@ public class EncryptionAlgorithmExecutor {
 
 
 	//Async execution
-	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) {
+	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
 		//TODO: save key to file
 		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
