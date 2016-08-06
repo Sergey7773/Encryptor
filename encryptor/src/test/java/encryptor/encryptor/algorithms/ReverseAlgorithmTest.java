@@ -1,4 +1,4 @@
-package encryptor.encryptor;
+package encryptor.encryptor.algorithms;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.algorithms.ReverseAlgorithm;
 import encryptor.encryptor.interfaces.Key;

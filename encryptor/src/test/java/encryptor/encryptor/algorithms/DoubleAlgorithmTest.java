@@ -1,4 +1,4 @@
-package encryptor.encryptor;
+package encryptor.encryptor.algorithms;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
+import encryptor.encryptor.CompositeKey;
+import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.DoubleAlgorithm;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 
