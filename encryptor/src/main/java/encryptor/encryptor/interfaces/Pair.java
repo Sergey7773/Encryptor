@@ -1,8 +1,8 @@
-package encryptor.encryptor;
+package encryptor.encryptor.interfaces;
 
 public class Pair<T,S> {
-	T first;
-	S second;
+	public T first;
+	public S second;
 	
 	public Pair(T t, S s) {
 		this.first= t;

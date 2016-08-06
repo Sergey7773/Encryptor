@@ -1,4 +1,4 @@
-package encryptor.encryptor;
+package encryptor.encryptor.interfaces;
 
 import java.io.Serializable;
 
