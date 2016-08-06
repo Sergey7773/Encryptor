@@ -27,9 +27,6 @@ public class Main {
 			"Please enter the index of the desired algorithm (starting at 0).\n";
 	private static final String FILEPATH_REQUEST_STRING = 
 			"Please enter the file you wish to %s";
-	private static final String enterParams = "-e";
-	private static final String loadParams = "-l";
-	private static final String changeSavedParams = "-c";
 
 	private static final String actionRequestString = 
 			"Enter desired action, %s for encryption and %s for decryption";
@@ -42,9 +39,7 @@ public class Main {
 			"Incorrect filepath, enter filepath again";
 
 
-	private static String[] algorithms = new String[] {"caesar,xor,mul"}; 
-
-	private enum ParamsMode {ENTER_NEW,LOAD,CHANGE_SAVED};
+	private static String[] algorithms = new String[] {"caesar,xor,mul,double,reverse,split"}; 
 	public enum Action {ENCRYPT,DECRYPT};
 
 	private static Console console;
@@ -52,7 +47,6 @@ public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 
 		console = System.console();
-		//ParamsMode paramsMode =  parseParamsMode(args[0]); //for future use
 		Key key = null;
 		EncryptionAlgorithm alg=null;
 		console.format(actionRequestString, encryptionAction, decryptionAction);
@@ -107,14 +101,6 @@ public class Main {
 
 	private static void onBadFile() {
 		System.err.println(BAD_FILE);
-	}
-
-	private static ParamsMode parseParamsMode(String paramsMode) {
-		if(paramsMode.equals(changeSavedParams)) return ParamsMode.CHANGE_SAVED;
-		else if(paramsMode.equals(enterParams)) return ParamsMode.ENTER_NEW;
-		else if(paramsMode.equals(loadParams)) return ParamsMode.LOAD;
-		onBadParams();
-		return null;
 	}
 
 	private static Action parseActionParam(String action) {
