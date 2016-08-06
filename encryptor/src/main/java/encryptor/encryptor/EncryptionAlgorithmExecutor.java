@@ -5,9 +5,16 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+
+import org.apache.log4j.Logger;
 
 import report.FailureReport;
 import report.Report;
@@ -23,8 +30,9 @@ public class EncryptionAlgorithmExecutor {
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 
 
-	protected List<Observer> encryptionObservers;
-	protected List<Observer> decryptionObservers;
+	private List<Observer> encryptionObservers;
+	private List<Observer> decryptionObservers;
+	private Logger logger;
 
 	public EncryptionAlgorithmExecutor() {
 		encryptionObservers = new ArrayList<Observer>();
@@ -34,6 +42,7 @@ public class EncryptionAlgorithmExecutor {
 				"Encryption ended.", new MillisClock()));
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended", new MillisClock()));
+		logger = TimeKeepingLogger.getLogger(EncryptionAlgorithmExecutor.class);
 	}
 
 	//Sync execution
@@ -67,7 +76,14 @@ public class EncryptionAlgorithmExecutor {
 				appedEncryptedToFilename(inputFile) : appedDecryptedToFilename(inputFile);
 				FileOutputStream fos = new FileOutputStream(new File(outputFilePath));
 				FileInputStream fis = new FileInputStream(inputFile);
-				performAction(algorithm, actionType, fis, fos, key);
+				logger.info(String.format("%s of %s started.",actionType,inputFile));
+				try{
+					performAction(algorithm, actionType, fis, fos, key);
+					logger.info(String.format("%s of %s finished successfully.",actionType,inputFile));
+				} catch(Exception e) {
+					logger.info(String.format("%s of %s finished ended with the following exception %s:\n"
+							+ "%s.",actionType,inputFile,e.getClass().getName()));
+				}
 	}
 
 	private void performActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
@@ -87,17 +103,21 @@ public class EncryptionAlgorithmExecutor {
 			FileInputStream fis = new FileInputStream(filesInDir[i]);
 			FileOutputStream fos = new FileOutputStream(
 					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
+			logger.info(String.format("%s of %s started.",actionType,filesInDir[i]));
 			try{
 				performAction(algorithm, actionType, fis, fos, key);
 				SuccessReport sr = new SuccessReport();
 				sr.setTime(999); //TODO: measure elapsed time
 				reportsList.add(sr);
+				logger.info(String.format("%s of %s finished successfully.",actionType,filesInDir[i]));
 			} catch (Exception e) {
 				FailureReport fr = new FailureReport();
 				fr.setExceptionMessage(e.getMessage());
 				fr.setExceptionName(e.getClass().getName());
 				fr.setStackTrace(e.getStackTrace().toString());
 				reportsList.add(fr);
+				logger.info(String.format("%s of %s finished ended with the following exception %s:\n"
+						+ "%s.",actionType,filesInDir[i],e.getClass().getName()));
 			}
 			
 			Utils.marshallReports(reports, outputDir+"/reports.xml");
