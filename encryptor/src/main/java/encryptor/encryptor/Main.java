@@ -73,11 +73,24 @@ public class Main {
 		if(response.equals("y")) {
 			alg = Utils.unmarshallEncryptionAlgorithm("alg.xml");
 		} else {
-			console.format(ALGORITHM_INDEX_REQUEST_STRING
-					+ algorithms.toString());
-			alg = parseAlgorithmSelection(console.readLine());
+			console.format("Would you like to import the algorithm from an xml configuration file? (y/n)");
+			response = console.readLine();
+			if(response.equals("y")) {
+				console.format("Please enter the filepath of the configuration file");
+				alg = Utils.unmarshallEncryptionAlgorithm(console.readLine());
+			} else {
+				console.format(ALGORITHM_INDEX_REQUEST_STRING
+						+ algorithms.toString());
+				alg = parseAlgorithmSelection(console.readLine());
+				
+				console.format("Would you like to export this algorithm to an xml configuration file? (y/n)");
+				response = console.readLine();
+				if(response.equals("y")) {
+					Utils.marshallEncryptionAlgorithm(alg, console.readLine());
+				} 
+			}
 		}
-		
+
 		EncryptionAlgorithmExecutor executor = new EncryptionAlgorithmExecutor();
 		if(action.equals(Action.ENCRYPT)) 
 			executor.executeEncyption(alg, file);
@@ -85,7 +98,7 @@ public class Main {
 			executor.executeDecryption(alg, file, key);
 	}
 
-	
+
 
 	private static void onBadParams() {
 		System.err.println(BAD_PARAMS_STRING);
