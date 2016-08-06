@@ -2,6 +2,8 @@ package encryptor.encryptor;
 
 import java.io.Serializable;
 
+import encryptor.encryptor.interfaces.Key;
+
 
 public class CompositeKey implements Key, Serializable {
 

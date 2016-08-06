@@ -17,6 +17,8 @@ import java.util.concurrent.Executors;
 
 import encryptor.encryptor.Main.Action;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+import encryptor.encryptor.interfaces.Key;
+import encryptor.encryptor.interfaces.Pair;
 
 
 public class EncryptionExecutorAsyncService {

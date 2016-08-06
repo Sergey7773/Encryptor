@@ -3,8 +3,10 @@ package encryptor.encryptor;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
@@ -16,12 +18,17 @@ import java.util.Timer;
 
 import org.apache.log4j.Logger;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import report.FailureReport;
 import report.Report;
 import report.Reports;
 import report.SuccessReport;
 import encryptor.encryptor.Main.Action;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+import encryptor.encryptor.interfaces.Key;
+import encryptor.encryptor.interfaces.Observer;
 import encryptor.encryptor.xml.Utils;
 
 public class EncryptionAlgorithmExecutor {
@@ -29,9 +36,11 @@ public class EncryptionAlgorithmExecutor {
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 
-
 	private List<Observer> encryptionObservers;
 	private List<Observer> decryptionObservers;
+	
+	@Inject
+	@Named("ActionLogger")
 	private Logger logger;
 
 	public EncryptionAlgorithmExecutor() {
@@ -39,16 +48,22 @@ public class EncryptionAlgorithmExecutor {
 		decryptionObservers = new ArrayList<Observer>();
 
 		encryptionObservers.add(new ActionObserver("Encryption started.",
-				"Encryption ended.", new MillisClock()));
+				"Encryption ended."));
 		decryptionObservers.add(new ActionObserver("Decryption started",
-				"Decryption ended", new MillisClock()));
-		logger = TimeKeepingLogger.getLogger(EncryptionAlgorithmExecutor.class);
+				"Decryption ended"));
+	}
+	
+	public List<Observer> getEncryptionObservers() {
+		return this.encryptionObservers;
+	}
+	
+	public List<Observer> getDecryptionObservers() {
+		return this.decryptionObservers;
 	}
 
 	//Sync execution
 	public void executeEncyption(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
-		Key key = algorithm.generateKey();
-		//TODO: save key to file
+		Key key = generateAndWriteKey(algorithm,inputFile);
 		execute(algorithm, inputFile, key, Action.ENCRYPT);
 	}
 
@@ -105,6 +120,7 @@ public class EncryptionAlgorithmExecutor {
 					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
 			logger.info(String.format("%s of %s started.",actionType,filesInDir[i]));
 			try{
+				long startTime = System.currentTimeMillis();
 				performAction(algorithm, actionType, fis, fos, key);
 				SuccessReport sr = new SuccessReport();
 				sr.setTime(999); //TODO: measure elapsed time
@@ -127,8 +143,7 @@ public class EncryptionAlgorithmExecutor {
 
 	//Async execution
 	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
-		Key key = algorithm.generateKey();
-		//TODO: save key to file
+		Key key = generateAndWriteKey(algorithm, inputFile);
 		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
 
 	}
@@ -206,5 +221,15 @@ public class EncryptionAlgorithmExecutor {
 		return outputDir;
 	}
 
+	private Key generateAndWriteKey(EncryptionAlgorithm alg, File inputFile) throws IOException {
 
+		Key key = alg.generateKey();
+		String keyPathfile = (inputFile.isDirectory()) ? inputFile.getPath()+"/encrypted/key.bin" 
+				: inputFile.getParentFile().getPath()+"/key.bin";
+		FileOutputStream fos = new FileOutputStream(keyPathfile);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(key);
+		oos.close();
+		return key;
+	}
 }

@@ -1,6 +1,8 @@
 package encryptor.encryptor;
 
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+import encryptor.encryptor.interfaces.Applier;
+import encryptor.encryptor.interfaces.Key;
 
 public class DecryptionApplier implements Applier<Byte, Byte> {
 

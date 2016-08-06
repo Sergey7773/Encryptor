@@ -17,6 +17,8 @@ import encryptor.encryptor.algorithms.MultiplicationEncryptionAlgorithm;
 import encryptor.encryptor.algorithms.ReverseAlgorithm;
 import encryptor.encryptor.algorithms.SplitAlgorithm;
 import encryptor.encryptor.algorithms.XorEncryptionAlgorithm;
+import encryptor.encryptor.interfaces.Key;
+import encryptor.encryptor.interfaces.UserDialogHandler;
 import encryptor.encryptor.xml.Utils;
 
 
@@ -42,45 +44,45 @@ public class Main {
 	private static String[] algorithms = new String[] {"caesar,xor,mul,double,reverse,split"}; 
 	public enum Action {ENCRYPT,DECRYPT};
 
-	private static Console console;
+	private static UserDialogHandler dialogHandler;
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 
-		console = System.console();
+		dialogHandler = new ConsolelUserDialogHandler();
 		Key key = null;
 		EncryptionAlgorithm alg=null;
-		console.format(actionRequestString, encryptionAction, decryptionAction);
-		Action action = parseActionParam(console.readLine());
+		dialogHandler.writeLine(actionRequestString, encryptionAction, decryptionAction);
+		Action action = parseActionParam(dialogHandler.readLine());
 
 		if(action.equals(Action.DECRYPT)) {
-			console.format("Please provide the decryption key file");
+			dialogHandler.writeLine("Please provide the decryption key file");
 			File keyFile = parseFilepathFromCMD(); 			
 			key = readKeyFromFile(keyFile);
 		}
 
-		console.format(FILEPATH_REQUEST_STRING,
+		dialogHandler.writeLine(FILEPATH_REQUEST_STRING,
 				(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
 		File file = parseFilepathFromCMD();
 
-		console.format("Would you like to load the last saved encryption algorithm? (y/n)\n");
-		String response = console.readLine();
+		dialogHandler.writeLine("Would you like to load the last saved encryption algorithm? (y/n)\n");
+		String response = dialogHandler.readLine();
 		if(response.equals("y")) {
 			alg = Utils.unmarshallEncryptionAlgorithm("alg.xml");
 		} else {
-			console.format("Would you like to import the algorithm from an xml configuration file? (y/n)");
-			response = console.readLine();
+			dialogHandler.writeLine("Would you like to import the algorithm from an xml configuration file? (y/n)");
+			response = dialogHandler.readLine();
 			if(response.equals("y")) {
-				console.format("Please enter the filepath of the configuration file");
-				alg = Utils.unmarshallEncryptionAlgorithm(console.readLine());
+				dialogHandler.writeLine("Please enter the filepath of the configuration file");
+				alg = Utils.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
 			} else {
-				console.format(ALGORITHM_INDEX_REQUEST_STRING
+				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING
 						+ algorithms.toString());
-				alg = parseAlgorithmSelection(console.readLine());
+				alg = parseAlgorithmSelection(dialogHandler.readLine());
 				
-				console.format("Would you like to export this algorithm to an xml configuration file? (y/n)");
-				response = console.readLine();
+				dialogHandler.writeLine("Would you like to export this algorithm to an xml configuration file? (y/n)");
+				response = dialogHandler.readLine();
 				if(response.equals("y")) {
-					Utils.marshallEncryptionAlgorithm(alg, console.readLine());
+					Utils.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
 				} 
 			}
 		}
@@ -111,10 +113,10 @@ public class Main {
 	}
 
 	private static File parseFilepathFromCMD() {
-		File $ = new File(console.readLine());
+		File $ = new File(dialogHandler.readLine());
 		while($==null || $.exists()==false) {
 			onBadFile();
-			$ = new File(console.readLine());
+			$ = new File(dialogHandler.readLine());
 		}
 		return $;
 	}
@@ -149,19 +151,19 @@ public class Main {
 	}
 
 	private static EncryptionAlgorithm parseBiArgAlgorithm(int depth) {
-		console.format("Please Enter the index of the first algorithm.");
+		dialogHandler.writeLine("Please Enter the index of the first algorithm.");
 		EncryptionAlgorithm first = parseAlgorithmSelectionRecursive(
-				Integer.parseInt(console.readLine()), depth+1);
-		console.format("please Enter the index of the second algorithm");
+				Integer.parseInt(dialogHandler.readLine()), depth+1);
+		dialogHandler.writeLine("please Enter the index of the second algorithm");
 		EncryptionAlgorithm second = parseAlgorithmSelectionRecursive(
-				Integer.parseInt(console.readLine()), depth+1);
+				Integer.parseInt(dialogHandler.readLine()), depth+1);
 		return new DoubleAlgorithm(first, second);
 	}
 
 	private static EncryptionAlgorithm parseSingleArgAlgorithm(int index, int depth) {
-		console.format("Please enter the index of the nested algorithm");
+		dialogHandler.writeLine("Please enter the index of the nested algorithm");
 		EncryptionAlgorithm nested = parseAlgorithmSelectionRecursive(
-				Integer.parseInt(console.readLine()), depth+1);
+				Integer.parseInt(dialogHandler.readLine()), depth+1);
 		switch(index) {
 		case 4: return new ReverseAlgorithm(nested);
 		case 5: return new SplitAlgorithm(nested);

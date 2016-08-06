@@ -2,8 +2,8 @@ package encryptor.encryptor.algorithms;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
+import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 public class SimulationEncryptionAlgorithm extends EncryptionAlgorithm{

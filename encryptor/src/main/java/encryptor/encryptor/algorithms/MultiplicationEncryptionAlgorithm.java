@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import encryptor.encryptor.CompositeKey;
-import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
+import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "MultiplicationEncryptionAlgorithm")

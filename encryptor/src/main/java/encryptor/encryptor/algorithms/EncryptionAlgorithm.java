@@ -7,10 +7,10 @@ import java.io.OutputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import encryptor.encryptor.Applier;
 import encryptor.encryptor.DecryptionApplier;
 import encryptor.encryptor.EncryptionApplier;
-import encryptor.encryptor.Key;
+import encryptor.encryptor.interfaces.Applier;
+import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "EncryptionAlgorithm")

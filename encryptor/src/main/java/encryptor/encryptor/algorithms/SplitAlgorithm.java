@@ -12,12 +12,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import encryptor.encryptor.Applier;
-import encryptor.encryptor.BiApplier;
+import com.google.inject.Inject;
+
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.EncryptionApplier;
-import encryptor.encryptor.Key;
 import encryptor.encryptor.SingleValueKey;
+import encryptor.encryptor.interfaces.Applier;
+import encryptor.encryptor.interfaces.BiApplier;
+import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "SplitAlgorithm")

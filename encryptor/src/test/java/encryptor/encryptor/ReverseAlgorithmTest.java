@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.algorithms.ReverseAlgorithm;
+import encryptor.encryptor.interfaces.Key;
 
 public class ReverseAlgorithmTest {
 	

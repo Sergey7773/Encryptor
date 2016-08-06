@@ -4,7 +4,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import encryptor.encryptor.Key;
+import com.google.inject.Inject;
+
+import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "ReverseAlgorithm")

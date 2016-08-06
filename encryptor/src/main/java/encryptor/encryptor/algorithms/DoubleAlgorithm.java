@@ -4,14 +4,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.inject.Inject;
+
 import encryptor.encryptor.CompositeKey;
-import encryptor.encryptor.Key;
+import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name="DoubleAlgorithm")
 public class DoubleAlgorithm extends EncryptionAlgorithm {
+	
 	@XmlElement
 	private EncryptionAlgorithm firstAlgorithm;
+	
 	@XmlElement
 	private EncryptionAlgorithm secondAlgorithm;
 
