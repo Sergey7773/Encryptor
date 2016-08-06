@@ -84,6 +84,7 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 		int counter = 0;
 		Key currKey;
 		while(is.available()>0) {
+			is.read(in);
 			currKey = (counter % 2 ==0) ? composite.getFirstKey() : composite.getSecondKey();
 			out[0] = biApplier.apply(in[0], currKey);
 			os.write(out);
