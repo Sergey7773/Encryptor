@@ -7,9 +7,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
+import report.FailureReport;
+import report.Report;
+import report.Reports;
+import report.SuccessReport;
 import encryptor.encryptor.Main.Action;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+import encryptor.encryptor.xml.Utils;
 
 public class EncryptionAlgorithmExecutor {
 
@@ -29,7 +35,7 @@ public class EncryptionAlgorithmExecutor {
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended", new MillisClock()));
 	}
-	
+
 	//Sync execution
 	public void executeEncyption(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
@@ -68,6 +74,8 @@ public class EncryptionAlgorithmExecutor {
 			Key key, Action actionType) 
 					throws IOException {
 		File outputDir = createOutputDirectory(inputDir, actionType);
+		Reports reports = new Reports();
+		List<Report> reportsList = reports.getReports();
 		File[] filesInDir = inputDir.listFiles(new FileFilter() {
 
 			@Override
@@ -79,7 +87,20 @@ public class EncryptionAlgorithmExecutor {
 			FileInputStream fis = new FileInputStream(filesInDir[i]);
 			FileOutputStream fos = new FileOutputStream(
 					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
-			performAction(algorithm, actionType, fis, fos, key);
+			try{
+				performAction(algorithm, actionType, fis, fos, key);
+				SuccessReport sr = new SuccessReport();
+				sr.setTime(999); //TODO: measure elapsed time
+				reportsList.add(sr);
+			} catch (Exception e) {
+				FailureReport fr = new FailureReport();
+				fr.setExceptionMessage(e.getMessage());
+				fr.setExceptionName(e.getClass().getName());
+				fr.setStackTrace(e.getStackTrace().toString());
+				reportsList.add(fr);
+			}
+			
+			Utils.marshallReports(reports, outputDir+"/reports.xml");
 		}
 	}
 
@@ -89,7 +110,7 @@ public class EncryptionAlgorithmExecutor {
 		Key key = algorithm.generateKey();
 		//TODO: save key to file
 		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
-		
+
 	}
 
 	public void executeDecryptionAsync(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
@@ -121,7 +142,7 @@ public class EncryptionAlgorithmExecutor {
 		});
 
 		new EncryptionExecutorAsyncService().execute(outputDir, filesInDir, algorithm, actionType, key);
-		
+
 	}
 
 	//Utility functions
@@ -156,7 +177,7 @@ public class EncryptionAlgorithmExecutor {
 		for(Observer observer : observers) 
 			observer.onEnd();
 	}
-	
+
 	private File createOutputDirectory(File inputDir, Action action) throws IOException {
 		String outputDirPath = (action.equals(Action.ENCRYPT)) ?
 				inputDir.getPath()+"/encrypted" : inputDir.getPath() + "/decrypted";
@@ -164,6 +185,6 @@ public class EncryptionAlgorithmExecutor {
 		outputDir.createNewFile();
 		return outputDir;
 	}
-	
-	
+
+
 }

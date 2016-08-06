@@ -1,6 +1,7 @@
 
 package report;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "successReport")
@@ -15,6 +16,16 @@ public class SuccessReport implements Report{
 		time = -1;
 	}
 	
+	@XmlElement
+	public Status getStatus() {
+		return this.status;
+	}
+	
+	public void setStatus(Status status) {
+		this.status=status;
+	}
+	
+	@XmlElement
 	public int getTime() {
 		return time;
 	}

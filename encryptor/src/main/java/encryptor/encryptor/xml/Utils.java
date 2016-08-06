@@ -11,6 +11,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import report.Reports;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 
 public class Utils {
@@ -60,7 +61,10 @@ public class Utils {
 	public static void marshallEncryptionAlgorithm(EncryptionAlgorithm alg, String filepath) {
 		marshall(alg,filepath,"EncryptionAlgorithms.xsd","encryptor.encryptor.algorithms");
 	}
-
+	
+	public static void marshallReports(Reports reports, String filepath) {
+		marshall(reports,filepath,"Reports.xsd","reports");
+	}
 
 
 }
