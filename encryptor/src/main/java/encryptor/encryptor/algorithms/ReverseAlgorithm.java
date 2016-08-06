@@ -9,9 +9,13 @@ import encryptor.encryptor.Key;
 @XmlRootElement
 @XmlType(name = "ReverseAlgorithm")
 public class ReverseAlgorithm extends EncryptionAlgorithm {
-
+	
 	@XmlElement
 	private EncryptionAlgorithm nestedAlgorithm;
+	
+	public ReverseAlgorithm() {
+		this.nestedAlgorithm = null;
+	}
 	
 	public ReverseAlgorithm(EncryptionAlgorithm nested) {
 		this.nestedAlgorithm = nested;

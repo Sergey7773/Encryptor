@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.example.org/EncryptionAlgorithms"
+	xmlns:tns="http://www.example.org/EncryptionAlgorithms" 
+	elementFormDefault="unqualified"
+	attributeFormDefault="unqualified">
+
+	<element name="doubleAlgorithm" type="tns:DoubleAlgorithm"></element>
+	<element name="multiplicationEncryptionAlgorithm" type="tns:MultiplicationEncryptionAlgorithm"></element>
+	<element name="reverseAlgorithm" type="tns:ReverseAlgorithm"></element>
+	<element name="simulationEncryptionAlgorithm" type="tns:SimulationEncyptionAlgorithm"></element>
+	<element name="splitAlgorithm" type="tns:SplitAlgorithm"></element>
+	<element name="xorEncryptionAlgorithm" type="tns:XorEncryptionAlgorithm"></element>
+	
+	<complexType name="EncryptionAlgorithm" abstract="true"></complexType>
+	
+	<complexType name="DoubleAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm">
+				<sequence>
+					<element name="firstAlgorithm" type="tns:EncryptionAlgorithm">
+					</element>
+					<element name="secondAlgorithm" type="tns:EncryptionAlgorithm">
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="MultiplicationEncryptionAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm"></extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="CaesarEncryptionAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm"></extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="XorEncryptionAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm"></extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ReverseAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm">
+				<sequence>
+					<element name="nestedAlgorithm">
+						<complexType>
+							<complexContent>
+								<extension base="tns:EncryptionAlgorithm"></extension>
+							</complexContent>
+						</complexType>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="SplitAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm">
+				<sequence>
+					<element name="nestedAlgorithm">
+						<complexType>
+							<complexContent>
+								<extension base="tns:EncryptionAlgorithm"></extension>
+							</complexContent>
+						</complexType>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="SimulationEncyptionAlgorithm">
+		<complexContent>
+			<extension base="tns:EncryptionAlgorithm"></extension>
+		</complexContent>
+	</complexType>
+	
+
+</schema>

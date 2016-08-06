@@ -16,7 +16,8 @@ import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.algorithms.MultiplicationEncryptionAlgorithm;
 import encryptor.encryptor.algorithms.ReverseAlgorithm;
 import encryptor.encryptor.algorithms.SplitAlgorithm;
-import encryptor.encryptor.algorithms.xorEncryptionAlgorithm;
+import encryptor.encryptor.algorithms.XorEncryptionAlgorithm;
+import encryptor.encryptor.xml.Utils;
 
 
 public class Main {
@@ -53,6 +54,7 @@ public class Main {
 		console = System.console();
 		//ParamsMode paramsMode =  parseParamsMode(args[0]); //for future use
 		Key key = null;
+		EncryptionAlgorithm alg=null;
 		console.format(actionRequestString, encryptionAction, decryptionAction);
 		Action action = parseActionParam(console.readLine());
 
@@ -66,9 +68,15 @@ public class Main {
 				(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
 		File file = parseFilepathFromCMD();
 
-		console.format(ALGORITHM_INDEX_REQUEST_STRING
-				+ algorithms.toString());
-		EncryptionAlgorithm alg = parseAlgorithmSelection(console.readLine());
+		console.format("Would you like to load the last saved encryption algorithm? (y/n)\n");
+		String response = console.readLine();
+		if(response.equals("y")) {
+			alg = Utils.unmarshallEncryptionAlgorithm("alg.xml");
+		} else {
+			console.format(ALGORITHM_INDEX_REQUEST_STRING
+					+ algorithms.toString());
+			alg = parseAlgorithmSelection(console.readLine());
+		}
 		
 		EncryptionAlgorithmExecutor executor = new EncryptionAlgorithmExecutor();
 		if(action.equals(Action.ENCRYPT)) 
@@ -124,7 +132,7 @@ public class Main {
 		}
 		switch(index) {
 		case 0: return new CaesarEncryptionAlgorithm();
-		case 1: return new xorEncryptionAlgorithm();
+		case 1: return new XorEncryptionAlgorithm();
 		case 2: return new MultiplicationEncryptionAlgorithm();
 		default: return parseAlgorithmSelectionRecursive(index,1);
 		}

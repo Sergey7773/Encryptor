@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tns:doubleAlgorithm xmlns:tns="http://www.example.org/EncryptionAlgorithms" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <firstAlgorithm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="tns:DoubleAlgorithm">
+        <firstAlgorithm xsi:type="tns:MultiplicationEncryptionAlgorithm"/>
+        <secondAlgorithm xsi:type="tns:MultiplicationEncryptionAlgorithm"/>
+    </firstAlgorithm>
+    <secondAlgorithm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="tns:XorEncryptionAlgorithm"/>
+</tns:doubleAlgorithm>

@@ -26,6 +26,10 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	@XmlElement
 	private EncryptionAlgorithm nestedAlgorithm;
 	
+	public SplitAlgorithm() {
+		this.nestedAlgorithm = null;
+	}
+	
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
 		this.nestedAlgorithm = nested;
 	}
