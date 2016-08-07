@@ -28,6 +28,6 @@ public class Stopwatch {
 	}
 	
 	public long getElapsedTimeInMillis() {
-		return Duration.between(clock.instant(), startingInstant).toMillis();
+		return Duration.between(startingInstant,clock.instant()).toMillis();
 	}
 }

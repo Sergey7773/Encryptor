@@ -18,6 +18,7 @@ import java.util.Timer;
 
 import org.apache.log4j.Logger;
 
+import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -119,10 +120,11 @@ public class EncryptionAlgorithmExecutor {
 					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
 			logger.info(String.format("%s of %s started.",actionType,filesInDir[i]));
 			try{
-				long startTime = System.currentTimeMillis();
+				Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
+				sw.start();
 				performAction(algorithm, actionType, fis, fos, key);
 				SuccessReport sr = new SuccessReport();
-				sr.setTime(999); //TODO: measure elapsed time
+				sr.setTime(sw.getElapsedTimeInSeconds());
 				reportsList.add(sr);
 				logger.info(String.format("%s of %s finished successfully.",actionType,filesInDir[i]));
 			} catch (Exception e) {
