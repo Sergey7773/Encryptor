@@ -64,8 +64,9 @@ public class EncryptionAlgorithmExecutor {
 
 	//Sync execution
 	public void executeEncyption(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
-		Key key = generateAndWriteKey(algorithm,inputFile);
+		Key key = algorithm.generateKey();
 		execute(algorithm, inputFile, key, Action.ENCRYPT);
+		writeKey(key,inputFile);
 	}
 
 	public void executeDecryption(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
@@ -143,9 +144,9 @@ public class EncryptionAlgorithmExecutor {
 
 	//Async execution
 	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
-		Key key = generateAndWriteKey(algorithm, inputFile);
+		Key key = algorithm.generateKey();
 		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
-
+		writeKey(key, inputFile);
 	}
 
 	public void executeDecryptionAsync(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
@@ -226,9 +227,8 @@ public class EncryptionAlgorithmExecutor {
 		return outputDir;
 	}
 
-	private Key generateAndWriteKey(EncryptionAlgorithm alg, File inputFile) throws IOException {
+	private Key writeKey(Key key, File inputFile) throws IOException {
 
-		Key key = alg.generateKey();
 		String keyPathfile = (inputFile.isDirectory()) ? inputFile.getPath()+"/key.bin" 
 				: inputFile.getParentFile().getPath()+"/key.bin";
 		FileOutputStream fos = new FileOutputStream(keyPathfile);
