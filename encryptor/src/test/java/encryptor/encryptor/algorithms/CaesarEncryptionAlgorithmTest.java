@@ -24,17 +24,7 @@ public class CaesarEncryptionAlgorithmTest {
 		
 		plainValues = new byte[]{Byte.MIN_VALUE+10,0,Byte.MAX_VALUE-10};
 		testKey = new byte[]{15};
-		cypheredValues = new byte[]{Byte.MIN_VALUE+25,15,Byte.MIN_VALUE+5};
-		
-		
-		for(int i=0;i<plainValues.length;i++) {
-			if(plainValues[i]+testKey[0]>Byte.MAX_VALUE){
-				cypheredValues[i]=(byte) 
-						(Byte.MIN_VALUE+(plainValues[i]+testKey[0]-Byte.MAX_VALUE));
-			} else {
-				cypheredValues[i] = (byte) (plainValues[i]+testKey[0]);
-			}
-		}
+		cypheredValues = new byte[]{Byte.MIN_VALUE+25,15,(byte) (Byte.MAX_VALUE+5)};
 	}
 	
 	@Test

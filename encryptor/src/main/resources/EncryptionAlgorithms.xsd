@@ -11,6 +11,7 @@
 	<element name="simulationEncryptionAlgorithm" type="tns:SimulationEncyptionAlgorithm"></element>
 	<element name="splitAlgorithm" type="tns:SplitAlgorithm"></element>
 	<element name="xorEncryptionAlgorithm" type="tns:XorEncryptionAlgorithm"></element>
+	<element name="caesarEncryptionAlgorithm" type="tns:CaesarEncryptionAlgorithm"></element>
 	
 	<complexType name="EncryptionAlgorithm" abstract="true"></complexType>
 	

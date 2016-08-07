@@ -109,7 +109,7 @@ public class EncryptionExecutorAsyncService {
 					FileInputStream fis = pair.second;
 					File file = pair.first;
 					
-					if(fileActionTimers.get(file)!=null) {
+					if(fileActionTimers.get(file)==null) {
 						Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
 						sw.start();
 						fileActionTimers.put(file, sw);
