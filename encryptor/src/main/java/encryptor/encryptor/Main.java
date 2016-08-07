@@ -71,7 +71,7 @@ public class Main {
 		dialogHandler.writeLine("Would you like to load the last saved encryption algorithm? (y/n)");
 		String response = dialogHandler.readLine();
 		if(response.equals("y")) {
-			alg = Utils.unmarshallEncryptionAlgorithm("alg.xml");
+			alg = Utils.unmarshallEncryptionAlgorithm(Main.class.getClassLoader().getResource("alg.xml").getPath());
 		} else {
 			dialogHandler.writeLine("Would you like to import the algorithm from an xml configuration file? (y/n)");
 			response = dialogHandler.readLine();

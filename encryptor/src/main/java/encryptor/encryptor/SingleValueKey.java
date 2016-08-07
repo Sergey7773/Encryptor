@@ -3,6 +3,7 @@ package encryptor.encryptor;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import encryptor.encryptor.interfaces.Key;
 
@@ -23,12 +24,12 @@ public class SingleValueKey implements Key, Serializable {
 		return new SingleValueKey(buffer[0]);
 	}
 	
-	public static SingleValueKey generate(List<Byte> illegalValues) {
+	public static SingleValueKey generate(Predicate<Byte> illegalValuesPredicate) {
 		Random rnd = new Random(System.currentTimeMillis());
 		byte[] buffer = new byte[1];
 		do {
 			rnd.nextBytes(buffer);
-		} while(illegalValues.contains(buffer[0]));
+		} while(illegalValuesPredicate.test(buffer[0]));
 		return new SingleValueKey(buffer[0]);
 	}
 	

@@ -39,11 +39,11 @@ public class Utils {
 	public static Object unmarshall(String filepath,String schema, String contextPackage) {
 		Object result = null;
 		try {
-		JAXBContext jc = JAXBContext.newInstance("encryptor.encryptor.algorithms");
+		JAXBContext jc = JAXBContext.newInstance(contextPackage);
 		Unmarshaller um = jc.createUnmarshaller();
 		um.setSchema(SchemaFactory
 				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI )
-				.newSchema(new File("EncryptionAlgorithms.xsd")));
+				.newSchema(new File(schema)));
 		result = um.unmarshal(new File(filepath));;
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -54,16 +54,19 @@ public class Utils {
 	}
 	
 	public static EncryptionAlgorithm unmarshallEncryptionAlgorithm(String filepath) {
+		String schema = Utils.class.getClassLoader().getResource("EncryptionAlgorithms.xsd").getPath();
 		return (EncryptionAlgorithm)(
-				unmarshall(filepath,"EncryptionAlgorithms.xsd","encryptor.encryptor.algorithms"));
+				unmarshall(filepath,schema,"encryptor.encryptor.algorithms"));
 	}
 	
 	public static void marshallEncryptionAlgorithm(EncryptionAlgorithm alg, String filepath) {
-		marshall(alg,filepath,"EncryptionAlgorithms.xsd","encryptor.encryptor.algorithms");
+		String schema = Utils.class.getClassLoader().getResource("EncryptionAlgorithms.xsd").getPath();
+		marshall(alg,filepath,schema,"encryptor.encryptor.algorithms");
 	}
 	
 	public static void marshallReports(Reports reports, String filepath) {
-		marshall(reports,filepath,"Reports.xsd","reports");
+		String schema = Utils.class.getClassLoader().getResource("Reports.xsd").getPath();
+		marshall(reports,filepath,schema,"reports");
 	}
 
 

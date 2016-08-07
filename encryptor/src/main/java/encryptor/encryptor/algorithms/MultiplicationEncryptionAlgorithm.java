@@ -1,6 +1,7 @@
 package encryptor.encryptor.algorithms;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -45,7 +46,7 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 	
 	private byte findNewDecKey() {
 		for(byte k = Byte.MIN_VALUE; k<=Byte.MAX_VALUE; k++) {
-			if(MWO(k,lastKey)==1)
+			if(MWO(k,lastKey)==(byte)1)
 				return k;
 		}
 		return -1;
@@ -59,7 +60,13 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 
 	@Override
 	public Key generateKey() {
-		return SingleValueKey.generate(Arrays.asList((byte)0, (byte)2));
+		return SingleValueKey.generate(new Predicate<Byte>() {
+			
+			@Override
+			public boolean test(Byte t) {
+				return t==0 || t%2==0;
+			}
+		});
 	}
 
 }
