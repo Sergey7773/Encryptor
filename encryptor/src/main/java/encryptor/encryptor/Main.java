@@ -26,7 +26,7 @@ public class Main {
 
 
 	private static final String ALGORITHM_INDEX_REQUEST_STRING = 
-			"Please enter the index of the desired algorithm (starting at 0).\n";
+			"Please enter the index of the desired algorithm (starting at 0).";
 	private static final String FILEPATH_REQUEST_STRING = 
 			"Please enter the file you wish to %s";
 
@@ -64,7 +64,7 @@ public class Main {
 				(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
 		File file = parseFilepathFromCMD();
 
-		dialogHandler.writeLine("Would you like to load the last saved encryption algorithm? (y/n)\n");
+		dialogHandler.writeLine("Would you like to load the last saved encryption algorithm? (y/n)");
 		String response = dialogHandler.readLine();
 		if(response.equals("y")) {
 			alg = Utils.unmarshallEncryptionAlgorithm("alg.xml");
@@ -106,8 +106,10 @@ public class Main {
 	}
 
 	private static Action parseActionParam(String action) {
-		if(action.equals(decryptionAction)) return Action.DECRYPT;
-		else if(action.equals(encryptionAction)) return Action.ENCRYPT;
+		String toCompare = action.replace("\n", "");
+		toCompare = toCompare.replace("\r", "");
+		if(toCompare.equals(decryptionAction)) return Action.DECRYPT;
+		else if(toCompare.equals(encryptionAction)) return Action.ENCRYPT;
 		onBadParams();  //exit
 		return null;
 	}
@@ -123,11 +125,6 @@ public class Main {
 
 	private static EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex) {
 		int index=Integer.parseInt(algorithmIndex);
-		try {
-			index = System.in.read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		if(index<0 || index>=algorithms.length) {
 			throw new IllegalArgumentException();
 		}

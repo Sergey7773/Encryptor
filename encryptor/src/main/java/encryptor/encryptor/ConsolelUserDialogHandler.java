@@ -2,6 +2,7 @@ package encryptor.encryptor;
 
 import java.io.Console;
 import java.io.IOException;
+import java.util.Arrays;
 
 import encryptor.encryptor.interfaces.UserDialogHandler;
 
@@ -16,9 +17,9 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 	@Override
 	public void writeLine(String line) {
 		if(console!=null)
-			console.format(line+"\n");
+			console.format(line+"\r\n");
 		else
-			System.out.println(line+"\n");
+			System.out.println(line);
 		
 	}
 
@@ -27,13 +28,15 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 		if(console!=null) 
 			return console.readLine();
 		else {
+			int readBytes=0;
 			byte[] buffer = new byte[500];
 			try {
-				System.in.read(buffer, 0, buffer.length);
+				readBytes = System.in.read(buffer, 0, buffer.length);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return String.valueOf(buffer);
+			String res = new String(Arrays.copyOf(buffer, readBytes)).replaceAll("(\r)(\n)", "");
+			return res;
 		}
 	}
 
