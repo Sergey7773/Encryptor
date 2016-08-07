@@ -12,6 +12,7 @@ import java.io.PipedOutputStream;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,10 +21,16 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.google.inject.Guice;
+
+import reports.FailureReport;
+import reports.Reports;
+import reports.SuccessReport;
 import encryptor.encryptor.Main.Action;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.Pair;
+import encryptor.encryptor.xml.Utils;
 
 
 public class EncryptionExecutorAsyncService {
@@ -36,8 +43,10 @@ public class EncryptionExecutorAsyncService {
 	private BlockingQueue<AsyncJob> readyJobs;
 	private ConcurrentLinkedQueue<Pair<File,FileInputStream>> fileInputStreams;
 	private ConcurrentLinkedQueue<File> filesToFinish;
+	private ConcurrentHashMap<File, Stopwatch> fileActionTimers;
 	private ExecutorService threadPool;
 	private File outputDir;
+	private Reports reportsList;
 
 	private Lock lock;
 	private Condition readyToRead;
@@ -52,9 +61,11 @@ public class EncryptionExecutorAsyncService {
 			fileInputStreams.add(new Pair<File,FileInputStream>(f,new FileInputStream(f)));
 		}
 		filesToFinish = new ConcurrentLinkedQueue<>(Arrays.asList(files));
+		fileActionTimers = new ConcurrentHashMap<File,Stopwatch>();
 		readyJobs = new ArrayBlockingQueue<AsyncJob>(files.length);
 		this.outputDir = outputDir;
 		finished = new AtomicBoolean(false);
+		reportsList = new Reports();
 		
 		lock = new ReentrantLock();
 		readyToRead = lock.newCondition();
@@ -75,6 +86,7 @@ public class EncryptionExecutorAsyncService {
 			threadPool.execute(new WriterTask(job,algorithm,action,key));
 		}
 		threadPool.shutdown();
+		Utils.marshallReports(reportsList, outputDir.getParent()+"/reports.xml");
 	}
 
 	private class ReaderTask implements Runnable {
@@ -82,8 +94,7 @@ public class EncryptionExecutorAsyncService {
 		@Override
 		public void run() {
 			while(!filesToFinish.isEmpty()) {
-				try {
-					
+				try {		
 					lock.lock();
 					Pair<File,FileInputStream> pair = fileInputStreams.poll();
 					while(pair==null) {
@@ -97,6 +108,14 @@ public class EncryptionExecutorAsyncService {
 					lock.unlock();
 					FileInputStream fis = pair.second;
 					File file = pair.first;
+					
+					if(fileActionTimers.get(file)!=null) {
+						Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
+						sw.start();
+						fileActionTimers.put(file, sw);
+						//TODO: write to log
+					}
+					
 					PipedInputStream pis = new PipedInputStream();
 					PipedOutputStream pos = new PipedOutputStream(pis);
 					byte[] buffer = new byte[BUFFER_SIZE];
@@ -151,6 +170,10 @@ public class EncryptionExecutorAsyncService {
 				os.close();
 				is.close();
 				if(fis.available()==0) {
+					SuccessReport sr = new SuccessReport();
+					sr.setTime(fileActionTimers.get(sourceFile).getElapsedTimeInSeconds());
+					//TODO: write to log
+					reportsList.getReports().add(sr);
 					filesToFinish.remove(sourceFile);
 					if(filesToFinish.isEmpty()) finished.set(true);
 					fis.close();
@@ -161,7 +184,21 @@ public class EncryptionExecutorAsyncService {
 				readyToRead.signal();
 				lock.unlock();
 			} catch (IOException e) {
+				
+				FailureReport fr = new FailureReport();
+				fr.setExceptionMessage(e.getMessage());
+				fr.setExceptionName(e.getClass().getName());
+				fr.setStackTrace(e.getStackTrace().toString());
+				reportsList.getReports().add(fr);
+				//TODO: write to log
 				e.printStackTrace();
+				filesToFinish.remove(sourceFile);
+				if(filesToFinish.isEmpty()) finished.set(true);
+				try {
+					fis.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			} 
 
 		}

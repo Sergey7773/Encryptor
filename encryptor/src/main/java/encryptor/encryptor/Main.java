@@ -90,13 +90,22 @@ public class Main {
 				} 
 			}
 		}
-
+		dialogHandler.writeLine("Would you like to use async mode? (y/n)");
+		String useAsync = dialogHandler.readLine();
+		
 		EncryptionAlgorithmExecutor executor = 
 				Guice.createInjector(new DefaultEncryptorInjector()).getInstance(EncryptionAlgorithmExecutor.class);
-		if(action.equals(Action.ENCRYPT)) 
-			executor.executeEncyption(alg, file);
-		else
-			executor.executeDecryption(alg, file, key);
+		if(useAsync.equals("y")) {
+			if(action.equals(Action.ENCRYPT))
+				executor.executeEncryptionAsync(alg, file);
+			else
+				executor.executeDecryptionAsync(alg, file, key);
+		} else {
+			if(action.equals(Action.ENCRYPT)) 
+				executor.executeEncyption(alg, file);
+			else
+				executor.executeDecryption(alg, file, key);
+		}
 	}
 
 
