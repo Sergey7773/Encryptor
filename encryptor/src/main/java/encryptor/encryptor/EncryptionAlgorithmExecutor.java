@@ -21,10 +21,10 @@ import org.apache.log4j.Logger;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import report.FailureReport;
-import report.Report;
-import report.Reports;
-import report.SuccessReport;
+import reports.FailureReport;
+import reports.Report;
+import reports.Reports;
+import reports.SuccessReport;
 import encryptor.encryptor.Main.Action;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
@@ -38,12 +38,10 @@ public class EncryptionAlgorithmExecutor {
 
 	private List<Observer> encryptionObservers;
 	private List<Observer> decryptionObservers;
-	
-	@Inject
-	@Named("ActionLogger")
 	private Logger logger;
 
-	public EncryptionAlgorithmExecutor() {
+	@Inject
+	public EncryptionAlgorithmExecutor(@Named("ActionLogger") Logger logger) {
 		encryptionObservers = new ArrayList<Observer>();
 		decryptionObservers = new ArrayList<Observer>();
 
@@ -51,6 +49,8 @@ public class EncryptionAlgorithmExecutor {
 				"Encryption ended."));
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended"));
+		
+		this.logger = logger;
 	}
 	
 	public List<Observer> getEncryptionObservers() {
@@ -96,8 +96,7 @@ public class EncryptionAlgorithmExecutor {
 					performAction(algorithm, actionType, fis, fos, key);
 					logger.info(String.format("%s of %s finished successfully.",actionType,inputFile));
 				} catch(Exception e) {
-					logger.info(String.format("%s of %s finished ended with the following exception %s:\n"
-							+ "%s.",actionType,inputFile,e.getClass().getName()));
+					logger.info(String.format("%s of %s finished ended with the following exception %s",actionType,inputFile,e.getClass().getName()));
 				}
 	}
 
@@ -115,7 +114,7 @@ public class EncryptionAlgorithmExecutor {
 			}
 		});
 		for(int i=0;i<filesInDir.length;i++) {
-			FileInputStream fis = new FileInputStream(filesInDir[i]);
+			FileInputStream fis = new FileInputStream(inputDir.getPath()+"/"+filesInDir[i].getName());
 			FileOutputStream fos = new FileOutputStream(
 					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
 			logger.info(String.format("%s of %s started.",actionType,filesInDir[i]));
@@ -135,9 +134,8 @@ public class EncryptionAlgorithmExecutor {
 				logger.info(String.format("%s of %s finished ended with the following exception %s:\n"
 						+ "%s.",actionType,filesInDir[i],e.getClass().getName()));
 			}
-			
-			Utils.marshallReports(reports, outputDir+"/reports.xml");
 		}
+		Utils.marshallReports(reports, inputDir+"/reports.xml");
 	}
 
 
@@ -214,17 +212,22 @@ public class EncryptionAlgorithmExecutor {
 	}
 
 	private File createOutputDirectory(File inputDir, Action action) throws IOException {
-		String outputDirPath = (action.equals(Action.ENCRYPT)) ?
-				inputDir.getPath()+"/encrypted" : inputDir.getPath() + "/decrypted";
+		String outputDirPath = "";
+		if(action.equals(Action.ENCRYPT)) {
+			outputDirPath = inputDir.getPath()+"/encrypted";
+		} else {
+			outputDirPath = inputDir.getParent()+"/decypted";
+		}
+		
 		File outputDir = new File(outputDirPath);
-		outputDir.createNewFile();
+		outputDir.mkdir();
 		return outputDir;
 	}
 
 	private Key generateAndWriteKey(EncryptionAlgorithm alg, File inputFile) throws IOException {
 
 		Key key = alg.generateKey();
-		String keyPathfile = (inputFile.isDirectory()) ? inputFile.getPath()+"/encrypted/key.bin" 
+		String keyPathfile = (inputFile.isDirectory()) ? inputFile.getPath()+"/key.bin" 
 				: inputFile.getParentFile().getPath()+"/key.bin";
 		FileOutputStream fos = new FileOutputStream(keyPathfile);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);

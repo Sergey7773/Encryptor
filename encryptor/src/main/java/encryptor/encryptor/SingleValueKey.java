@@ -28,7 +28,7 @@ public class SingleValueKey implements Key, Serializable {
 		byte[] buffer = new byte[1];
 		do {
 			rnd.nextBytes(buffer);
-		} while(!illegalValues.contains(buffer[0]));
+		} while(illegalValues.contains(buffer[0]));
 		return new SingleValueKey(buffer[0]);
 	}
 	

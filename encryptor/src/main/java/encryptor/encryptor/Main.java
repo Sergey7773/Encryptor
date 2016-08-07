@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Scanner;
 
+import org.apache.log4j.BasicConfigurator;
+
+import com.google.inject.Guice;
+
 import encryptor.encryptor.algorithms.CaesarEncryptionAlgorithm;
 import encryptor.encryptor.algorithms.DoubleAlgorithm;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
@@ -47,7 +51,7 @@ public class Main {
 	private static UserDialogHandler dialogHandler;
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-
+		BasicConfigurator.configure();
 		dialogHandler = new ConsolelUserDialogHandler();
 		Key key = null;
 		EncryptionAlgorithm alg=null;
@@ -87,7 +91,8 @@ public class Main {
 			}
 		}
 
-		EncryptionAlgorithmExecutor executor = new EncryptionAlgorithmExecutor();
+		EncryptionAlgorithmExecutor executor = 
+				Guice.createInjector(new DefaultEncryptorInjector()).getInstance(EncryptionAlgorithmExecutor.class);
 		if(action.equals(Action.ENCRYPT)) 
 			executor.executeEncyption(alg, file);
 		else

@@ -1,11 +1,11 @@
 
-package report;
+package reports;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "successReport")
-public class SuccessReport implements Report{
+public class SuccessReport extends Report{
 	
 	private Status status;
 	private int time;

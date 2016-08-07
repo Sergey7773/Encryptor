@@ -11,9 +11,12 @@ public class Stopwatch {
 	
 	private Instant startingInstant;
 	
-	@Inject
-	@Named("StopWatchClock")
 	private Clock clock;
+	
+	@Inject
+	public Stopwatch(@Named("StopWatchClock") Clock clock) {
+		this.clock=clock;
+	}
 	
 	public Instant start() {
 		startingInstant = clock.instant();

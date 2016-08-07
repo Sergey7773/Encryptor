@@ -11,7 +11,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import report.Reports;
+import reports.Reports;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 
 public class Utils {
@@ -33,7 +33,7 @@ public class Utils {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public static Object unmarshall(String filepath,String schema, String contextPackage) {

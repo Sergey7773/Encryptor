@@ -1,10 +1,10 @@
-package report;
+package reports;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "failureReport")
-public class FailureReport implements Report {
+public class FailureReport extends Report {
 	
 	private Status status;
 	private String exceptionName;

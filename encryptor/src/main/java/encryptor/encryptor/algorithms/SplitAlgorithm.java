@@ -66,7 +66,6 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	public void decrypt(InputStream is,OutputStream os,Key key) throws IOException {
 		doAction(is, os, key, new BiApplier<Byte, Byte, Key>() {
 
-			@Override
 			public Byte apply(Byte t, Key u) {
 				return decrypt(t,u);
 			}

@@ -19,7 +19,7 @@ public class TimeKeepingLogger extends Logger{
 	
 	@Override
 	public void info(Object Message) {
-		super.info(dateFormat.format(calendar.getTime())+" : "+Message.toString());
+		//super.info(dateFormat.format(calendar.getTime())+" : "+Message.toString());
 	}
 	
 }

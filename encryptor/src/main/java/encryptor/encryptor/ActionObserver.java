@@ -4,6 +4,8 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 
+import com.google.inject.Guice;
+
 import encryptor.encryptor.interfaces.Observer;
 
 public class ActionObserver implements Observer {
@@ -15,7 +17,7 @@ public class ActionObserver implements Observer {
 	public ActionObserver(String onStartMessage, String onEndMessage) {
 		this.onActionStartMessage = onStartMessage;
 		this.onActionEndMessage = onEndMessage;
-		stopwatch = new Stopwatch();
+		stopwatch = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
 	}
 	
 	public void onStart() {
