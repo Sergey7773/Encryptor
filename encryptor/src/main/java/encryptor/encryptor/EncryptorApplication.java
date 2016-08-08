@@ -18,41 +18,52 @@ import encryptor.encryptor.algorithms.XorEncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.UserDialogHandler;
 import encryptor.encryptor.xml.Utils;
+import encryptor.encryptor.xml.XmlParser;
 
 public class EncryptorApplication {
-	private static final String ALGORITHM_INDEX_REQUEST_STRING = 
-			"Please enter the index of the desired algorithm (starting at 0).";
-	private static final String FILEPATH_REQUEST_STRING = 
+	public static final String SAVE_ALGORITHM_OPTION_STRING = "Would you like to export this algorithm to an xml configuration file? (y/n)";
+
+	private static String[] algorithms = new String[] {"caesar","xor","mul","double","reverse","split"}; 
+	
+	public static final String KEY_FILE_REQUEST_STRING = "Please provide the decryption key file";
+	public static final String ALGORITHM_INDEX_REQUEST_STRING = 
+			"Please enter the index of the desired algorithm (starting at 0)."+"\n"+Arrays.toString(algorithms);
+	public static final String FILEPATH_REQUEST_STRING = 
 			"Please enter the file you wish to %s";
 
-	private static final String actionRequestString = 
+	public static final String actionRequestString = 
 			"Enter desired action, %s for encryption and %s for decryption";
-	private static final String encryptionAction = "ENC";
-	private static final String decryptionAction = "DEC";
+	public static final String encryptionAction = "ENC";
+	public static final String decryptionAction = "DEC";
 
-	private static final String BAD_PARAMS_STRING = 
-			"Bad input\nEnter <-e|-l|-c> <filepath> <ENCRYPT|DECRYPT>";
-	private static final String BAD_FILE = 
+	public static final String BAD_PARAMS_STRING = 
+			"Illegal arguments, please enter ENC or DEC";
+	public static final String BAD_FILE = 
 			"Incorrect filepath, enter filepath again";
 	
-	private static String[] algorithms = new String[] {"caesar","xor","mul","double","reverse","split"}; 
+	
 
-	private static UserDialogHandler dialogHandler;
+	private UserDialogHandler dialogHandler;
+	private EncryptionAlgorithmExecutor executor;
+	private XmlParser xmlParser;
 	
 	@Inject
-	public EncryptorApplication(UserDialogHandler dialogHandler) {
+	public EncryptorApplication(UserDialogHandler dialogHandler,
+			EncryptionAlgorithmExecutor executor,
+			XmlParser parser) {
 		this.dialogHandler = dialogHandler;
+		this.executor = executor;
+		this.xmlParser = parser;
 	}
 	
 	public void run() throws IOException, ClassNotFoundException {
-		dialogHandler = new ConsolelUserDialogHandler();
 		Key key = null;
 		EncryptionAlgorithm alg=null;
 		dialogHandler.writeLine(actionRequestString, encryptionAction, decryptionAction);
 		Action action = parseActionParam(dialogHandler.readLine());
-
+		if(action==null) return;
 		if(action.equals(Action.DECRYPT)) {
-			dialogHandler.writeLine("Please provide the decryption key file");
+			dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
 			File keyFile = parseFilepathFromCMD(); 			
 			key = readKeyFromFile(keyFile);
 		}
@@ -64,29 +75,27 @@ public class EncryptorApplication {
 		dialogHandler.writeLine("Would you like to load the last saved encryption algorithm? (y/n)");
 		String response = dialogHandler.readLine();
 		if(response.equals("y")) {
-			alg = Utils.unmarshallEncryptionAlgorithm(Main.class.getClassLoader().getResource("alg.xml").getPath());
+			alg = xmlParser.unmarshallEncryptionAlgorithm(Main.class.getClassLoader().getResource("alg.xml").getPath());
 		} else {
 			dialogHandler.writeLine("Would you like to import the algorithm from an xml configuration file? (y/n)");
 			response = dialogHandler.readLine();
 			if(response.equals("y")) {
 				dialogHandler.writeLine("Please enter the filepath of the configuration file");
-				alg = Utils.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
+				alg = xmlParser.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
 			} else {
-				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING
-						+ Arrays.toString(algorithms));
+				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING);
 				alg = parseAlgorithmSelection(dialogHandler.readLine());
 				
-				dialogHandler.writeLine("Would you like to export this algorithm to an xml configuration file? (y/n)");
+				dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
 				response = dialogHandler.readLine();
 				if(response.equals("y")) {
-					Utils.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
+					xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
 				} 
 			}
 		}
 		dialogHandler.writeLine("Would you like to use async mode? (y/n)");
 		String useAsync = dialogHandler.readLine();
 		
-		EncryptionAlgorithmExecutor executor = new EncryptionAlgorithmExecutor();
 		if(useAsync.equals("y")) {
 			if(action.equals(Action.ENCRYPT))
 				executor.executeEncryptionAsync(alg, file);
@@ -102,11 +111,13 @@ public class EncryptorApplication {
 	
 	
 	private void onBadParams() {
+		dialogHandler.writeLine(BAD_PARAMS_STRING);
 		System.err.println(BAD_PARAMS_STRING);
-		throw new IllegalArgumentException();
+		//throw new IllegalArgumentException();
 	}
 
 	private void onBadFile() {
+		dialogHandler.writeLine(BAD_FILE);
 		System.err.println(BAD_FILE);
 	}
 
