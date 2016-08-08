@@ -16,6 +16,6 @@ public class SplitDecryptionApplier implements ActionApplier{
 	public Byte apply(Byte t, Key u) {
 		Key usedKey = (counter%2==0) ? ((CompositeKey)u).getFirstKey() : ((CompositeKey)u).getSecondKey();
 		counter++;
-		return alg.encrypt(t, usedKey);
+		return alg.decrypt(t, usedKey);
 	}
 }

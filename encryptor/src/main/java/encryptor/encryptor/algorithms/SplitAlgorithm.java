@@ -48,6 +48,7 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	}
 	
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
+		super(new SplitEncryptionApplierFactory(), new SplitDecryptionApplierFactory());
 		this.nestedAlgorithm = nested;
 	}
 	
