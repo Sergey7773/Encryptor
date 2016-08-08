@@ -39,20 +39,12 @@ public class EncryptionAlgorithmExecutor {
 
 	private List<Observer> encryptionObservers;
 	private List<Observer> decryptionObservers;
-	private Logger logger;
 
 	@Inject
 	public EncryptionAlgorithmExecutor(@Named("encObservers")List<Observer> encryptionObservers,
 			@Named("decObservers")List<Observer> decryptionObservers ) {
 		this.encryptionObservers = encryptionObservers;
 		this.decryptionObservers = decryptionObservers;
-		
-		encryptionObservers.add(new ActionObserver("Encryption started.",
-				"Encryption ended."));
-		decryptionObservers.add(new ActionObserver("Decryption started",
-				"Decryption ended"));
-
-		this.logger = Logger.getLogger(this.getClass());
 	}
 	
 	@Inject
