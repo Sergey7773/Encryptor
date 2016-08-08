@@ -78,15 +78,18 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 			throw new IllegalArgumentException();
 		}
 		CompositeKey composite = (CompositeKey)key;
-		byte in[] = new byte[1];
-		byte out[] = new byte[1];
+		byte in[] = new byte[500];
+		byte out[] = new byte[500];
 		int counter = 0;
 		Key currKey;
+		int read = 0;
 		while(is.available()>0) {
-			is.read(in);
+			read = is.read(in);
 			currKey = (counter % 2 ==0) ? composite.getFirstKey() : composite.getSecondKey();
-			out[0] = biApplier.apply(in[0], currKey);
-			os.write(out);
+			for(int i=0;i<500;i++) {
+				out[i] = biApplier.apply(in[i], currKey);
+			}
+			os.write(out,0,read);
 			counter++;
 		}
 	}

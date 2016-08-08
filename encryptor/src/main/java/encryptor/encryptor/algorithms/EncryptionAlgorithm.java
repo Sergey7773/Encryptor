@@ -31,12 +31,14 @@ public abstract class EncryptionAlgorithm {
 	}
 	
 	private void doAction(InputStream is,OutputStream os,Applier<Byte,Byte> function) throws IOException {
-		byte plain[] = new byte[1];
-		byte cyphered[] = new byte[1];
+		byte plain[] = new byte[500];
+		byte cyphered[] = new byte[500];
+		int read = 0;
 		while(is.available()>0) {
-			is.read(plain);
-			cyphered[0]=function.apply(plain[0]);
-			os.write(cyphered);
+			read = is.read(plain);
+			for(int i=0;i<500;i++)
+				cyphered[i]=function.apply(plain[i]);
+			os.write(cyphered,0,read);
 		}
 	}
 }
