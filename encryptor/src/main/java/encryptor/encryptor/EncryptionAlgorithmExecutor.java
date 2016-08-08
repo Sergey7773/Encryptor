@@ -42,7 +42,7 @@ public class EncryptionAlgorithmExecutor {
 	private Logger logger;
 
 	@Inject
-	public EncryptionAlgorithmExecutor(@Named("ActionLogger") Logger logger) {
+	public EncryptionAlgorithmExecutor() {
 		encryptionObservers = new ArrayList<Observer>();
 		decryptionObservers = new ArrayList<Observer>();
 
@@ -50,14 +50,14 @@ public class EncryptionAlgorithmExecutor {
 				"Encryption ended."));
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended"));
-		
-		this.logger = logger;
+
+		this.logger = Logger.getLogger(this.getClass());
 	}
-	
+
 	public List<Observer> getEncryptionObservers() {
 		return this.encryptionObservers;
 	}
-	
+
 	public List<Observer> getDecryptionObservers() {
 		return this.decryptionObservers;
 	}
@@ -95,8 +95,11 @@ public class EncryptionAlgorithmExecutor {
 				FileInputStream fis = new FileInputStream(inputFile);
 				logger.info(String.format("%s of %s started.",actionType,inputFile));
 				try{
+					Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
+					sw.start();
 					performAction(algorithm, actionType, fis, fos, key);
-					logger.info(String.format("%s of %s finished successfully.",actionType,inputFile));
+					logger.info(String.format("%s of %s finished successfully.\n"+
+							"The action took %d seconds",actionType,inputFile,sw.getElapsedTimeInSeconds()));
 				} catch(Exception e) {
 					logger.info(String.format("%s of %s finished ended with the following exception %s",actionType,inputFile,e.getClass().getName()));
 				}
@@ -125,9 +128,11 @@ public class EncryptionAlgorithmExecutor {
 				sw.start();
 				performAction(algorithm, actionType, fis, fos, key);
 				SuccessReport sr = new SuccessReport();
-				sr.setTime(sw.getElapsedTimeInSeconds());
+				int elapsedTime = sw.getElapsedTimeInSeconds();
+				sr.setTime(elapsedTime);
 				reportsList.add(sr);
-				logger.info(String.format("%s of %s finished successfully.",actionType,filesInDir[i]));
+				logger.info(String.format("%s of %s finished successfully.\n"+
+						"The action took %d seconds",actionType,filesInDir[i],elapsedTime));
 			} catch (Exception e) {
 				FailureReport fr = new FailureReport();
 				fr.setExceptionMessage(e.getMessage());
@@ -176,9 +181,8 @@ public class EncryptionAlgorithmExecutor {
 				return !pathname.isDirectory();
 			}
 		});
-
-		new EncryptionExecutorAsyncService().execute(outputDir, filesInDir, algorithm, actionType, key);
-
+		EncryptionExecutorAsyncService service = new EncryptionExecutorAsyncService();
+		service.execute(outputDir, filesInDir, algorithm, actionType, key);
 	}
 
 	//Utility functions
@@ -221,7 +225,7 @@ public class EncryptionAlgorithmExecutor {
 		} else {
 			outputDirPath = inputDir.getParent()+"/decypted";
 		}
-		
+
 		File outputDir = new File(outputDirPath);
 		outputDir.mkdir();
 		return outputDir;

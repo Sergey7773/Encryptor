@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import org.apache.log4j.BasicConfigurator;
@@ -45,13 +46,13 @@ public class Main {
 			"Incorrect filepath, enter filepath again";
 
 
-	private static String[] algorithms = new String[] {"caesar,xor,mul,double,reverse,split"}; 
+	private static String[] algorithms = new String[] {"caesar","xor","mul","double","reverse","split"}; 
 	public enum Action {ENCRYPT,DECRYPT};
 
 	private static UserDialogHandler dialogHandler;
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-		BasicConfigurator.configure();
+		
 		dialogHandler = new ConsolelUserDialogHandler();
 		Key key = null;
 		EncryptionAlgorithm alg=null;
@@ -80,7 +81,7 @@ public class Main {
 				alg = Utils.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
 			} else {
 				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING
-						+ algorithms.toString());
+						+ Arrays.toString(algorithms));
 				alg = parseAlgorithmSelection(dialogHandler.readLine());
 				
 				dialogHandler.writeLine("Would you like to export this algorithm to an xml configuration file? (y/n)");
@@ -93,8 +94,7 @@ public class Main {
 		dialogHandler.writeLine("Would you like to use async mode? (y/n)");
 		String useAsync = dialogHandler.readLine();
 		
-		EncryptionAlgorithmExecutor executor = 
-				Guice.createInjector(new DefaultEncryptorInjector()).getInstance(EncryptionAlgorithmExecutor.class);
+		EncryptionAlgorithmExecutor executor = new EncryptionAlgorithmExecutor();
 		if(useAsync.equals("y")) {
 			if(action.equals(Action.ENCRYPT))
 				executor.executeEncryptionAsync(alg, file);
