@@ -35,8 +35,8 @@ import encryptor.encryptor.xml.Utils;
 
 public class EncryptionExecutorAsyncService {
 
-	private static int NUM_READER_THREADS = 1;
-	private static int TOTAL_NUM_THREADS = 4;
+	private static int NUM_READER_THREADS = 2;
+	private static int TOTAL_NUM_THREADS = 8;
 	private static int BUFFER_SIZE = 500;
 
 	private AtomicBoolean finished;
@@ -70,6 +70,7 @@ public class EncryptionExecutorAsyncService {
 		lock = new ReentrantLock();
 		readyToRead = lock.newCondition();
 
+
 		int readers = Math.min(NUM_READER_THREADS, TOTAL_NUM_THREADS);
 		for(int i = 0;i < readers; i++) {
 			threadPool.execute(new ReaderTask());
@@ -79,10 +80,12 @@ public class EncryptionExecutorAsyncService {
 			while(job==null){
 				if(finished.get()) {
 					threadPool.shutdown();
+					Utils.marshallReports(reportsList, outputDir.getParent()+"/reports.xml");
 					return;
 				}
 				job = readyJobs.poll();
 			}
+			
 			threadPool.execute(new WriterTask(job,algorithm,action,key));
 		}
 		threadPool.shutdown();
@@ -99,6 +102,7 @@ public class EncryptionExecutorAsyncService {
 					Pair<File,FileInputStream> pair = fileInputStreams.poll();
 					while(pair==null) {
 						if(finished.get() || filesToFinish.isEmpty()) {
+							readyToRead.signalAll();
 							lock.unlock();
 							return;
 						}
@@ -193,6 +197,9 @@ public class EncryptionExecutorAsyncService {
 				//TODO: write to log
 				e.printStackTrace();
 				filesToFinish.remove(sourceFile);
+				lock.lock();
+				readyToRead.signal();
+				lock.unlock();
 				if(filesToFinish.isEmpty()) finished.set(true);
 				try {
 					fis.close();

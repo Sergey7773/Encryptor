@@ -28,12 +28,12 @@ public class FileGenerator {
 
 	private void generateFile(int size, String filepath) throws IOException {
 		File outputFile = new File(filepath);
-		FileOutputStream fos = new FileOutputStream(outputFile);
+		FileOutputStream fos = new FileOutputStream(outputFile,true);
 		Random rndGen = new Random(System.currentTimeMillis());
 		byte[] buffer = new byte[2000];
 		for(int i=0;i<size;i+=buffer.length) {
 			rndGen.nextBytes(buffer);
-			fos.write(buffer, i*buffer.length, buffer.length);
+			fos.write(buffer, 0, buffer.length);
 		}
 		fos.close();
 	}
