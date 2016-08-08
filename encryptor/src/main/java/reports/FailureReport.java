@@ -26,6 +26,14 @@ public class FailureReport extends Report {
 		exceptionMessage = exceptionName = stackTrace = null;
 	}
 	
+	public FailureReport(String filename, Exception e ) {
+		status = Status.FAILURE;
+		exceptionMessage = e.getMessage();
+		stackTrace = e.getStackTrace().toString();
+		exceptionName = e.getClass().getName();
+		this.filename = filename;
+	}
+	
 	@XmlElement
 	public Status getStatus() {
 		return status;

@@ -23,6 +23,13 @@ public class SuccessReport extends Report{
 	public SuccessReport() {
 		status = Status.SUCCESS;
 		time = -1;
+		filename = null;
+	}
+	
+	public SuccessReport(String filename, int elapsedTime) {
+		this.filename = filename;
+		this.time = elapsedTime;
+		status = Status.SUCCESS;
 	}
 	
 	@XmlElement

@@ -190,19 +190,11 @@ public class EncryptionAlgorithmExecutor {
 			}
 			int elapsedTime = sw.getElapsedTimeInSeconds();
 			logger.info(String.format(ACTION_SUCCESS_LOGGING_MESSAGE,actionType,inputFilepath,elapsedTime));
-			SuccessReport sr = new SuccessReport();
-			sr.setFilename(inputFilepath);
-			sr.setTime(elapsedTime);
-			report = sr;
+			report = new SuccessReport(inputFilepath,sw.getElapsedTimeInSeconds());
 		} catch(IOException e) {
 			logger.info(String.format(ACTION_FAILURE_LOGGING_MESSAGE,
 					actionType,inputFilepath,e.getClass().getName()));
-			FailureReport fr = new FailureReport();
-			fr.setExceptionMessage(e.getMessage());
-			fr.setExceptionName(e.getClass().getName());
-			fr.setStackTrace(e.getStackTrace().toString());
-			fr.setFilename(inputFilepath);
-			report = fr;
+			report = new FailureReport(inputFilepath, e);
 		}
 		return report;
 	}
