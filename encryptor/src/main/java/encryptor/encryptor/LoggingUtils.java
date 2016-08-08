@@ -2,8 +2,6 @@ package encryptor.encryptor;
 
 import org.apache.log4j.Logger;
 
-import encryptor.encryptor.Main.Action;
-
 public class LoggingUtils {
 	public static final String ACTION_FAILURE_LOGGING_MESSAGE = "%s of %s finished ended with the following exception %s";
 	public static final String ACTION_SUCCESS_LOGGING_MESSAGE = "%s of %s finished successfully.\n"+

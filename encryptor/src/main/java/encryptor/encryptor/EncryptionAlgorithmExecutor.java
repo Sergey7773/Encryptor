@@ -27,7 +27,6 @@ import reports.FailureReport;
 import reports.Report;
 import reports.Reports;
 import reports.SuccessReport;
-import encryptor.encryptor.Main.Action;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.Observer;
