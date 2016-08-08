@@ -34,6 +34,10 @@ import encryptor.encryptor.xml.Utils;
 
 public class EncryptionAlgorithmExecutor {
 
+	private static final String ACTION_FAILURE_LOGGING_MESSAGE = "%s of %s finished ended with the following exception %s";
+	private static final String ACTION_SUCCESS_LOGGING_MESSAGE = "%s of %s finished successfully.\n"+
+			"The action took %d seconds";
+	private static final String ACTION_START_LOGGING_MESSAGE = "%s of %s started.";
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 
@@ -91,18 +95,7 @@ public class EncryptionAlgorithmExecutor {
 					throws IOException {
 		String outputFilePath = (actionType.equals(Action.ENCRYPT)) ?
 				appedEncryptedToFilename(inputFile) : appedDecryptedToFilename(inputFile);
-				FileOutputStream fos = new FileOutputStream(new File(outputFilePath));
-				FileInputStream fis = new FileInputStream(inputFile);
-				logger.info(String.format("%s of %s started.",actionType,inputFile));
-				try{
-					Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
-					sw.start();
-					performAction(algorithm, actionType, fis, fos, key);
-					logger.info(String.format("%s of %s finished successfully.\n"+
-							"The action took %d seconds",actionType,inputFile,sw.getElapsedTimeInSeconds()));
-				} catch(Exception e) {
-					logger.info(String.format("%s of %s finished ended with the following exception %s",actionType,inputFile,e.getClass().getName()));
-				}
+				performAction(algorithm, actionType, outputFilePath, outputFilePath, key);
 	}
 
 	private void performActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
@@ -119,29 +112,9 @@ public class EncryptionAlgorithmExecutor {
 			}
 		});
 		for(int i=0;i<filesInDir.length;i++) {
-			FileInputStream fis = new FileInputStream(inputDir.getPath()+"/"+filesInDir[i].getName());
-			FileOutputStream fos = new FileOutputStream(
-					new File(outputDir.getPath()+"/"+filesInDir[i].getName()));
-			logger.info(String.format("%s of %s started.",actionType,filesInDir[i]));
-			try{
-				Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
-				sw.start();
-				performAction(algorithm, actionType, fis, fos, key);
-				SuccessReport sr = new SuccessReport();
-				int elapsedTime = sw.getElapsedTimeInSeconds();
-				sr.setTime(elapsedTime);
-				reportsList.add(sr);
-				logger.info(String.format("%s of %s finished successfully.\n"+
-						"The action took %d seconds",actionType,filesInDir[i],elapsedTime));
-			} catch (Exception e) {
-				FailureReport fr = new FailureReport();
-				fr.setExceptionMessage(e.getMessage());
-				fr.setExceptionName(e.getClass().getName());
-				fr.setStackTrace(e.getStackTrace().toString());
-				reportsList.add(fr);
-				logger.info(String.format("%s of %s finished ended with the following exception %s:\n"
-						+ "%s.",actionType,filesInDir[i],e.getClass().getName()));
-			}
+			reportsList.add(performAction(algorithm, actionType,
+					inputDir.getPath()+"/"+filesInDir[i].getName(),
+					outputDir.getPath()+"/"+filesInDir[i].getName(), key));
 		}
 		Utils.marshallReports(reports, inputDir+"/reports.xml");
 	}
@@ -199,13 +172,36 @@ public class EncryptionAlgorithmExecutor {
 		return $;
 	}
 
-	private void performAction(EncryptionAlgorithm algorithm, Action actionType,
-			FileInputStream fis, FileOutputStream fos,Key key) throws IOException {
-		if(actionType.equals(Action.ENCRYPT)) {
-			algorithm.encrypt(fis,fos,key);
-		} else {
-			algorithm.decrypt(fis,fos,key);
+
+	private Report performAction(EncryptionAlgorithm algorithm, Action actionType,
+			String inputFilepath, String outputFilepath, Key key) {
+		Report report = null;
+		try {
+			FileInputStream fis = new FileInputStream(new File(inputFilepath));
+			FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
+
+			logger.info(String.format(ACTION_START_LOGGING_MESSAGE,actionType,inputFilepath));
+			Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
+			sw.start();
+			if(actionType.equals(Action.ENCRYPT)) {
+				algorithm.encrypt(fis,fos,key);
+			} else {
+				algorithm.decrypt(fis,fos,key);
+			}
+			int elapsedTime = sw.getElapsedTimeInSeconds();
+			logger.info(String.format(ACTION_SUCCESS_LOGGING_MESSAGE,actionType,inputFilepath,elapsedTime));
+			report = new SuccessReport();
+			((SuccessReport) report).setTime(elapsedTime);
+		} catch(IOException e) {
+			logger.info(String.format(ACTION_FAILURE_LOGGING_MESSAGE,
+					actionType,inputFilepath,e.getClass().getName()));
+			FailureReport fr = new FailureReport();
+			fr.setExceptionMessage(e.getMessage());
+			fr.setExceptionName(e.getClass().getName());
+			fr.setStackTrace(e.getStackTrace().toString());
+			report = fr;
 		}
+		return report;
 	}
 
 	private void notifyObserversOnStart(List<Observer> observers) {
