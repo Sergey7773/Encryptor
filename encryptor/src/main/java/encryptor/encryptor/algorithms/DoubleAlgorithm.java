@@ -5,8 +5,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import encryptor.encryptor.CompositeKey;
+import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -24,6 +26,16 @@ public class DoubleAlgorithm extends EncryptionAlgorithm {
 	}
 	
 	public DoubleAlgorithm(EncryptionAlgorithm firstAlg, EncryptionAlgorithm secondAlg) {
+		firstAlgorithm=firstAlg;
+		secondAlgorithm=secondAlg;
+	}
+	
+	@Inject
+	public DoubleAlgorithm(
+			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
+			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory,
+			EncryptionAlgorithm firstAlg, EncryptionAlgorithm secondAlg) {
+		super(encryptionApplierFactory,decryptionApplierFactory);
 		firstAlgorithm=firstAlg;
 		secondAlgorithm=secondAlg;
 	}

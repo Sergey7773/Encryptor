@@ -12,13 +12,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
+import dependencyInjection.DefaultEncryptionAlgorithmModule;
 import encryptor.encryptor.CompositeKey;
-import encryptor.encryptor.EncryptionApplier;
 import encryptor.encryptor.SingleValueKey;
-import encryptor.encryptor.interfaces.Applier;
-import encryptor.encryptor.interfaces.BiApplier;
+import encryptor.encryptor.algorithms.appliers.ActionApplier;
+import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
+import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
+import encryptor.encryptor.algorithms.appliers.SplitDecryptionApplierFactory;
+import encryptor.encryptor.algorithms.appliers.SplitEncryptionApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -28,7 +33,17 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	@XmlElement
 	private EncryptionAlgorithm nestedAlgorithm;
 	
+	@Inject
+	public SplitAlgorithm(
+			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
+			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory,
+			EncryptionAlgorithm nested) {
+		super(encryptionApplierFactory,decryptionApplierFactory);
+		this.nestedAlgorithm = nested;
+	}
+	
 	public SplitAlgorithm() {
+		super(new SplitEncryptionApplierFactory(), new SplitDecryptionApplierFactory());
 		this.nestedAlgorithm = null;
 	}
 	
@@ -51,49 +66,6 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 		return nestedAlgorithm.isValidKey(key);
 	}
 	
-	@Override
-	public void encrypt(InputStream is,OutputStream os,Key key) throws IOException {
-		doAction(is, os, key, new BiApplier<Byte, Byte, Key>() {
-
-			@Override
-			public Byte apply(Byte t, Key u) {
-				return encrypt(t,u);
-			}
-		});
-	}
-	
-	@Override
-	public void decrypt(InputStream is,OutputStream os,Key key) throws IOException {
-		doAction(is, os, key, new BiApplier<Byte, Byte, Key>() {
-
-			public Byte apply(Byte t, Key u) {
-				return decrypt(t,u);
-			}
-		});
-	}
-	
-	private void doAction(InputStream is,OutputStream os,Key key,
-			BiApplier<Byte, Byte, Key> biApplier) throws IOException {
-		if(!isValidKey(key)) {
-			throw new IllegalArgumentException();
-		}
-		CompositeKey composite = (CompositeKey)key;
-		byte in[] = new byte[500];
-		byte out[] = new byte[500];
-		int counter = 0;
-		Key currKey;
-		int read = 0;
-		while(is.available()>0) {
-			read = is.read(in);
-			currKey = (counter % 2 ==0) ? composite.getFirstKey() : composite.getSecondKey();
-			for(int i=0;i<500;i++) {
-				out[i] = biApplier.apply(in[i], currKey);
-			}
-			os.write(out,0,read);
-			counter++;
-		}
-	}
-
 	@Override
 	public Key generateKey() {
 		return new CompositeKey(nestedAlgorithm.generateKey(), nestedAlgorithm.generateKey());

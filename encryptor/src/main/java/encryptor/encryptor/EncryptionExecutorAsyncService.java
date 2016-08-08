@@ -23,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.google.inject.Guice;
 
+import dependencyInjection.DefaultStopwatchModule;
 import reports.FailureReport;
 import reports.Reports;
 import reports.SuccessReport;
@@ -114,7 +115,7 @@ public class EncryptionExecutorAsyncService {
 					File file = pair.first;
 					
 					if(fileActionTimers.get(file)==null) {
-						Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
+						Stopwatch sw = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
 						sw.start();
 						fileActionTimers.put(file, sw);
 						//TODO: write to log

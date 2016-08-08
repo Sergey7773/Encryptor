@@ -43,7 +43,6 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 	@Override
 	public void writeLine(String line, Object... args) {
 		this.writeLine(String.format(line, args));
-		
 	}
 
 }

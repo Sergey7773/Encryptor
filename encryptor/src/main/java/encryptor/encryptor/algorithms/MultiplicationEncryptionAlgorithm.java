@@ -6,8 +6,12 @@ import java.util.function.Predicate;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.SingleValueKey;
+import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -16,6 +20,13 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 	
 	private byte lastKey;
 	private byte decKey;
+	
+	@Inject
+	public MultiplicationEncryptionAlgorithm(
+			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
+			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory) {
+		super(encryptionApplierFactory,decryptionApplierFactory);
+	}
 	
 	public MultiplicationEncryptionAlgorithm() {
 		lastKey=1;

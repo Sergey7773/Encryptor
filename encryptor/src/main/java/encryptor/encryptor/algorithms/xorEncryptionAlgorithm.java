@@ -3,12 +3,26 @@ package encryptor.encryptor.algorithms;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import encryptor.encryptor.SingleValueKey;
+import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "XorEncryptionAlgorithm")
 public class XorEncryptionAlgorithm extends EncryptionAlgorithm {
+
+	@Inject
+	public XorEncryptionAlgorithm(
+			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
+			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory) {
+		super(encryptionApplierFactory,decryptionApplierFactory);
+	}
+	
+	public XorEncryptionAlgorithm() {
+	}
 
 	public byte encrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();

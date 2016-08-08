@@ -22,6 +22,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import dependencyInjection.DefaultStopwatchModule;
 import reports.FailureReport;
 import reports.Report;
 import reports.Reports;
@@ -46,16 +47,22 @@ public class EncryptionAlgorithmExecutor {
 	private Logger logger;
 
 	@Inject
-	public EncryptionAlgorithmExecutor() {
-		encryptionObservers = new ArrayList<Observer>();
-		decryptionObservers = new ArrayList<Observer>();
-
+	public EncryptionAlgorithmExecutor(@Named("encObservers")List<Observer> encryptionObservers,
+			@Named("decObservers")List<Observer> decryptionObservers ) {
+		this.encryptionObservers = encryptionObservers;
+		this.decryptionObservers = decryptionObservers;
+		
 		encryptionObservers.add(new ActionObserver("Encryption started.",
 				"Encryption ended."));
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended"));
 
 		this.logger = Logger.getLogger(this.getClass());
+	}
+	
+	@Inject
+	public EncryptionAlgorithmExecutor() {
+		this(new ArrayList<Observer>(), new ArrayList<Observer>());
 	}
 
 	public List<Observer> getEncryptionObservers() {
@@ -181,7 +188,7 @@ public class EncryptionAlgorithmExecutor {
 			FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
 
 			logger.info(String.format(ACTION_START_LOGGING_MESSAGE,actionType,inputFilepath));
-			Stopwatch sw = Guice.createInjector(new DefaultEncryptorInjector()).getInstance(Stopwatch.class);
+			Stopwatch sw = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
 			sw.start();
 			if(actionType.equals(Action.ENCRYPT)) {
 				algorithm.encrypt(fis,fos,key);

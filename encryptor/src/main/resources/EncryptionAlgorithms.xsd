@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-	targetNamespace="http://www.example.org/EncryptionAlgorithms"
-	xmlns:tns="http://www.example.org/EncryptionAlgorithms" 
-	elementFormDefault="unqualified"
-	attributeFormDefault="unqualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/EncryptionAlgorithms"
+	xmlns:tns="http://www.example.org/EncryptionAlgorithms"
+	elementFormDefault="unqualified" attributeFormDefault="unqualified">
 
 	<element name="doubleAlgorithm" type="tns:DoubleAlgorithm"></element>
 	<element name="multiplicationEncryptionAlgorithm" type="tns:MultiplicationEncryptionAlgorithm"></element>
@@ -12,9 +10,37 @@
 	<element name="splitAlgorithm" type="tns:SplitAlgorithm"></element>
 	<element name="xorEncryptionAlgorithm" type="tns:XorEncryptionAlgorithm"></element>
 	<element name="caesarEncryptionAlgorithm" type="tns:CaesarEncryptionAlgorithm"></element>
+
+	<complexType name="ActionApplierFactory" abstract="true"></complexType>
+	<complexType name="EncryptionApplierFactory">
+		<complexContent>
+			<extension base="tns:ActionApplierFactory"></extension>
+		</complexContent>
+	</complexType>
+	<complexType name="DecryptionApplierFactory">
+		<complexContent>
+			<extension base="tns:ActionApplierFactory"></extension>
+		</complexContent>
+	</complexType>
+	<complexType name="SplitEncryptionApplierFactory">
+		<complexContent>
+			<extension base="tns:ActionApplierFactory"></extension>
+		</complexContent>
+	</complexType>
+	<complexType name="SplitDecryptionApplierFactory">
+		<complexContent>
+			<extension base="tns:ActionApplierFactory"></extension>
+		</complexContent>
+	</complexType>
 	
-	<complexType name="EncryptionAlgorithm" abstract="true"></complexType>
-	
+
+	<complexType name="EncryptionAlgorithm" abstract="true">
+		<sequence>
+			<element name="encApplierFactory" type="tns:ActionApplierFactory"></element>
+			<element name="decApplierFactory" type="tns:ActionApplierFactory"></element>
+		</sequence>
+	</complexType>
+
 	<complexType name="DoubleAlgorithm">
 		<complexContent>
 			<extension base="tns:EncryptionAlgorithm">
@@ -27,7 +53,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
 	<complexType name="MultiplicationEncryptionAlgorithm">
 		<complexContent>
 			<extension base="tns:EncryptionAlgorithm"></extension>
@@ -83,6 +109,6 @@
 			<extension base="tns:EncryptionAlgorithm"></extension>
 		</complexContent>
 	</complexType>
-	
+
 
 </schema>
