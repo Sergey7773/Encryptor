@@ -10,7 +10,17 @@ public class FailureReport extends Report {
 	private String exceptionName;
 	private String exceptionMessage;
 	private String stackTrace;
+	private String filename;
 	
+	@XmlElement
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filaname) {
+		this.filename = filaname;
+	}
+
 	public FailureReport() {
 		status = Status.FAILURE;
 		exceptionMessage = exceptionName = stackTrace = null;

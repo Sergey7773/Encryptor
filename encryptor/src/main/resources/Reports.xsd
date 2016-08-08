@@ -12,6 +12,7 @@
 		<complexContent>
 			<extension base="tns:Report">
 				<sequence>
+					<element name = "filename" type="string"></element>
 					<element name="status" type="string"></element>
 					<element name="time" type="int"></element>
 				</sequence>
@@ -22,6 +23,7 @@
 		<complexContent>
 			<extension base="tns:Report">
 				<sequence>
+					<element name = "filename" type="string"></element>
 					<element name="status" type="string"></element>
 					<element name="exceptionName" type="string"></element>
 					<element name="exceptionMessage" type="string"></element>

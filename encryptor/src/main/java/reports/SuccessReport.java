@@ -9,7 +9,16 @@ public class SuccessReport extends Report{
 	
 	private Status status;
 	private int time;
+	private String filename;
 
+	@XmlElement
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filaname) {
+		this.filename = filaname;
+	}
 
 	public SuccessReport() {
 		status = Status.SUCCESS;
