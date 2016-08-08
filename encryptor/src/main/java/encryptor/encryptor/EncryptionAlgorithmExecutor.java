@@ -47,7 +47,6 @@ public class EncryptionAlgorithmExecutor {
 		this.decryptionObservers = decryptionObservers;
 	}
 	
-	@Inject
 	public EncryptionAlgorithmExecutor() {
 		this(new ArrayList<Observer>(), new ArrayList<Observer>());
 	}
@@ -89,7 +88,7 @@ public class EncryptionAlgorithmExecutor {
 					throws IOException {
 		String outputFilePath = (actionType.equals(Action.ENCRYPT)) ?
 				appedEncryptedToFilename(inputFile) : appedDecryptedToFilename(inputFile);
-				performAction(algorithm, actionType, outputFilePath, outputFilePath, key);
+				performAction(algorithm, actionType, inputFile.getPath(), outputFilePath, key);
 	}
 
 	private void performActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
