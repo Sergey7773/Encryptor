@@ -21,6 +21,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.Logger;
+
 import com.google.inject.Guice;
 
 import dependencyInjection.DefaultStopwatchModule;
@@ -48,6 +50,7 @@ public class EncryptionExecutorAsyncService {
 	private ExecutorService threadPool;
 	private File outputDir;
 	private Reports reportsList;
+	private Action action;
 
 	private Lock lock;
 	private Condition readyToRead;
@@ -70,7 +73,8 @@ public class EncryptionExecutorAsyncService {
 		
 		lock = new ReentrantLock();
 		readyToRead = lock.newCondition();
-
+		
+		this.action = action;
 
 		int readers = Math.min(NUM_READER_THREADS, TOTAL_NUM_THREADS);
 		for(int i = 0;i < readers; i++) {
@@ -118,7 +122,7 @@ public class EncryptionExecutorAsyncService {
 						Stopwatch sw = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
 						sw.start();
 						fileActionTimers.put(file, sw);
-						//TODO: write to log
+						LoggingUtils.writeActionStart(getClass().getName(), action, file.getPath());
 					}
 					
 					PipedInputStream pis = new PipedInputStream();
@@ -175,10 +179,11 @@ public class EncryptionExecutorAsyncService {
 				os.close();
 				is.close();
 				if(fis.available()==0) {
-					SuccessReport sr = new SuccessReport();
-					sr.setTime(fileActionTimers.get(sourceFile).getElapsedTimeInSeconds());
-					//TODO: write to log
-					reportsList.getReports().add(sr);
+					int elapsedTime = fileActionTimers.get(sourceFile).getElapsedTimeInSeconds();
+					LoggingUtils.writeActionFinisedWithSuccess(getClass().getName(),
+							action, sourceFile.getPath(), elapsedTime);
+					reportsList.getReports().add(new SuccessReport(sourceFile.getPath(), elapsedTime));
+					
 					filesToFinish.remove(sourceFile);
 					if(filesToFinish.isEmpty()) finished.set(true);
 					fis.close();
@@ -190,12 +195,9 @@ public class EncryptionExecutorAsyncService {
 				lock.unlock();
 			} catch (IOException e) {
 				
-				FailureReport fr = new FailureReport();
-				fr.setExceptionMessage(e.getMessage());
-				fr.setExceptionName(e.getClass().getName());
-				fr.setStackTrace(e.getStackTrace().toString());
-				reportsList.getReports().add(fr);
-				//TODO: write to log
+				reportsList.getReports().add(new FailureReport(sourceFile.getPath(), e));
+				LoggingUtils.writeActionFinishedWithFailure(getClass().getName(),
+						action, sourceFile.getPath(), e);
 				e.printStackTrace();
 				filesToFinish.remove(sourceFile);
 				lock.lock();

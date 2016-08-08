@@ -35,10 +35,6 @@ import encryptor.encryptor.xml.Utils;
 
 public class EncryptionAlgorithmExecutor {
 
-	private static final String ACTION_FAILURE_LOGGING_MESSAGE = "%s of %s finished ended with the following exception %s";
-	private static final String ACTION_SUCCESS_LOGGING_MESSAGE = "%s of %s finished successfully.\n"+
-			"The action took %d seconds";
-	private static final String ACTION_START_LOGGING_MESSAGE = "%s of %s started.";
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
 	private static final String DECRYPTED_EXTENTION = "_decrypted";
 
@@ -186,21 +182,23 @@ public class EncryptionAlgorithmExecutor {
 		try {
 			FileInputStream fis = new FileInputStream(new File(inputFilepath));
 			FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
-
-			logger.info(String.format(ACTION_START_LOGGING_MESSAGE,actionType,inputFilepath));
+			
+			LoggingUtils.writeActionStart(getClass().getName(), actionType, inputFilepath);
 			Stopwatch sw = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
+			
 			sw.start();
 			if(actionType.equals(Action.ENCRYPT)) {
 				algorithm.encrypt(fis,fos,key);
 			} else {
 				algorithm.decrypt(fis,fos,key);
 			}
+			
 			int elapsedTime = sw.getElapsedTimeInSeconds();
-			logger.info(String.format(ACTION_SUCCESS_LOGGING_MESSAGE,actionType,inputFilepath,elapsedTime));
+			LoggingUtils.writeActionFinisedWithSuccess(getClass().getName(),
+					actionType, inputFilepath, elapsedTime);
 			report = new SuccessReport(inputFilepath,sw.getElapsedTimeInSeconds());
 		} catch(IOException e) {
-			logger.info(String.format(ACTION_FAILURE_LOGGING_MESSAGE,
-					actionType,inputFilepath,e.getClass().getName()));
+			LoggingUtils.writeActionFinishedWithFailure(getClass().getName(), actionType, inputFilepath, e);
 			report = new FailureReport(inputFilepath, e);
 		}
 		return report;
