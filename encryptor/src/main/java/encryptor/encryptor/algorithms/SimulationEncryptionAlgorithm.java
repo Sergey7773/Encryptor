@@ -19,6 +19,10 @@ public class SimulationEncryptionAlgorithm extends EncryptionAlgorithm{
 		super(encryptionApplierFactory,decryptionApplierFactory);
 	}
 	
+	public SimulationEncryptionAlgorithm() {
+		
+	}
+	
 	@Override
 	public byte encrypt(byte value, Key key) {
 		return value;
