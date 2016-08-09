@@ -60,8 +60,16 @@ public class ExecutorAsyncService<T,S> {
 		threadPool = Executors.newFixedThreadPool(TOTAL_NUM_THREADS);
 	}
 
+	/**
+	 * Performs reading and writing jobs, until all the tasks are complete.
+	 * @param initialReadJobs 
+	 * @param writeJobFactory - creates a writing job given a reading job.
+	 * @param performerFactory - performs a writing job and returns the next reading job which is needed
+	 * for this task, if no such reading job exists returns null
+	 * @throws FileNotFoundException
+	 */
 	public void execute(
-			Key key,Collection<S> initialReadJobs,
+			Collection<S> initialReadJobs,
 			WriteJobFactory<T, S> writeJobFactory,
 			WriteJobPerformerFactory<S, T> performerFactory) throws FileNotFoundException {
 		readJobsQueue = new ArrayBlockingQueue<S>(JOB_QUEUE_SIZE);
@@ -130,6 +138,10 @@ public class ExecutorAsyncService<T,S> {
 		}
 		
 		@Override
+		/**
+		 * reads from reading jobs queue as long as all tasks are not finished, transforms 
+		 * reading jobs into writing jobs and pushes them into writing jobs queue.
+		 */
 		public void run() {
 			while(tasksToFinish.get()>0) {
 				try {		
@@ -197,6 +209,11 @@ public class ExecutorAsyncService<T,S> {
 		}
 
 		@Override
+		/**
+		 * reads jobs from the writing queue and executes them as long as all tasks
+		 * are not finished. creates reading jobs from the writing jobs and pushes them into the
+		 * reading job queue.
+		 */
 		public void run() {
 			
 			while(tasksToFinish.get()>0) {
