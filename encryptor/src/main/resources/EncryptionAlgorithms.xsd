@@ -76,12 +76,7 @@
 		<complexContent>
 			<extension base="tns:EncryptionAlgorithm">
 				<sequence>
-					<element name="nestedAlgorithm">
-						<complexType>
-							<complexContent>
-								<extension base="tns:EncryptionAlgorithm"></extension>
-							</complexContent>
-						</complexType>
+					<element name="nestedAlgorithm" type="tns:EncryptionAlgorithm">
 					</element>
 				</sequence>
 			</extension>
@@ -92,12 +87,7 @@
 		<complexContent>
 			<extension base="tns:EncryptionAlgorithm">
 				<sequence>
-					<element name="nestedAlgorithm">
-						<complexType>
-							<complexContent>
-								<extension base="tns:EncryptionAlgorithm"></extension>
-							</complexContent>
-						</complexType>
+					<element name="nestedAlgorithm" type="tns:EncryptionAlgorithm">
 					</element>
 				</sequence>
 			</extension>
