@@ -89,11 +89,12 @@ public class EncryptorApplication {
 				alg = xmlParser.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
 			} else {
 				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING);
-				alg = parseAlgorithmSelection(dialogHandler.readLine());
+				alg = parseAlgorithmSelection(dialogHandler.readLine(),0);
 				
 				dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
 				response = dialogHandler.readLine();
 				if(response.equals("y")) {
+					dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
 					xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
 				} 
 			}
@@ -122,7 +123,7 @@ public class EncryptorApplication {
 	}
 
 	private void onBadFile() {
-		dialogHandler.writeLine(BAD_FILE);
+		//dialogHandler.writeLine(BAD_FILE);
 		System.err.println(BAD_FILE);
 	}
 
@@ -144,7 +145,7 @@ public class EncryptorApplication {
 		return $;
 	}
 
-	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex) {
+	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,int depth) {
 		int index=Integer.parseInt(algorithmIndex);
 		if(index<0 || index>=algorithms.length) {
 			throw new IllegalArgumentException();
@@ -153,35 +154,24 @@ public class EncryptorApplication {
 		case 0: return new CaesarEncryptionAlgorithm();
 		case 1: return new XorEncryptionAlgorithm();
 		case 2: return new MultiplicationEncryptionAlgorithm();
-		default: return parseAlgorithmSelectionRecursive(index,1);
-		}
-	}
-
-	private EncryptionAlgorithm parseAlgorithmSelectionRecursive(int index, int depth) {
-		switch(index) {
 		case 3: return parseBiArgAlgorithm(depth);
-
-		case 4: return parseSingleArgAlgorithm(4,depth+1);
-		case 5: return parseSingleArgAlgorithm(5,depth+1);
+		case 4: return parseSingleArgAlgorithm(index,depth);
+		case 5: return parseSingleArgAlgorithm(index,depth);
+		default: return null;
 		}
-		return null;
-
 	}
 
 	private EncryptionAlgorithm parseBiArgAlgorithm(int depth) {
-		dialogHandler.writeLine("Please Enter the index of the first algorithm.");
-		EncryptionAlgorithm first = parseAlgorithmSelectionRecursive(
-				Integer.parseInt(dialogHandler.readLine()), depth+1);
-		dialogHandler.writeLine("please Enter the index of the second algorithm");
-		EncryptionAlgorithm second = parseAlgorithmSelectionRecursive(
-				Integer.parseInt(dialogHandler.readLine()), depth+1);
+		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the first algorithm.");
+		EncryptionAlgorithm first = parseAlgorithmSelection(dialogHandler.readLine(),depth+1);
+		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the second algorithm");
+		EncryptionAlgorithm second = parseAlgorithmSelection(dialogHandler.readLine(),depth+1);
 		return new DoubleAlgorithm(first, second);
 	}
 
-	private EncryptionAlgorithm parseSingleArgAlgorithm(int index, int depth) {
-		dialogHandler.writeLine("Please enter the index of the nested algorithm");
-		EncryptionAlgorithm nested = parseAlgorithmSelectionRecursive(
-				Integer.parseInt(dialogHandler.readLine()), depth+1);
+	private EncryptionAlgorithm parseSingleArgAlgorithm(int index,int depth) {
+		dialogHandler.writeLine("Depth: "+depth+". Please enter the index of the nested algorithm");
+		EncryptionAlgorithm nested = parseAlgorithmSelection(dialogHandler.readLine(),depth+1);
 		switch(index) {
 		case 4: return new ReverseAlgorithm(nested);
 		case 5: return new SplitAlgorithm(nested);
