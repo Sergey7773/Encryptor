@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.ToString;
+
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -21,6 +23,7 @@ import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "EncryptionAlgorithm")
+@ToString(exclude = {"encApplierFactory","decApplierFactory"})
 public abstract class EncryptionAlgorithm {
 	
 	

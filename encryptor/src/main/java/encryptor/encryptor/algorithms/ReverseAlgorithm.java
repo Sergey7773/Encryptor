@@ -4,6 +4,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -12,9 +16,10 @@ import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "ReverseAlgorithm")
+@ToString( includeFieldNames = true)
 public class ReverseAlgorithm extends EncryptionAlgorithm {
 	
-	@XmlElement
+	@Getter @Setter
 	private EncryptionAlgorithm nestedAlgorithm;
 	
 	public ReverseAlgorithm() {

@@ -3,6 +3,8 @@ package encryptor.encryptor.algorithms;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.ToString;
+
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -12,6 +14,7 @@ import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "CaesarEncryptionAlgorithm")
+@ToString()
 public class CaesarEncryptionAlgorithm extends EncryptionAlgorithm {
 
 	@Inject

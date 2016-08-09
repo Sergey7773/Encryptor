@@ -12,6 +12,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -28,11 +32,12 @@ import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
 @XmlType(name = "SplitAlgorithm")
+@ToString(includeFieldNames = true)
 public class SplitAlgorithm extends EncryptionAlgorithm {
 
-	@XmlElement
+	@Getter @Setter
 	private EncryptionAlgorithm nestedAlgorithm;
-	
+
 	@Inject
 	public SplitAlgorithm(
 			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
@@ -41,17 +46,17 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 		super(encryptionApplierFactory,decryptionApplierFactory);
 		this.nestedAlgorithm = nested;
 	}
-	
+
 	public SplitAlgorithm() {
 		super(new SplitEncryptionApplierFactory(), new SplitDecryptionApplierFactory());
 		this.nestedAlgorithm = null;
 	}
-	
+
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
 		super(new SplitEncryptionApplierFactory(), new SplitDecryptionApplierFactory());
 		this.nestedAlgorithm = nested;
 	}
-	
+
 	@Override
 	public byte encrypt(byte value, Key key) {
 		return nestedAlgorithm.encrypt(value, key);
@@ -66,7 +71,7 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	public boolean isValidKey(Key key) {
 		return nestedAlgorithm.isValidKey(key);
 	}
-	
+
 	@Override
 	public Key generateKey() {
 		return new CompositeKey(nestedAlgorithm.generateKey(), nestedAlgorithm.generateKey());

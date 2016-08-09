@@ -31,7 +31,7 @@ public class EncryptorApplication {
 	public static final String SAVE_ALGORITHM_OPTION_STRING = "Would you like to export this algorithm to an xml configuration file? (y/n)";
 
 	private static String[] algorithms = new String[] {"caesar","xor","mul","double","reverse","split"}; 
-	
+
 	public static final String KEY_FILE_REQUEST_STRING = "Please provide the decryption key file";
 	public static final String ALGORITHM_INDEX_REQUEST_STRING = 
 			"Please enter the index of the desired algorithm (starting at 0)."+"\n"+Arrays.toString(algorithms);
@@ -47,13 +47,13 @@ public class EncryptorApplication {
 			"Illegal arguments, please enter ENC or DEC";
 	public static final String BAD_FILE = 
 			"Incorrect filepath, enter filepath again";
-	
-	
+
+
 
 	private UserDialogHandler dialogHandler;
 	private EncryptionAlgorithmExecutor executor;
 	private XmlParser xmlParser;
-	
+
 	@Inject
 	public EncryptorApplication(UserDialogHandler dialogHandler,
 			EncryptionAlgorithmExecutor executor,
@@ -62,7 +62,7 @@ public class EncryptorApplication {
 		this.executor = executor;
 		this.xmlParser = parser;
 	}
-	
+
 	/**
 	 * Starts the application and the dialog with the user.
 	 * @throws IOException
@@ -95,7 +95,7 @@ public class EncryptorApplication {
 				alg = xmlParser.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
 			} else {
 				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING);
-				alg = parseAlgorithmSelection(dialogHandler.readLine(),0);
+				alg = parseAlgorithm();
 				dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
 				if(parseYesNoAnswer()) {
 					dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
@@ -103,6 +103,7 @@ public class EncryptorApplication {
 				} 
 			}
 		}
+		dialogHandler.writeLine(alg.toString());
 		dialogHandler.writeLine(ASYNC_MODE_OPTION);
 		if(parseYesNoAnswer()) {
 			if(action.equals(Action.ENCRYPT))
@@ -116,8 +117,8 @@ public class EncryptorApplication {
 				executor.executeDecryption(alg, file, key);
 		}
 	}
-	
-	
+
+
 	private void onBadParams() {
 		//dialogHandler.writeLine(BAD_PARAMS_STRING);
 		System.err.println(BAD_PARAMS_STRING);
@@ -146,7 +147,7 @@ public class EncryptorApplication {
 		}
 		return $;
 	}
-	
+
 	private boolean parseYesNoAnswer() {
 		String response = dialogHandler.readLine();
 		if(!response.equals("y") && !response.equals("n"))
@@ -154,7 +155,53 @@ public class EncryptorApplication {
 		return response.equals("y");
 	}
 
-	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,int depth) {
+	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,
+			int depth,EncryptionAlgorithm parent) {
+		int index=Integer.parseInt(algorithmIndex);
+		if(index<0 || index>=algorithms.length) {
+			throw new IllegalArgumentException();
+		}
+		if(parent!=null)
+			dialogHandler.writeLine(parent.toString());
+		switch(index) {
+		case 0: return new CaesarEncryptionAlgorithm();
+		case 1: return new XorEncryptionAlgorithm();
+		case 2: return new MultiplicationEncryptionAlgorithm();
+		case 3: DoubleAlgorithm dAlg = new DoubleAlgorithm();
+		return parseBiArgAlgorithm(depth,dAlg);
+		case 4: ReverseAlgorithm rAlg = new ReverseAlgorithm();
+		parseSingleArgAlgorithm(index,depth,rAlg);
+		case 5:	SplitAlgorithm sAlg = new SplitAlgorithm(); 
+		return parseSingleArgAlgorithm(index,depth,sAlg);
+		default: return null;
+		}
+	}
+
+	private EncryptionAlgorithm parseBiArgAlgorithm(int depth,DoubleAlgorithm parent) {
+		dialogHandler.writeLine(parent.toString());
+		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the first algorithm.");
+		EncryptionAlgorithm first = parseAlgorithmSelection(dialogHandler.readLine(),depth+1,parent);
+		parent.setFirstAlgorithm(first);
+		dialogHandler.writeLine(parent.toString());
+		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the second algorithm");
+		EncryptionAlgorithm second = parseAlgorithmSelection(dialogHandler.readLine(),depth+1,parent);
+		parent.setSecondAlgorithm(second);
+		return parent;
+	}
+
+	private EncryptionAlgorithm parseSingleArgAlgorithm(int index,int depth,EncryptionAlgorithm parent) {
+		dialogHandler.writeLine(parent.toString());
+		dialogHandler.writeLine("Depth: "+depth+". Please enter the index of the nested algorithm");
+		EncryptionAlgorithm nested = parseAlgorithmSelection(dialogHandler.readLine(),depth+1,parent);
+		switch(index) {
+		case 4: ((ReverseAlgorithm)parent).setNestedAlgorithm(nested);
+		case 5: ((SplitAlgorithm)parent).setNestedAlgorithm(nested);
+		}
+		return parent;
+	}
+
+	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,
+			int depth) {
 		int index=Integer.parseInt(algorithmIndex);
 		if(index<0 || index>=algorithms.length) {
 			throw new IllegalArgumentException();
@@ -163,30 +210,49 @@ public class EncryptorApplication {
 		case 0: return new CaesarEncryptionAlgorithm();
 		case 1: return new XorEncryptionAlgorithm();
 		case 2: return new MultiplicationEncryptionAlgorithm();
-		case 3: return parseBiArgAlgorithm(depth);
-		case 4: return parseSingleArgAlgorithm(index,depth);
-		case 5: return parseSingleArgAlgorithm(index,depth);
+		case 3: return new DoubleAlgorithm();
+		case 4: return new ReverseAlgorithm();
+		case 5:	return new SplitAlgorithm();
 		default: return null;
 		}
 	}
 
-	private EncryptionAlgorithm parseBiArgAlgorithm(int depth) {
-		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the first algorithm.");
-		EncryptionAlgorithm first = parseAlgorithmSelection(dialogHandler.readLine(),depth+1);
-		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the second algorithm");
-		EncryptionAlgorithm second = parseAlgorithmSelection(dialogHandler.readLine(),depth+1);
-		return new DoubleAlgorithm(first, second);
+	private EncryptionAlgorithm parseAlgorithm() {
+		EncryptionAlgorithm root = parseAlgorithmSelection(dialogHandler.readLine(), 0);
+		if(root instanceof DoubleAlgorithm || root instanceof ReverseAlgorithm || root instanceof SplitAlgorithm) {
+			return parseAlgorithm(root, root,0);
+		} 
+		return root;
 	}
 
-	private EncryptionAlgorithm parseSingleArgAlgorithm(int index,int depth) {
-		dialogHandler.writeLine("Depth: "+depth+". Please enter the index of the nested algorithm");
-		EncryptionAlgorithm nested = parseAlgorithmSelection(dialogHandler.readLine(),depth+1);
-		switch(index) {
-		case 4: return new ReverseAlgorithm(nested);
-		case 5: return new SplitAlgorithm(nested);
+	private EncryptionAlgorithm parseAlgorithm(EncryptionAlgorithm root, EncryptionAlgorithm parent,int depth) {
+		dialogHandler.writeLine(root.toString());
+		if(parent instanceof DoubleAlgorithm) {
+			DoubleAlgorithm da = ((DoubleAlgorithm)parent);
+			dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the second algorithm");
+			EncryptionAlgorithm first = parseAlgorithmSelection(dialogHandler.readLine(),0);
+			da.setFirstAlgorithm(first);
+			parseAlgorithm(root, first,depth+1);
+			dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the second algorithm");
+			EncryptionAlgorithm second = parseAlgorithmSelection(dialogHandler.readLine(),0);
+			da.setSecondAlgorithm(second);
+			parseAlgorithm(root,second,depth+1);
+		} else if(parent instanceof ReverseAlgorithm) {
+			ReverseAlgorithm ra = ((ReverseAlgorithm)parent);
+			dialogHandler.writeLine("Depth: "+depth+". Please enter the index of the nested algorithm");
+			EncryptionAlgorithm nested = parseAlgorithmSelection(dialogHandler.readLine(), 0);
+			ra.setNestedAlgorithm(nested);
+			parseAlgorithm(root, nested,depth+1);
+		} else if(parent instanceof SplitAlgorithm) {
+			SplitAlgorithm ra = ((SplitAlgorithm)parent);
+			dialogHandler.writeLine("Depth: "+depth+". Please enter the index of the nested algorithm");
+			EncryptionAlgorithm nested = parseAlgorithmSelection(dialogHandler.readLine(), 0);
+			ra.setNestedAlgorithm(nested);
+			parseAlgorithm(root, nested,depth+1);
 		}
-		return null;
+		return parent;
 	}
+
 
 	private Key readKeyFromFile(File f) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(f);
