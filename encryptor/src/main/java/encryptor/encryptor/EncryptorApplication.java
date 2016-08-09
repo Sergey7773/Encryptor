@@ -21,6 +21,14 @@ import encryptor.encryptor.xml.Utils;
 import encryptor.encryptor.xml.XmlParser;
 
 public class EncryptorApplication {
+	public static final String ASYNC_MODE_OPTION = "Would you like to use async mode? (y/n)";
+
+	public static final String FILEPATH_FOR_CONF_FILE_PROMPT = "Please enter the filepath of the configuration file";
+
+	public static final String IMPORT_FROM_FILE = "Would you like to import the algorithm from an xml configuration file? (y/n)";
+
+	public static final String LOAD_LAST_SAVED_OPTION = "Would you like to load the last saved encryption algorithm? (y/n)";
+
 	public static final String SAVE_ALGORITHM_OPTION_STRING = "Would you like to export this algorithm to an xml configuration file? (y/n)";
 
 	private static String[] algorithms = new String[] {"caesar","xor","mul","double","reverse","split"}; 
@@ -77,32 +85,27 @@ public class EncryptorApplication {
 				(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
 		File file = parseFilepathFromCMD();
 
-		dialogHandler.writeLine("Would you like to load the last saved encryption algorithm? (y/n)");
-		String response = dialogHandler.readLine();
-		if(response.equals("y")) {
-			alg = xmlParser.unmarshallEncryptionAlgorithm(Main.class.getClassLoader().getResource("alg.xml").getPath());
+		dialogHandler.writeLine(LOAD_LAST_SAVED_OPTION);
+		if(parseYesNoAnswer()) {
+			alg = xmlParser.unmarshallEncryptionAlgorithm(
+					Main.class.getClassLoader().getResource("alg.xml").getPath());
 		} else {
-			dialogHandler.writeLine("Would you like to import the algorithm from an xml configuration file? (y/n)");
-			response = dialogHandler.readLine();
-			if(response.equals("y")) {
-				dialogHandler.writeLine("Please enter the filepath of the configuration file");
+			dialogHandler.writeLine(IMPORT_FROM_FILE);
+			if(parseYesNoAnswer()) {
+				dialogHandler.writeLine(FILEPATH_FOR_CONF_FILE_PROMPT);
 				alg = xmlParser.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
 			} else {
 				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING);
 				alg = parseAlgorithmSelection(dialogHandler.readLine(),0);
-				
 				dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
-				response = dialogHandler.readLine();
-				if(response.equals("y")) {
+				if(parseYesNoAnswer()) {
 					dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
 					xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
 				} 
 			}
 		}
-		dialogHandler.writeLine("Would you like to use async mode? (y/n)");
-		String useAsync = dialogHandler.readLine();
-		
-		if(useAsync.equals("y")) {
+		dialogHandler.writeLine(ASYNC_MODE_OPTION);
+		if(parseYesNoAnswer()) {
 			if(action.equals(Action.ENCRYPT))
 				executor.executeEncryptionAsync(alg, file);
 			else
@@ -143,6 +146,13 @@ public class EncryptorApplication {
 			$ = new File(dialogHandler.readLine());
 		}
 		return $;
+	}
+	
+	private boolean parseYesNoAnswer() {
+		String response = dialogHandler.readLine();
+		if(!response.equals("y") && !response.equals("n"))
+			throw new IllegalArgumentException();
+		return response.equals("y");
 	}
 
 	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,int depth) {
