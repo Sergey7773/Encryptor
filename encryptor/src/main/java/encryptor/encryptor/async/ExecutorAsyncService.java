@@ -41,7 +41,7 @@ import encryptor.encryptor.interfaces.Pair;
 import encryptor.encryptor.xml.Utils;
 
 
-public class EncryptionExecutorAsyncService<T,S> {
+public class ExecutorAsyncService<T,S> {
 
 	private static int NUM_READER_THREADS = 1;
 	private static int TOTAL_NUM_THREADS = 8;
@@ -56,7 +56,7 @@ public class EncryptionExecutorAsyncService<T,S> {
 	private Condition readyToRead;
 	private Condition readyToWrite;
 	
-	public EncryptionExecutorAsyncService() {
+	public ExecutorAsyncService() {
 		threadPool = Executors.newFixedThreadPool(TOTAL_NUM_THREADS);
 	}
 
