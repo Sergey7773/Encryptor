@@ -39,6 +39,7 @@ public class EncryptionExecutorAsyncService {
 
 	private static int NUM_READER_THREADS = 2;
 	private static int TOTAL_NUM_THREADS = 8;
+	private static int JOB_QUEUE_SIZE = 100;
 	private static int BUFFER_SIZE = 500;
 
 	private AtomicBoolean finished;
@@ -65,9 +66,9 @@ public class EncryptionExecutorAsyncService {
 		}
 		filesToFinish = new ConcurrentLinkedQueue<>(Arrays.asList(files));
 		fileActionTimers = new ConcurrentHashMap<File,Stopwatch>();
-		readyJobs = new ArrayBlockingQueue<AsyncJob>(files.length);
+		readyJobs = new ArrayBlockingQueue<AsyncJob>(JOB_QUEUE_SIZE);
 		this.outputDir = outputDir;
-		finished = new AtomicBoolean(false);
+		finished = new AtomicBoolean(files.length==0);
 		reportsList = new Reports();
 		
 		lock = new ReentrantLock();

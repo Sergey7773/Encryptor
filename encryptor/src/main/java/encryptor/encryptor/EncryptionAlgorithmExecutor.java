@@ -209,7 +209,7 @@ public class EncryptionAlgorithmExecutor {
 		if(action.equals(Action.ENCRYPT)) {
 			outputDirPath = inputDir.getPath()+"/encrypted";
 		} else {
-			outputDirPath = inputDir.getParent()+"/decypted";
+			outputDirPath = inputDir.getParent()+"/decrypted";
 		}
 
 		File outputDir = new File(outputDirPath);
