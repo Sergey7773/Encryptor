@@ -1,5 +1,7 @@
 package encryptor.encryptor;
 
+import lombok.NonNull;
+
 import org.apache.log4j.Logger;
 
 public class LoggingUtils {
@@ -18,7 +20,7 @@ public class LoggingUtils {
 	 * @param actionType
 	 * @param filepath
 	 */
-	public static void writeActionStart(String className,Action actionType, String filepath) {
+	public static void writeActionStart(String className, Action actionType, String filepath) {
 		Logger logger = Logger.getLogger(className);
 		logger.info(String.format(ACTION_START_LOGGING_MESSAGE,
 						actionType.toString(),filepath));

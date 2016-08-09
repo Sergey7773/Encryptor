@@ -4,21 +4,15 @@ package reports;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @XmlType(name = "successReport")
 public class SuccessReport extends Report{
 	
-	private Status status;
-	private int time;
-	private String filename;
-
-	@XmlElement
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filaname) {
-		this.filename = filaname;
-	}
+	@Getter @Setter private Status status;
+	@Getter @Setter private int time;
+	@Getter @Setter private String filename;
 
 	public SuccessReport() {
 		status = Status.SUCCESS;
@@ -31,24 +25,4 @@ public class SuccessReport extends Report{
 		this.time = elapsedTime;
 		status = Status.SUCCESS;
 	}
-	
-	@XmlElement
-	public Status getStatus() {
-		return this.status;
-	}
-	
-	public void setStatus(Status status) {
-		this.status=status;
-	}
-	
-	@XmlElement
-	public int getTime() {
-		return time;
-	}
-
-	public void setTime(int time) {
-		this.time = time;
-	}
-	
-	
 }

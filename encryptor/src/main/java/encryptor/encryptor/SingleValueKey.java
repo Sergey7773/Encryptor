@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import lombok.AllArgsConstructor;
 import encryptor.encryptor.interfaces.Key;
 
 /**
@@ -11,15 +12,12 @@ import encryptor.encryptor.interfaces.Key;
  * @author Sergey
  *
  */
+@AllArgsConstructor
 public class SingleValueKey implements Key, Serializable {
 	
 
 	private static final long serialVersionUID = -6300576333626322453L;
 	private byte value;
-	
-	public SingleValueKey(byte value) {
-		this.value=value;
-	}
 	
 	/**
 	 * 

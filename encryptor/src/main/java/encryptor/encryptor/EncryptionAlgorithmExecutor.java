@@ -12,6 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
+
+
+import lombok.Cleanup;
+import lombok.NonNull;
+
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -49,9 +54,10 @@ public class EncryptionAlgorithmExecutor {
 	private XmlParser xmlParser;
 
 	@Inject
-	public EncryptionAlgorithmExecutor(@Named("encObservers")List<Observer> encryptionObservers,
-			@Named("decObservers")List<Observer> decryptionObservers,
-			XmlParser xmlParser) {
+	public EncryptionAlgorithmExecutor(
+			@NonNull @Named("encObservers")List<Observer> encryptionObservers,
+			@NonNull @Named("decObservers")List<Observer> decryptionObservers,
+			@NonNull XmlParser xmlParser) {
 		this.encryptionObservers = encryptionObservers;
 		this.decryptionObservers = decryptionObservers;
 		this.xmlParser = xmlParser;
@@ -85,7 +91,8 @@ public class EncryptionAlgorithmExecutor {
 	 * @param inputFile - file or directory to encrypt.
 	 * @throws IOException
 	 */
-	public void executeEncyption(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
+	public void executeEncyption(@NonNull EncryptionAlgorithm algorithm,
+			@NonNull File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
 		execute(algorithm, inputFile, key, Action.ENCRYPT);
 		writeKey(key,inputFile);
@@ -98,7 +105,8 @@ public class EncryptionAlgorithmExecutor {
 	 * @param key - the decryption key
 	 * @throws IOException
 	 */
-	public void executeDecryption(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
+	public void executeDecryption(@NonNull EncryptionAlgorithm algorithm,
+			@NonNull File inputFile, Key key) throws IOException {
 		execute(algorithm, inputFile, key, Action.DECRYPT);
 	}
 
@@ -181,7 +189,8 @@ public class EncryptionAlgorithmExecutor {
 	 * @param inputFile - file or directory to encrypt.
 	 * @throws IOException
 	 */
-	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
+	public void executeEncryptionAsync(@NonNull EncryptionAlgorithm algorithm,
+			@NonNull File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
 		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
 		writeKey(key, inputFile);
@@ -284,8 +293,8 @@ public class EncryptionAlgorithmExecutor {
 			String inputFilepath, String outputFilepath, Key key) {
 		Report report = null;
 		try {
-			FileInputStream fis = new FileInputStream(new File(inputFilepath));
-			FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
+			@Cleanup FileInputStream fis = new FileInputStream(new File(inputFilepath));
+			@Cleanup FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
 			
 			LoggingUtils.writeActionStart(getClass().getName(), actionType, inputFilepath);
 			Stopwatch sw = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);

@@ -3,23 +3,17 @@ package reports;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @XmlType(name = "failureReport")
 public class FailureReport extends Report {
 	
-	private Status status;
-	private String exceptionName;
-	private String exceptionMessage;
-	private String stackTrace;
-	private String filename;
-	
-	@XmlElement
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filaname) {
-		this.filename = filaname;
-	}
+	@Getter @Setter private String filename;
+	@Getter @Setter private Status status;
+	@Getter @Setter private String exceptionName;
+	@Getter @Setter private String exceptionMessage;
+	@Getter @Setter private String stackTrace;
 
 	public FailureReport() {
 		status = Status.FAILURE;
@@ -33,42 +27,4 @@ public class FailureReport extends Report {
 		exceptionName = e.getClass().getName();
 		this.filename = filename;
 	}
-	
-	@XmlElement
-	public Status getStatus() {
-		return status;
-	}
-	
-	public void setStatus(Status status) {
-		this.status=status;
-	}
-
-	@XmlElement
-	public String getExceptionName() {
-		return exceptionName;
-	}
-
-	public void setExceptionName(String exceptionName) {
-		this.exceptionName = exceptionName;
-	}
-	
-	@XmlElement
-	public String getExceptionMessage() {
-		return exceptionMessage;
-	}
-
-	public void setExceptionMessage(String exceptionMessage) {
-		this.exceptionMessage = exceptionMessage;
-	}
-	
-	@XmlElement
-	public String getStackTrace() {
-		return stackTrace;
-	}
-
-	public void setStackTrace(String stackTrace) {
-		this.stackTrace = stackTrace;
-	}
-	
-	
 }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import lombok.AllArgsConstructor;
 import reports.FailureReport;
 import reports.Report;
 import reports.SuccessReport;
@@ -18,28 +19,18 @@ import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.Pair;
 
+@AllArgsConstructor
 public class LoggedWriteJobPerformer implements WriteJobPerformer<Pair<File,FileInputStream>,AsyncJob> {
 
 	private ConcurrentHashMap<File,Stopwatch> fileActionTimers;
-	private Action action;
 	private EncryptionAlgorithm alg;
-	private File outputDir;
+	private Action action;
 	private Key key;
+	private File outputDir;
 	private ConcurrentLinkedQueue<Report> reportsList;
-
-	public LoggedWriteJobPerformer(ConcurrentHashMap<File,Stopwatch> fileActionTimers, EncryptionAlgorithm algorithm,
-			Action actionType,Key key,File outputDir,ConcurrentLinkedQueue<Report> reportsList) {
-		this.fileActionTimers = fileActionTimers;
-		this.action = actionType;
-		this.alg = algorithm;
-		this.key = key;
-		this.reportsList = reportsList;
-		this.outputDir = outputDir;
-	}
 
 	@Override
 	public Pair<File, FileInputStream> perform(AsyncJob writeJob) {
-		
 		InputStream is = writeJob.getInputStream();
 		File sourceFile = writeJob.getFile();
 		FileInputStream fis = writeJob.getFileInputStream();

@@ -7,6 +7,8 @@ import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.AllArgsConstructor;
+
 import com.google.inject.Guice;
 
 import dependencyInjection.DefaultStopwatchModule;
@@ -15,17 +17,13 @@ import encryptor.encryptor.LoggingUtils;
 import encryptor.encryptor.Stopwatch;
 import encryptor.encryptor.interfaces.Pair;
 
+@AllArgsConstructor
 public class LoggedWriteJobFactory implements WriteJobFactory<AsyncJob, Pair<File,FileInputStream>>{
 
 	private ConcurrentHashMap<File,Stopwatch> fileActionTimers;
 	private Action actionType;
 
 	private static int BUFFER_SIZE = 1000;
-
-	public LoggedWriteJobFactory(ConcurrentHashMap<File, Stopwatch> fileActionTimers, Action actionType) {
-		this.actionType = actionType;
-		this.fileActionTimers = fileActionTimers;
-	}
 
 	@Override
 	public AsyncJob make(Pair<File, FileInputStream> readJob) {

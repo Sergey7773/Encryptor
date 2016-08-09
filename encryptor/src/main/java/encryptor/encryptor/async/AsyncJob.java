@@ -4,43 +4,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * servers as a WriteJob object for LoggedWriteJobPerformer
  * @author Sergey
  *
  */
+@AllArgsConstructor
 public class AsyncJob {
-	private InputStream is;
-	private FileInputStream fis;
-	private File file;
+	@Getter @Setter private File file;
+	@Getter @Setter private FileInputStream fileInputStream;
+	@Getter @Setter private InputStream inputStream;
 
-	public AsyncJob(File f,FileInputStream fis, InputStream is) {
-		this.file = f;
-		this.is = is;
-		this.fis = fis;
-	}
-	
-	public InputStream getInputStream() {
-		return is;
-	}
 
-	public void setInputStream(InputStream is) {
-		this.is = is;
-	}
-
-	public FileInputStream getFileInputStream() {
-		return fis;
-	}
-
-	public void setFileInputStream(FileInputStream fis) {
-		this.fis = fis;
-	}
-
-	public File getFile() {
-		return file;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
-	}
 }
