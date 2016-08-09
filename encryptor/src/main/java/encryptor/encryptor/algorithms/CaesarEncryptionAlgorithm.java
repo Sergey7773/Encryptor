@@ -23,7 +23,8 @@ public class CaesarEncryptionAlgorithm extends EncryptionAlgorithm {
 	
 	public CaesarEncryptionAlgorithm() {
 	}
-
+	
+	
 	public byte encrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();
 		return (byte)(value+valueOfKey);

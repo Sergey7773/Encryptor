@@ -1,12 +1,16 @@
 package encryptor.encryptor;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
 import encryptor.encryptor.interfaces.Key;
 
+/**
+ * A key which holds a single byte value
+ * @author Sergey
+ *
+ */
 public class SingleValueKey implements Key, Serializable {
 	
 
@@ -17,6 +21,10 @@ public class SingleValueKey implements Key, Serializable {
 		this.value=value;
 	}
 	
+	/**
+	 * 
+	 * @return a SingleValueKey with a random value (from MIN_VALUE to MAX_VALUE of Byte)
+	 */
 	public static SingleValueKey generate() {
 		Random rnd = new Random(System.currentTimeMillis());
 		byte[] buffer = new byte[1];
@@ -24,6 +32,11 @@ public class SingleValueKey implements Key, Serializable {
 		return new SingleValueKey(buffer[0]);
 	}
 	
+	/**
+	 * generates keys with random value and test them against the predicate.
+	 * @param illegalValuesPredicate
+	 * @return a key with value v for which illegalValuesPredicate.test(v)==false holds.
+	 */
 	public static SingleValueKey generate(Predicate<Byte> illegalValuesPredicate) {
 		Random rnd = new Random(System.currentTimeMillis());
 		byte[] buffer = new byte[1];
@@ -33,6 +46,10 @@ public class SingleValueKey implements Key, Serializable {
 		return new SingleValueKey(buffer[0]);
 	}
 	
+	/**
+	 * 
+	 * @return the value of this key
+	 */
 	public byte getValue() {
 		return this.value;
 	}

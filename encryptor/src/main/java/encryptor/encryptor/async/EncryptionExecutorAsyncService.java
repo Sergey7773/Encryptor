@@ -33,7 +33,6 @@ import reports.FailureReport;
 import reports.Reports;
 import reports.SuccessReport;
 import encryptor.encryptor.Action;
-import encryptor.encryptor.AsyncJob;
 import encryptor.encryptor.LoggingUtils;
 import encryptor.encryptor.Stopwatch;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
@@ -49,7 +48,7 @@ public class EncryptionExecutorAsyncService<T,S> {
 	private static int JOB_QUEUE_SIZE = 100;
 
 	private BlockingQueue<T> writeJobQueue;
-	private ArrayBlockingQueue<S> readJobsQueue;
+	private BlockingQueue<S> readJobsQueue;
 	private AtomicInteger tasksToFinish;
 	private ExecutorService threadPool;
 

@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import reports.Report;
 import encryptor.encryptor.Action;
-import encryptor.encryptor.AsyncJob;
 import encryptor.encryptor.Stopwatch;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;

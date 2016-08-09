@@ -12,7 +12,6 @@ import reports.FailureReport;
 import reports.Report;
 import reports.SuccessReport;
 import encryptor.encryptor.Action;
-import encryptor.encryptor.AsyncJob;
 import encryptor.encryptor.LoggingUtils;
 import encryptor.encryptor.Stopwatch;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
@@ -41,9 +40,9 @@ public class LoggedWriteJobPerformer implements WriteJobPerformer<Pair<File,File
 	@Override
 	public Pair<File, FileInputStream> perform(AsyncJob writeJob) {
 		
-		InputStream is = writeJob.getIs();
+		InputStream is = writeJob.getInputStream();
 		File sourceFile = writeJob.getFile();
-		FileInputStream fis = writeJob.getFis();
+		FileInputStream fis = writeJob.getFileInputStream();
 		try {
 			FileOutputStream os = new FileOutputStream(
 					outputDir.getPath()+"/"+writeJob.getFile().getName(),true);

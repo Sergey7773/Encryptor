@@ -56,6 +56,11 @@ public class EncryptorApplication {
 		this.xmlParser = parser;
 	}
 	
+	/**
+	 * Starts the application and the dialog with the user.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public void run() throws IOException, ClassNotFoundException {
 		Key key = null;
 		EncryptionAlgorithm alg=null;
@@ -111,7 +116,7 @@ public class EncryptorApplication {
 	
 	
 	private void onBadParams() {
-		dialogHandler.writeLine(BAD_PARAMS_STRING);
+		//dialogHandler.writeLine(BAD_PARAMS_STRING);
 		System.err.println(BAD_PARAMS_STRING);
 		//throw new IllegalArgumentException();
 	}

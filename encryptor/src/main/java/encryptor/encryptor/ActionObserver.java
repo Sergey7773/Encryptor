@@ -21,11 +21,18 @@ public class ActionObserver implements Observer {
 		stopwatch = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
 	}
 	
+	/**
+	 * prints the 'onStartMessage' which was passed as an argument to the constructor.
+	 */
 	public void onStart() {
 		System.out.println(onActionStartMessage);
 		stopwatch.start();
 	}
 
+	/**
+	 * prints the 'onEndMessage' which was passed as an argument to the constructor, and the
+	 * time in seconds the action took.
+	 */
 	public void onEnd() {
 		System.out.println(onActionEndMessage);
 		System.out.println("The action took "+

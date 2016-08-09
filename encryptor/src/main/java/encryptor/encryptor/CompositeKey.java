@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 import encryptor.encryptor.interfaces.Key;
 
-
+/**
+ * A key composed of two other keys.
+ * @author Sergey
+ *
+ */
 public class CompositeKey implements Key, Serializable {
 
 	

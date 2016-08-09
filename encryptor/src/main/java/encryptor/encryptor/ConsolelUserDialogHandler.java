@@ -6,6 +6,11 @@ import java.util.Arrays;
 
 import encryptor.encryptor.interfaces.UserDialogHandler;
 
+/**
+ * Used as the default UserDialogHandler by the EncryptorApplication.
+ * @author Sergey
+ *
+ */
 public class ConsolelUserDialogHandler implements UserDialogHandler {
 
 	private Console console;
@@ -15,6 +20,9 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 	}
 	
 	@Override
+	/**
+	 * writes the given string to a console if available, and to System.out otherwise.
+	 */
 	public void writeLine(String line) {
 		if(console!=null)
 			console.format(line+"\r\n");
@@ -24,6 +32,9 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 	}
 
 	@Override
+	/**
+	 * reads a line from the console if available, and from System.in otherwise
+	 */
 	public String readLine() {
 		if(console!=null) 
 			return console.readLine();
@@ -41,6 +52,9 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 	}
 
 	@Override
+	/**
+	 * prints a formatted string to a console if available, and to System.out otherwise.
+	 */
 	public void writeLine(String line, Object... args) {
 		this.writeLine(String.format(line, args));
 	}

@@ -31,6 +31,7 @@ import reports.Report;
 import reports.Reports;
 import reports.SuccessReport;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+import encryptor.encryptor.async.AsyncJob;
 import encryptor.encryptor.async.EncryptionExecutorAsyncService;
 import encryptor.encryptor.async.LoggedWriteJobFactory;
 import encryptor.encryptor.async.LoggedWriteJobPerformerFactory;
@@ -39,6 +40,14 @@ import encryptor.encryptor.interfaces.Observer;
 import encryptor.encryptor.interfaces.Pair;
 import encryptor.encryptor.xml.Utils;
 
+/**
+ * A wrapper class for the execution of encryption\decryption algorithms.
+ * Receives two lists of observers which will be executed before and after encryption\decryption,
+ * if a directory is passed as an argument, these observers will be executed before encryption\decryption of any
+ * files begin, and once encryption\decryption of all files has ended.
+ * @author Sergey
+ *
+ */
 public class EncryptionAlgorithmExecutor {
 
 	private static final String ENCRYPTED_FORMAT = ".encrypted";
@@ -58,26 +67,58 @@ public class EncryptionAlgorithmExecutor {
 		this(new ArrayList<Observer>(), new ArrayList<Observer>());
 	}
 
+	/**
+	 * 
+	 * @return the list of observers which will be called before and after encryption.
+	 */
 	public List<Observer> getEncryptionObservers() {
 		return this.encryptionObservers;
 	}
 
+	/**
+	 * 
+	 * @return the list of observers which will be called before and after decryption.
+	 */
 	public List<Observer> getDecryptionObservers() {
 		return this.decryptionObservers;
 	}
 
 	//Sync execution
+	
+	/**
+	 * Performs encryption of the given file (or directory) on a single thread.
+	 * @param algorithm - the used encryption algorithm
+	 * @param inputFile - file or directory to encrypt.
+	 * @throws IOException
+	 */
 	public void executeEncyption(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
 		execute(algorithm, inputFile, key, Action.ENCRYPT);
 		writeKey(key,inputFile);
 	}
-
+	
+	/**
+	 * Performs decryption of the given file (or directory) on a single thread, with the given key.
+	 * @param algorithm - the used encryption algorithm
+	 * @param inputFile - file or directory to decrypt
+	 * @param key - the decryption key
+	 * @throws IOException
+	 */
 	public void executeDecryption(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
 		execute(algorithm, inputFile, key, Action.DECRYPT);
 	}
 
 
+	/**
+	 * calls the observers according to the Action argument passed to the method, and 
+	 * calls the matching private mehod for encrypting\decrypting a file or directory according the the
+	 * File argument.
+	 * @param algorithm
+	 * @param inputFile
+	 * @param key
+	 * @param actionType
+	 * @throws IOException
+	 */
 	private void execute(EncryptionAlgorithm algorithm,File inputFile,
 			Key key, Action actionType) throws IOException {
 		List<Observer> toNotify = (actionType.equals(Action.ENCRYPT)) ?
@@ -90,6 +131,14 @@ public class EncryptionAlgorithmExecutor {
 		notifyObserversOnEnd(toNotify);
 	}
 
+	/**
+	 * performs the action on the inputFile and creates an output file to write the result.
+	 * @param algorithm
+	 * @param inputFile
+	 * @param key
+	 * @param actionType
+	 * @throws IOException
+	 */
 	private void performActionOnSingleFile(EncryptionAlgorithm algorithm,File inputFile,
 			Key key, Action actionType) 
 					throws IOException {
@@ -97,7 +146,16 @@ public class EncryptionAlgorithmExecutor {
 				appedEncryptedToFilename(inputFile) : appedDecryptedToFilename(inputFile);
 				performAction(algorithm, actionType, inputFile.getPath(), outputFilePath, key);
 	}
-
+	
+	/**
+	 * performs the action on every file in the input directory, and writes the output to a 
+	 * 'decrypted'/'encrypted' sub directory according to the action which was received.
+	 * @param algorithm
+	 * @param inputDir
+	 * @param key
+	 * @param actionType
+	 * @throws IOException
+	 */
 	private void performActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
 			Key key, Action actionType) 
 					throws IOException {
@@ -121,16 +179,40 @@ public class EncryptionAlgorithmExecutor {
 
 
 	//Async execution
+	
+	/**
+	 * Performs encryption of the given of a directory on multiple threads, encryption of a file will be 
+	 * carried out on a single thread.
+	 * @param algorithm - the used encryption algorithm
+	 * @param inputFile - file or directory to encrypt.
+	 * @throws IOException
+	 */
 	public void executeEncryptionAsync(EncryptionAlgorithm algorithm,File inputFile) throws IOException {
 		Key key = algorithm.generateKey();
 		executeAsync(algorithm,inputFile,key,Action.ENCRYPT);
 		writeKey(key, inputFile);
 	}
 
+	/**
+	 * Performs decryption of the given of a directory on multiple threads, decryption of a file will be 
+	 * carried out on a single thread.
+	 * @param algorithm - the used encryption algorithm
+	 * @param inputFile - file or directory to encrypt.
+	 * @throws IOException
+	 */
 	public void executeDecryptionAsync(EncryptionAlgorithm algorithm,File inputFile, Key key) throws IOException {
 		executeAsync(algorithm,inputFile,key,Action.DECRYPT);
 	}
 
+	/**
+	 * calls the observers according to the received action, and calls the methods which will perform 
+	 * the encryption\decryption.
+	 * @param algorithm
+	 * @param inputFile
+	 * @param key
+	 * @param actionType
+	 * @throws IOException
+	 */
 	private void executeAsync(EncryptionAlgorithm algorithm,File inputFile,
 			Key key, Action actionType) throws IOException {
 		List<Observer> toNotify = (actionType.equals(Action.ENCRYPT)) ?
@@ -143,7 +225,15 @@ public class EncryptionAlgorithmExecutor {
 		}
 		notifyObserversOnEnd(toNotify);
 	}
-
+	
+	/**
+	 * performs encryption\decryption of a given directory using multiple threads.
+	 * @param algorithm
+	 * @param inputDir
+	 * @param key
+	 * @param actionType
+	 * @throws IOException
+	 */
 	private void performAsyncActionOnDirectory(EncryptionAlgorithm algorithm, File inputDir,
 			Key key, Action actionType) throws IOException {
 		File outputDir = createOutputDirectory(inputDir, actionType);
@@ -185,7 +275,17 @@ public class EncryptionAlgorithmExecutor {
 		return $;
 	}
 
-
+	/**
+	 * calls the encryption algorithm which will perform the decryption\encryption of a file, 
+	 * logs the start of the action and the ending of it (either success or failure) and returns 
+	 * a report according to the result (success or failure).
+	 * @param algorithm
+	 * @param actionType
+	 * @param inputFilepath
+	 * @param outputFilepath
+	 * @param key
+	 * @return SuccessReport if the action completed without throwing an exception, FailureReport otherwise.
+	 */
 	private Report performAction(EncryptionAlgorithm algorithm, Action actionType,
 			String inputFilepath, String outputFilepath, Key key) {
 		Report report = null;
@@ -237,7 +337,14 @@ public class EncryptionAlgorithmExecutor {
 		return outputDir;
 	}
 
-	private Key writeKey(Key key, File inputFile) throws IOException {
+	/**
+	 * writes the key to a file name 'key.bin', which will be located in the same directory
+	 * with the inputFile if inputFile is a single file, and in inputFile if inputFile is a directory.
+	 * @param key
+	 * @param inputFile
+	 * @throws IOException
+	 */
+	private void writeKey(Key key, File inputFile) throws IOException {
 
 		String keyPathfile = (inputFile.isDirectory()) ? inputFile.getPath()+"/key.bin" 
 				: inputFile.getParentFile().getPath()+"/key.bin";
@@ -245,6 +352,5 @@ public class EncryptionAlgorithmExecutor {
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(key);
 		oos.close();
-		return key;
 	}
 }
