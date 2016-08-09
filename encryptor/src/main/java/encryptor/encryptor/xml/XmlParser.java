@@ -54,18 +54,18 @@ public class XmlParser {
 	}
 	
 	public EncryptionAlgorithm unmarshallEncryptionAlgorithm(String filepath) {
-		String schema = Utils.class.getClassLoader().getResource("EncryptionAlgorithms.xsd").getPath();
+		String schema = getClass().getClassLoader().getResource("EncryptionAlgorithms.xsd").getPath();
 		return (EncryptionAlgorithm)(
 				unmarshall(filepath,schema,"encryptor.encryptor.algorithms"));
 	}
 	
 	public void marshallEncryptionAlgorithm(EncryptionAlgorithm alg, String filepath) {
-		String schema = Utils.class.getClassLoader().getResource("EncryptionAlgorithms.xsd").getPath();
+		String schema = getClass().getClassLoader().getResource("EncryptionAlgorithms.xsd").getPath();
 		marshall(alg,filepath,schema,"encryptor.encryptor.algorithms");
 	}
 	
 	public void marshallReports(Reports reports, String filepath) {
-		String schema = Utils.class.getClassLoader().getResource("Reports.xsd").getPath();
+		String schema = getClass().getClassLoader().getResource("Reports.xsd").getPath();
 		marshall(reports,filepath,schema,"reports");
 	}
 	

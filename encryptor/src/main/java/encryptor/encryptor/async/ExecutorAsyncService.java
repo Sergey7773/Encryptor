@@ -1,44 +1,17 @@
 package encryptor.encryptor.async;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.Logger;
-
-import com.google.inject.Guice;
-
-import dependencyInjection.DefaultStopwatchModule;
-import reports.FailureReport;
-import reports.Reports;
-import reports.SuccessReport;
-import encryptor.encryptor.Action;
-import encryptor.encryptor.LoggingUtils;
-import encryptor.encryptor.Stopwatch;
-import encryptor.encryptor.algorithms.EncryptionAlgorithm;
-import encryptor.encryptor.interfaces.Key;
-import encryptor.encryptor.interfaces.Pair;
-import encryptor.encryptor.xml.Utils;
 
 
 public class ExecutorAsyncService<T,S> {

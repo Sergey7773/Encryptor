@@ -17,7 +17,6 @@ import encryptor.encryptor.algorithms.SplitAlgorithm;
 import encryptor.encryptor.algorithms.XorEncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.UserDialogHandler;
-import encryptor.encryptor.xml.Utils;
 import encryptor.encryptor.xml.XmlParser;
 
 public class EncryptorApplication {

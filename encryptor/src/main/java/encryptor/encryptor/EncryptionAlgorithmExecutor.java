@@ -3,23 +3,14 @@ package encryptor.encryptor;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Clock;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.log4j.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -38,7 +29,7 @@ import encryptor.encryptor.async.LoggedWriteJobPerformerFactory;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.Observer;
 import encryptor.encryptor.interfaces.Pair;
-import encryptor.encryptor.xml.Utils;
+import encryptor.encryptor.xml.XmlParser;
 
 /**
  * A wrapper class for the execution of encryption\decryption algorithms.
@@ -55,16 +46,19 @@ public class EncryptionAlgorithmExecutor {
 
 	private List<Observer> encryptionObservers;
 	private List<Observer> decryptionObservers;
+	private XmlParser xmlParser;
 
 	@Inject
 	public EncryptionAlgorithmExecutor(@Named("encObservers")List<Observer> encryptionObservers,
-			@Named("decObservers")List<Observer> decryptionObservers ) {
+			@Named("decObservers")List<Observer> decryptionObservers,
+			XmlParser xmlParser) {
 		this.encryptionObservers = encryptionObservers;
 		this.decryptionObservers = decryptionObservers;
+		this.xmlParser = xmlParser;
 	}
 	
 	public EncryptionAlgorithmExecutor() {
-		this(new ArrayList<Observer>(), new ArrayList<Observer>());
+		this(new ArrayList<Observer>(), new ArrayList<Observer>(),new XmlParser());
 	}
 
 	/**
@@ -174,7 +168,7 @@ public class EncryptionAlgorithmExecutor {
 					inputDir.getPath()+"/"+filesInDir[i].getName(),
 					outputDir.getPath()+"/"+filesInDir[i].getName(), key));
 		}
-		Utils.marshallReports(reports, inputDir+"/reports.xml");
+		xmlParser.marshallReports(reports, inputDir+"/reports.xml");
 	}
 
 
@@ -258,7 +252,7 @@ public class EncryptionAlgorithmExecutor {
 						fileActionTimers, algorithm, actionType, key, outputDir, reportsList));
 		Reports reports = new Reports();
 		reports.getReports().addAll(reportsList);
-		Utils.marshallReports(reports,inputDir.getPath()+"/reports.xml");
+		xmlParser.marshallReports(reports,inputDir.getPath()+"/reports.xml");
 	}
 
 	//Utility functions

@@ -9,6 +9,7 @@ import com.google.inject.name.Names;
 
 import encryptor.encryptor.ActionObserver;
 import encryptor.encryptor.interfaces.Observer;
+import encryptor.encryptor.xml.XmlParser;
 
 public class DefaultEncryptionAlgorithmExecutorModule extends AbstractModule {
 
@@ -24,7 +25,7 @@ public class DefaultEncryptionAlgorithmExecutorModule extends AbstractModule {
 		
 		bind(new TypeLiteral<List<Observer>>() {}).annotatedWith(Names.named("encObservers")).toInstance(encryptionObservers);
 		bind(new TypeLiteral<List<Observer>>() {}).annotatedWith(Names.named("decObservers")).toInstance(decryptionObservers);
-		
+		bind(XmlParser.class).toInstance(new XmlParser());
 	}
 
 }
