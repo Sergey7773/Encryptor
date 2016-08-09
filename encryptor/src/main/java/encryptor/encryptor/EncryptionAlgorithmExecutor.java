@@ -11,10 +11,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
 
@@ -28,8 +31,12 @@ import reports.Report;
 import reports.Reports;
 import reports.SuccessReport;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
+import encryptor.encryptor.async.EncryptionExecutorAsyncService;
+import encryptor.encryptor.async.LoggedWriteJobFactory;
+import encryptor.encryptor.async.LoggedWriteJobPerformerFactory;
 import encryptor.encryptor.interfaces.Key;
 import encryptor.encryptor.interfaces.Observer;
+import encryptor.encryptor.interfaces.Pair;
 import encryptor.encryptor.xml.Utils;
 
 public class EncryptionAlgorithmExecutor {
@@ -147,8 +154,21 @@ public class EncryptionAlgorithmExecutor {
 				return !pathname.isDirectory();
 			}
 		});
-		EncryptionExecutorAsyncService service = new EncryptionExecutorAsyncService();
-		service.execute(outputDir, filesInDir, algorithm, actionType, key);
+		
+		ConcurrentLinkedQueue<Report> reportsList = new ConcurrentLinkedQueue<Report>();
+		ConcurrentHashMap<File, Stopwatch> fileActionTimers = new ConcurrentHashMap<File, Stopwatch>();
+		
+		EncryptionExecutorAsyncService<AsyncJob,Pair<File,FileInputStream>> service =
+				new EncryptionExecutorAsyncService<AsyncJob,Pair<File,FileInputStream>>();
+		List<Pair<File,FileInputStream>> initialReadJobs = new ArrayList<Pair<File,FileInputStream>>();
+		for(File f : filesInDir) initialReadJobs.add(new Pair<File,FileInputStream>(f, new FileInputStream(f)));
+		service.execute(key,initialReadJobs,
+				new LoggedWriteJobFactory(fileActionTimers, actionType),
+				new LoggedWriteJobPerformerFactory(
+						fileActionTimers, algorithm, actionType, key, outputDir, reportsList));
+		Reports reports = new Reports();
+		reports.getReports().addAll(reportsList);
+		Utils.marshallReports(reports,inputDir.getPath()+"/reports.xml");
 	}
 
 	//Utility functions
