@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 import encryptor.encryptor.ActionObserver;
@@ -21,8 +22,8 @@ public class DefaultEncryptionAlgorithmExecutorModule extends AbstractModule {
 		decryptionObservers.add(new ActionObserver("Decryption started",
 				"Decryption ended"));
 		
-		bind(List.class).annotatedWith(Names.named("encObservers")).toInstance(encryptionObservers);
-		bind(List.class).annotatedWith(Names.named("decObservers")).toInstance(decryptionObservers);
+		bind(new TypeLiteral<List<Observer>>() {}).annotatedWith(Names.named("encObservers")).toInstance(encryptionObservers);
+		bind(new TypeLiteral<List<Observer>>() {}).annotatedWith(Names.named("decObservers")).toInstance(decryptionObservers);
 		
 	}
 
