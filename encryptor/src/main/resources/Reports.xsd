@@ -38,7 +38,7 @@
 			<element name="reportsList">
 				<complexType>
 					<sequence>
-						<element name="report" type="tns:Report" maxOccurs="unbounded"></element>
+						<element name="report" type="tns:Report" maxOccurs="unbounded" minOccurs="0"></element>
 					</sequence>
 				</complexType>
 			</element>
