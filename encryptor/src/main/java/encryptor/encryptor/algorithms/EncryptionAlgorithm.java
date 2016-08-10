@@ -54,9 +54,9 @@ public abstract class EncryptionAlgorithm {
 	public abstract Key generateKey();
 	
 	@XmlTransient
-	private ApplierFactory<? extends ActionApplier> encApplierFactory;
+	private ApplierFactory encApplierFactory;
 	@XmlTransient
-	private ApplierFactory<? extends ActionApplier> decApplierFactory;
+	private ApplierFactory decApplierFactory;
 
 	private String encApplierClassName;
 	private String decApplierClassName;
@@ -74,8 +74,8 @@ public abstract class EncryptionAlgorithm {
 	public EncryptionAlgorithm() {
 		encApplierClassName = EncryptionApplier.class.getName();
 		decApplierClassName = DecryptionApplier.class.getName();
-		encApplierFactory = new ApplierFactory<EncryptionApplier>(EncryptionApplier.class);
-		decApplierFactory = new ApplierFactory<DecryptionApplier>(DecryptionApplier.class);
+		encApplierFactory = new ApplierFactory(EncryptionApplier.class);
+		decApplierFactory = new ApplierFactory(DecryptionApplier.class);
 	}
 
 	
@@ -136,12 +136,12 @@ public abstract class EncryptionAlgorithm {
 		this.decApplierClassName = decApplierClassName;
 	}
 	
-	private ApplierFactory<ActionApplier> loadApplierFactory(String className) {
+	private ApplierFactory loadApplierFactory(String className) {
 		Class<ActionApplier> clz;
 		try {
 			clz = (Class<ActionApplier>) ClassLoader.
 					getSystemClassLoader().loadClass(className);
-			return new ApplierFactory<ActionApplier>(clz);
+			return new ApplierFactory(clz);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
