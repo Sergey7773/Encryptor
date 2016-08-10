@@ -6,7 +6,3 @@ ReverseAlgorithm
 SimulationEncryptionAlgorithm
 SplitAlgorithm
 CaesarEncryptionAlgorithm
-appliers.DecryptionApplierFactory
-appliers.EncryptionApplierFactory
-appliers.SplitDecryptionApplierFactory
-appliers.SplitEncryptionApplierFactory

@@ -11,7 +11,8 @@ import lombok.ToString;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
+import encryptor.encryptor.algorithms.appliers.ActionApplier;
+import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -32,10 +33,10 @@ public class ReverseAlgorithm extends EncryptionAlgorithm {
 	
 	@Inject
 	public ReverseAlgorithm(
-			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
-			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory,
+			@Named("encryptionApplierFactory")String encAppliercn,
+			@Named("decryptionApplierFactory")String decAppliercn,
 			EncryptionAlgorithm nested) {
-		super(encryptionApplierFactory,decryptionApplierFactory);
+		super(encAppliercn,decAppliercn);
 		this.nestedAlgorithm = nested;
 	}
 	

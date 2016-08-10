@@ -24,10 +24,10 @@ import dependencyInjection.DefaultEncryptionAlgorithmModule;
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
-import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
+import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
-import encryptor.encryptor.algorithms.appliers.SplitDecryptionApplierFactory;
-import encryptor.encryptor.algorithms.appliers.SplitEncryptionApplierFactory;
+import encryptor.encryptor.algorithms.appliers.SplitDecryptionApplier;
+import encryptor.encryptor.algorithms.appliers.SplitEncryptionApplier;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -40,20 +40,20 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 
 	@Inject
 	public SplitAlgorithm(
-			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
-			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory,
+			@Named("encryptionApplierFactory")String encAppliercn,
+			@Named("decryptionApplierFactory")String decAppliercn,
 			EncryptionAlgorithm nested) {
-		super(encryptionApplierFactory,decryptionApplierFactory);
+		super(encAppliercn,decAppliercn);
 		this.nestedAlgorithm = nested;
 	}
 
 	public SplitAlgorithm() {
-		super(new SplitEncryptionApplierFactory(), new SplitDecryptionApplierFactory());
+		super(SplitEncryptionApplier.class.getName(),SplitEncryptionApplier.class.getName());
 		this.nestedAlgorithm = null;
 	}
 
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
-		super(new SplitEncryptionApplierFactory(), new SplitDecryptionApplierFactory());
+		super(SplitEncryptionApplier.class.getName(),SplitEncryptionApplier.class.getName());
 		this.nestedAlgorithm = nested;
 	}
 

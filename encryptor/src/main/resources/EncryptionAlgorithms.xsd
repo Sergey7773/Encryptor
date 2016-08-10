@@ -11,33 +11,10 @@
 	<element name="xorEncryptionAlgorithm" type="tns:XorEncryptionAlgorithm"></element>
 	<element name="caesarEncryptionAlgorithm" type="tns:CaesarEncryptionAlgorithm"></element>
 
-	<complexType name="ActionApplierFactory" abstract="true"></complexType>
-	<complexType name="EncryptionApplierFactory">
-		<complexContent>
-			<extension base="tns:ActionApplierFactory"></extension>
-		</complexContent>
-	</complexType>
-	<complexType name="DecryptionApplierFactory">
-		<complexContent>
-			<extension base="tns:ActionApplierFactory"></extension>
-		</complexContent>
-	</complexType>
-	<complexType name="SplitEncryptionApplierFactory">
-		<complexContent>
-			<extension base="tns:ActionApplierFactory"></extension>
-		</complexContent>
-	</complexType>
-	<complexType name="SplitDecryptionApplierFactory">
-		<complexContent>
-			<extension base="tns:ActionApplierFactory"></extension>
-		</complexContent>
-	</complexType>
-	
-
 	<complexType name="EncryptionAlgorithm" abstract="true">
 		<sequence>
-			<element name="encApplierFactory" type="tns:ActionApplierFactory"></element>
-			<element name="decApplierFactory" type="tns:ActionApplierFactory"></element>
+			<element name="decApplierClassName" type="string"></element>
+			<element name="encApplierClassName" type="string"></element>
 		</sequence>
 	</complexType>
 

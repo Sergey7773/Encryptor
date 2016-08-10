@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.ToString;
@@ -16,11 +17,9 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
-import encryptor.encryptor.algorithms.appliers.ActionApplierFactory;
+import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.algorithms.appliers.DecryptionApplier;
-import encryptor.encryptor.algorithms.appliers.DecryptionApplierFactory;
 import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
-import encryptor.encryptor.algorithms.appliers.EncryptionApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -54,23 +53,31 @@ public abstract class EncryptionAlgorithm {
 	 */
 	public abstract Key generateKey();
 	
-	@XmlElement
-	private ActionApplierFactory encApplierFactory;
-	@XmlElement
-	private ActionApplierFactory decApplierFactory;
-	
-	public EncryptionAlgorithm() {
-		encApplierFactory = new EncryptionApplierFactory();
-		decApplierFactory = new DecryptionApplierFactory();
-	}
+	@XmlTransient
+	private ApplierFactory<? extends ActionApplier> encApplierFactory;
+	@XmlTransient
+	private ApplierFactory<? extends ActionApplier> decApplierFactory;
+
+	private String encApplierClassName;
+	private String decApplierClassName;
 	
 	@Inject
 	public EncryptionAlgorithm(
-			@Named("encryptionApplierFactory")ActionApplierFactory encryptionApplierFactory, 
-			@Named("decryptionApplierFactory")ActionApplierFactory decryptionApplierFactory) {
-		this.encApplierFactory = encryptionApplierFactory;
-		this.decApplierFactory = decryptionApplierFactory;
+			@Named("encryptionApplierFactory")String encAppliercn,
+			@Named("decryptionApplierFactory")String decAppliercn) {
+		encApplierClassName = encAppliercn;
+		decApplierClassName = decAppliercn;
+		encApplierFactory = loadApplierFactory(encAppliercn);
+		decApplierFactory = loadApplierFactory(decAppliercn);
 	}
+	
+	public EncryptionAlgorithm() {
+		encApplierClassName = EncryptionApplier.class.getName();
+		decApplierClassName = DecryptionApplier.class.getName();
+		encApplierFactory = new ApplierFactory<EncryptionApplier>(EncryptionApplier.class);
+		decApplierFactory = new ApplierFactory<DecryptionApplier>(DecryptionApplier.class);
+	}
+
 	
 	/**
 	 * reads from the given InputStream as long as possible, and decrypts every byte in the stream
@@ -115,5 +122,29 @@ public abstract class EncryptionAlgorithm {
 				cyphered[i]=function.apply(plain[i],key);
 			os.write(cyphered,0,read);
 		}
+	}
+	public String getEncApplierClassName() {
+		return encApplierClassName;
+	}
+	public void setEncApplierClassName(String encApplierClassName) {
+		this.encApplierClassName = encApplierClassName;
+	}
+	public String getDecApplierClassName() {
+		return decApplierClassName;
+	}
+	public void setDecApplierClassName(String decApplierClassName) {
+		this.decApplierClassName = decApplierClassName;
+	}
+	
+	private ApplierFactory loadApplierFactory(String className) {
+		Class<ActionApplier> clz;
+		try {
+			clz = (Class<ActionApplier>) ClassLoader.
+					getSystemClassLoader().loadClass(EncryptionApplier.class.getName());
+			return new ApplierFactory<ActionApplier>(clz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
