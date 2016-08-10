@@ -1,12 +1,13 @@
 package encryptor.encryptor.algorithms.appliers;
 
+import lombok.NonNull;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 
 public class EncryptionApplier implements ActionApplier {
 
 	private EncryptionAlgorithm m_algorithm;
-	public EncryptionApplier(EncryptionAlgorithm alg) {
+	public EncryptionApplier(@NonNull EncryptionAlgorithm alg) {
 		this.m_algorithm=alg;
 	}
 	

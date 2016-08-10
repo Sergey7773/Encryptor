@@ -1,5 +1,6 @@
 package encryptor.encryptor.algorithms.appliers;
 
+import lombok.NonNull;
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.interfaces.Key;
@@ -8,7 +9,7 @@ public class SplitDecryptionApplier implements ActionApplier{
 	private int counter = 0;
 	private EncryptionAlgorithm alg;
 	
-	public SplitDecryptionApplier(EncryptionAlgorithm alg) {
+	public SplitDecryptionApplier(@NonNull EncryptionAlgorithm alg) {
 		this.alg = alg;
 	}
 	
