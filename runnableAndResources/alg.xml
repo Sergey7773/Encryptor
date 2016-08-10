@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tns:doubleAlgorithm xmlns:tns="http://www.example.org/EncryptionAlgorithms" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <decApplierClassName>encryptor.encryptor.algorithms.appliers.DecryptionApplier</decApplierClassName>
+    <encApplierClassName>encryptor.encryptor.algorithms.appliers.EncryptionApplier</encApplierClassName>
+    <firstAlgorithm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="tns:XorEncryptionAlgorithm">
+        <decApplierClassName>encryptor.encryptor.algorithms.appliers.DecryptionApplier</decApplierClassName>
+        <encApplierClassName>encryptor.encryptor.algorithms.appliers.EncryptionApplier</encApplierClassName>
+    </firstAlgorithm>
+    <secondAlgorithm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="tns:CaesarEncryptionAlgorithm">
+        <decApplierClassName>encryptor.encryptor.algorithms.appliers.DecryptionApplier</decApplierClassName>
+        <encApplierClassName>encryptor.encryptor.algorithms.appliers.EncryptionApplier</encApplierClassName>
+    </secondAlgorithm>
+</tns:doubleAlgorithm>

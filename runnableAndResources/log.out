@@ -1,0 +1,82 @@
+2016-08-09 20:23:54 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsSample.docx started.
+2016-08-09 20:23:54 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsTemp.docx started.
+2016-08-09 20:23:54 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsTemp.docx finished successfully.
+The action took 0 seconds
+2016-08-09 20:23:54 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-09 20:24:31 INFO  LoggedWriteJobFactory:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted\graphsSample.docx started.
+2016-08-09 20:24:31 INFO  LoggedWriteJobFactory:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted\graphsTemp.docx started.
+2016-08-09 20:24:31 INFO  LoggedWriteJobPerformer:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted\graphsTemp.docx finished successfully.
+The action took 0 seconds
+2016-08-09 20:24:31 INFO  LoggedWriteJobPerformer:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted\graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/alg.xml started.
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/alg.xml finished successfully.
+The action took 0 seconds
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsSample.docx started.
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsTemp.docx started.
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsTemp.docx finished successfully.
+The action took 0 seconds
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/key.bin started.
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/key.bin finished successfully.
+The action took 0 seconds
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/reports.xml started.
+2016-08-09 20:31:41 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/reports.xml finished successfully.
+The action took 0 seconds
+2016-08-10 10:43:37 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\alg.xml started.
+2016-08-10 10:43:37 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsSample.docx started.
+2016-08-10 10:43:37 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsTemp.docx started.
+2016-08-10 10:43:37 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\key.bin started.
+2016-08-10 10:43:38 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\reports.xml started.
+2016-08-10 10:43:39 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\reports.xml finished successfully.
+The action took 0 seconds
+2016-08-10 10:43:39 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\alg.xml finished successfully.
+The action took 4 seconds
+2016-08-10 10:43:39 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\key.bin finished successfully.
+The action took 0 seconds
+2016-08-10 10:43:39 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsSample.docx finished successfully.
+The action took 1 seconds
+2016-08-10 10:43:39 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsTemp.docx finished successfully.
+The action took 1 seconds
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/alg.xml started.
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/alg.xml finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/fake.txt started.
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:53 - Encryption of C:\Users\Sergey\Desktop\testFolder/fake.txt finished ended with the following exception java.io.FileNotFoundException
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsSample.docx started.
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsTemp.docx started.
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/graphsTemp.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:23 - Encryption of C:\Users\Sergey\Desktop\testFolder/myAlg.xml started.
+2016-08-10 20:11:07 INFO  EncryptionAlgorithmExecutor:38 - Encryption of C:\Users\Sergey\Desktop\testFolder/myAlg.xml finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/alg.xml started.
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/alg.xml finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsSample.docx started.
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsTemp.docx started.
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsTemp.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/myAlg.xml started.
+2016-08-10 20:11:46 INFO  EncryptionAlgorithmExecutor:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/myAlg.xml finished successfully.
+The action took 0 seconds
+2016-08-10 20:14:12 INFO  EncryptionAlgorithmExecutor:23 - Encryption of fake.txt started.
+2016-08-10 20:14:12 INFO  EncryptionAlgorithmExecutor:53 - Encryption of fake.txt finished ended with the following exception java.io.FileNotFoundException
+2016-08-10 20:14:12 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsSample.docx started.
+2016-08-10 20:14:12 INFO  LoggedWriteJobFactory:23 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsTemp.docx started.
+2016-08-10 20:14:12 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:14:12 INFO  LoggedWriteJobPerformer:38 - Encryption of C:\Users\Sergey\Desktop\testFolder\graphsTemp.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:15:24 INFO  EncryptionAlgorithmExecutor:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsSample.docx started.
+2016-08-10 20:15:24 INFO  EncryptionAlgorithmExecutor:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsSample.docx finished successfully.
+The action took 0 seconds
+2016-08-10 20:15:24 INFO  EncryptionAlgorithmExecutor:23 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsTemp.docx started.
+2016-08-10 20:15:24 INFO  EncryptionAlgorithmExecutor:38 - Decryption of C:\Users\Sergey\Desktop\testFolder\encrypted/graphsTemp.docx finished successfully.
+The action took 0 seconds

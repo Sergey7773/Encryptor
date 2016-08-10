@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/Reports"
+	xmlns:tns="http://www.example.org/Reports" elementFormDefault="unqualified"
+	attributeFormDefault="unqualified">
+
+	<element name="successReport" type="tns:successReport"></element>
+	<element name="failureReport" type="tns:failureReport"></element>
+	<element name="reports" type="tns:Reports"></element>
+
+	<complexType name="Report" abstract="true"></complexType>
+	<complexType name="successReport">
+		<complexContent>
+			<extension base="tns:Report">
+				<sequence>
+					<element name = "filename" type="string"></element>
+					<element name="status" type="string"></element>
+					<element name="time" type="int"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="failureReport">
+		<complexContent>
+			<extension base="tns:Report">
+				<sequence>
+					<element name = "filename" type="string"></element>
+					<element name="status" type="string"></element>
+					<element name="exceptionName" type="string"></element>
+					<element name="exceptionMessage" type="string"></element>
+					<element name="stackTrace" type="string"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Reports">
+		<sequence>
+			<element name="reportsList">
+				<complexType>
+					<sequence>
+						<element name="report" type="tns:Report" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+</schema>
