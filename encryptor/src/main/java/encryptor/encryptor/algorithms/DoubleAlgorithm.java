@@ -14,6 +14,8 @@ import com.google.inject.name.Named;
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
 import encryptor.encryptor.algorithms.appliers.ApplierFactory;
+import encryptor.encryptor.algorithms.appliers.CompositeDecryptionApplier;
+import encryptor.encryptor.algorithms.appliers.CompositeEncryptionApplier;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement
@@ -38,10 +40,11 @@ public class DoubleAlgorithm extends EncryptionAlgorithm {
 	
 	@Inject
 	public DoubleAlgorithm(
-			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn,
+			@Named("encryptionApplierFactory")String encApplierClassName,
+			@Named("decryptionApplierFactory")String decApplierClassName,
+			ClassLoader classLoader,
 			EncryptionAlgorithm firstAlg, EncryptionAlgorithm secondAlg) {
-		super(encAppliercn,decAppliercn);
+		super(encApplierClassName,decApplierClassName,classLoader);
 		firstAlgorithm=firstAlg;
 		secondAlgorithm=secondAlg;
 	}
@@ -89,6 +92,18 @@ public class DoubleAlgorithm extends EncryptionAlgorithm {
 	 */
 	public Key generateKey() {
 		return new CompositeKey(firstAlgorithm.generateKey(), secondAlgorithm.generateKey());
+	}
+
+	@Override
+	public ActionApplier getEncryptionApplier() {
+		return new CompositeEncryptionApplier(
+				firstAlgorithm.getEncryptionApplier(),secondAlgorithm.getEncryptionApplier());
+	}
+
+	@Override
+	public ActionApplier getDecryptionApplier() {
+		return new CompositeDecryptionApplier(
+				firstAlgorithm.getDecryptionApplier(),secondAlgorithm.getDecryptionApplier());
 	}
 
 }

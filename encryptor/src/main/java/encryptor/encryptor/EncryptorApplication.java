@@ -99,7 +99,7 @@ public class EncryptorApplication {
 					alg = parseAlgorithm();
 					dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
 					if(parseYesNoAnswer()) {
-						dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
+						dialogHandler.writeLine(FILEPATH_REQUEST_STRING);
 						xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
 					} 
 				}

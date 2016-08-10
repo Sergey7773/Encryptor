@@ -27,9 +27,10 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 	
 	@Inject
 	public MultiplicationEncryptionAlgorithm(
-			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn) {
-		super(encAppliercn,decAppliercn);
+			@Named("encryptionApplierFactory")String encApplierClassName,
+			@Named("decryptionApplierFactory")String decApplierClassName,
+			ClassLoader classLoader) {
+		super(encApplierClassName,decApplierClassName,classLoader);
 	}
 	
 	public MultiplicationEncryptionAlgorithm() {
@@ -96,6 +97,16 @@ public class MultiplicationEncryptionAlgorithm extends EncryptionAlgorithm{
 				return t==0 || t%2==0;
 			}
 		});
+	}
+
+	@Override
+	public ActionApplier getEncryptionApplier() {
+		return this.encApplierFactory.get(this);
+	}
+
+	@Override
+	public ActionApplier getDecryptionApplier() {
+		return this.decApplierFactory.get(this);
 	}
 
 }

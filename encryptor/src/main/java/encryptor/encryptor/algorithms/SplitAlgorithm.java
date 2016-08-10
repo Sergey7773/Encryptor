@@ -25,6 +25,7 @@ import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
 import encryptor.encryptor.algorithms.appliers.ApplierFactory;
+import encryptor.encryptor.algorithms.appliers.AppliersClassLoader;
 import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
 import encryptor.encryptor.algorithms.appliers.SplitDecryptionApplier;
 import encryptor.encryptor.algorithms.appliers.SplitEncryptionApplier;
@@ -40,10 +41,11 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 
 	@Inject
 	public SplitAlgorithm(
-			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn,
+			@Named("encryptionApplierFactory")String encApplierClassName,
+			@Named("decryptionApplierFactory")String decApplierClassName,
+			ClassLoader classLoader,
 			EncryptionAlgorithm nested) {
-		super(encAppliercn,decAppliercn);
+		super(encApplierClassName,decApplierClassName,classLoader);
 		this.nestedAlgorithm = nested;
 	}
 
@@ -52,7 +54,8 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	}
 
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
-		super(SplitEncryptionApplier.class.getName(),SplitDecryptionApplier.class.getName());
+		super(SplitEncryptionApplier.class.getName(),SplitDecryptionApplier.class.getName(),
+				new AppliersClassLoader(AppliersClassLoader.class.getClassLoader()));
 		this.nestedAlgorithm = nested;
 	}
 
@@ -93,6 +96,16 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	 */
 	public Key generateKey() {
 		return new CompositeKey(nestedAlgorithm.generateKey(), nestedAlgorithm.generateKey());
+	}
+
+	@Override
+	public ActionApplier getEncryptionApplier() {
+		return this.encApplierFactory.get(nestedAlgorithm);
+	}
+
+	@Override
+	public ActionApplier getDecryptionApplier() {
+		return this.decApplierFactory.get(nestedAlgorithm);
 	}
 
 }

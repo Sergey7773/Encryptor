@@ -15,9 +15,10 @@ public class SimulationEncryptionAlgorithm extends EncryptionAlgorithm{
 
 	@Inject
 	public SimulationEncryptionAlgorithm(
-			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn) {
-		super(encAppliercn,decAppliercn);
+			@Named("encryptionApplierFactory")String encApplierClassName,
+			@Named("decryptionApplierFactory")String decApplierClassName,
+			ClassLoader classLoader) {
+		super(encApplierClassName,decApplierClassName,classLoader);
 	}
 	
 	public SimulationEncryptionAlgorithm() {
@@ -42,6 +43,18 @@ public class SimulationEncryptionAlgorithm extends EncryptionAlgorithm{
 	@Override
 	public Key generateKey() {
 		return SingleValueKey.generate();
+	}
+
+	@Override
+	public ActionApplier getEncryptionApplier() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ActionApplier getDecryptionApplier() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -33,10 +33,11 @@ public class ReverseAlgorithm extends EncryptionAlgorithm {
 	
 	@Inject
 	public ReverseAlgorithm(
-			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn,
+			@Named("encryptionApplierFactory")String encApplierClassName,
+			@Named("decryptionApplierFactory")String decApplierClassName,
+			ClassLoader classLoader,
 			EncryptionAlgorithm nested) {
-		super(encAppliercn,decAppliercn);
+		super(encApplierClassName,decApplierClassName,classLoader);
 		this.nestedAlgorithm = nested;
 	}
 	
@@ -71,5 +72,15 @@ public class ReverseAlgorithm extends EncryptionAlgorithm {
 	 */
 	public Key generateKey() {
 		return nestedAlgorithm.generateKey();
+	}
+
+	@Override
+	public ActionApplier getEncryptionApplier() {
+		return nestedAlgorithm.getDecryptionApplier();
+	}
+
+	@Override
+	public ActionApplier getDecryptionApplier() {
+		return nestedAlgorithm.getEncryptionApplier();
 	}
 }

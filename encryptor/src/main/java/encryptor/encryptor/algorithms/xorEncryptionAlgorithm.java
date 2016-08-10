@@ -20,9 +20,10 @@ public class XorEncryptionAlgorithm extends EncryptionAlgorithm {
 
 	@Inject
 	public XorEncryptionAlgorithm(
-			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn) {
-		super(encAppliercn,decAppliercn);
+			@Named("encryptionApplierFactory")String encApplierClassName,
+			@Named("decryptionApplierFactory")String decApplierClassName,
+			ClassLoader classLoader) {
+		super(encApplierClassName,decApplierClassName,classLoader);
 	}
 	
 	public XorEncryptionAlgorithm() {
@@ -61,6 +62,16 @@ public class XorEncryptionAlgorithm extends EncryptionAlgorithm {
 	 */
 	public Key generateKey() {
 		return SingleValueKey.generate();
+	}
+
+	@Override
+	public ActionApplier getEncryptionApplier() {
+		return this.encApplierFactory.get(this);
+	}
+
+	@Override
+	public ActionApplier getDecryptionApplier() {
+		return this.decApplierFactory.get(this);
 	}
 
 }

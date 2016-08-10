@@ -54,12 +54,14 @@ public abstract class EncryptionAlgorithm {
 	 */
 	public abstract Key generateKey();
 	
+	public abstract ActionApplier getEncryptionApplier();
+	public abstract ActionApplier getDecryptionApplier();
+	
 	@XmlTransient
-	private ApplierFactory encApplierFactory;
+	protected ApplierFactory encApplierFactory;
 	@XmlTransient
-	private ApplierFactory decApplierFactory;
+	protected ApplierFactory decApplierFactory;
 	@XmlTransient
-	@Inject
 	private ClassLoader classLoader;
 	
 	
@@ -69,11 +71,13 @@ public abstract class EncryptionAlgorithm {
 	@Inject
 	public EncryptionAlgorithm(
 			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn){
+			@Named("decryptionApplierFactory")String decAppliercn,
+			ClassLoader classLoader){
 		encApplierClassName = encAppliercn;
 		decApplierClassName = decAppliercn;
+		this.classLoader = classLoader;
 		encApplierFactory = loadApplierFactory(encAppliercn);
-		decApplierFactory = loadApplierFactory(decAppliercn);
+		decApplierFactory = loadApplierFactory(decAppliercn);	
 	}
 	
 	public EncryptionAlgorithm() {
@@ -93,7 +97,7 @@ public abstract class EncryptionAlgorithm {
 	 * @throws IOException
 	 */
 	public void decrypt(InputStream is,OutputStream os, Key key) throws IOException {
-		doAction(is, os,decApplierFactory.get(this), key);
+		doAction(is, os,getDecryptionApplier(), key);
 	}
 	
 	/**
@@ -105,7 +109,7 @@ public abstract class EncryptionAlgorithm {
 	 * @throws IOException
 	 */
 	public void encrypt(InputStream is,OutputStream os,Key key) throws IOException {
-		doAction(is, os, encApplierFactory.get(this), key);
+		doAction(is, os, getEncryptionApplier(), key);
 	}
 	
 	/**

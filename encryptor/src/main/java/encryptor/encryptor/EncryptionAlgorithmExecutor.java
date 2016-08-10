@@ -303,11 +303,11 @@ public class EncryptionAlgorithmExecutor {
 			String inputFilepath, String outputFilepath, Key key) {
 		Report report = null;
 		try {
-			@Cleanup FileInputStream fis = new FileInputStream(new File(inputFilepath));
-			@Cleanup FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
 			
 			LoggingUtils.writeActionStart(getClass().getName(), actionType, inputFilepath);
 			Stopwatch sw = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
+			@Cleanup FileInputStream fis = new FileInputStream(new File(inputFilepath));
+			@Cleanup FileOutputStream fos = new FileOutputStream(new File(outputFilepath));
 			
 			sw.start();
 			if(actionType.equals(Action.ENCRYPT)) {
