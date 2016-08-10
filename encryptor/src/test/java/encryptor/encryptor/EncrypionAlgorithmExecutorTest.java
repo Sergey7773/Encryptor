@@ -220,12 +220,12 @@ public class EncrypionAlgorithmExecutorTest {
 		userOutput.close();
 	}
 
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsEncryptedFileWithCorrectAppendixWhenSync() throws IOException {
 		createsEncryptedFileWithCorrectAppendix(new SyncEncryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsEncryptedFileWithCorrectAppendixWhenASync() throws IOException {
 		createsEncryptedFileWithCorrectAppendix(new AsyncEncryptionFunction());
 	}
@@ -242,12 +242,12 @@ public class EncrypionAlgorithmExecutorTest {
 		assertTrue(decrypted.exists());
 	}
 
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsDecryptedFileWithCorrectAppendixWhenAsync() throws IOException {
 		createsDecryptedFileWithCorrectAppendix(new AsyncEncryptionFunction(), new AsyncDecryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsDecryptedFileWithCorrectAppendixWhenSync() throws IOException {
 		createsDecryptedFileWithCorrectAppendix(new SyncEncryptionFunction(), new SyncDecryptionFunction());
 	}
@@ -261,12 +261,12 @@ public class EncrypionAlgorithmExecutorTest {
 		assertTrue(encryptedDir.exists());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void whenEncryptionFolderCreatesSubFolderWithCorrectNameWhenSync() throws IOException {
 		whenEncryptionFolderCreatesSubFolderWithCorrectName(new SyncEncryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void whenEncryptionFolderCreatesSubFolderWithCorrectNameWhenASync() throws IOException {
 		whenEncryptionFolderCreatesSubFolderWithCorrectName(new AsyncEncryptionFunction());
 	}
@@ -283,13 +283,13 @@ public class EncrypionAlgorithmExecutorTest {
 		assertTrue(new File(targetDir.getPath()+"\\decrypted").exists());
 	}
 
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void whenDecryptionFolderCreatesSubFolderWithCorrectNameInParentDirectoryWhenSync() throws IOException {
 		whenDecryptionFolderCreatesSubFolderWithCorrectNameInParentDirectory(new SyncDecryptionFunction());
 
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void whenDecryptionFolderCreatesSubFolderWithCorrectNameInParentDirectoryWhenAsync() throws IOException {
 		whenDecryptionFolderCreatesSubFolderWithCorrectNameInParentDirectory(new AsyncDecryptionFunction());
 
@@ -310,12 +310,12 @@ public class EncrypionAlgorithmExecutorTest {
 		}
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void everyFileIsEncryptedWhenEncryptingFolderWhenSync() throws IOException {
 		everyFileIsEncryptedWhenEncryptingFolder(new SyncEncryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void everyFileIsEncryptedWhenEncryptingFolderWhenAsync() throws IOException {
 		everyFileIsEncryptedWhenEncryptingFolder(new AsyncEncryptionFunction());
 	}
@@ -337,12 +337,12 @@ public class EncrypionAlgorithmExecutorTest {
 		}
 	}
 
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void everyFileIsDecryptedWhenDecryptingFolderWhenSync() throws IOException {
 		everyFileIsDecryptedWhenDecryptingFolder(new SyncDecryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void everyFileIsDecryptedWhenDecryptingFolderWhenAsync() throws IOException {
 		everyFileIsDecryptedWhenDecryptingFolder(new AsyncDecryptionFunction());
 	}
@@ -355,12 +355,12 @@ public class EncrypionAlgorithmExecutorTest {
 		assertTrue(new File(targetDir.getPath()+"/key.bin").exists());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsKeyFileInEncryptedFolderWhenSync() throws IOException {
 		createsKeyFileInEncryptedFolder(new SyncEncryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsKeyFileInEncryptedFolderWhenAsync() throws IOException {
 		createsKeyFileInEncryptedFolder(new AsyncEncryptionFunction());
 	}
@@ -373,12 +373,12 @@ public class EncrypionAlgorithmExecutorTest {
 		assertTrue(new File(targetDir.getPath()+"/reports.xml").exists());
 	}
 
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsReportsFileInEncryptedFolderWhenSync() throws IOException {
 		createsReportsFileInEncryptedFolder(new SyncEncryptionFunction());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 10000)
 	public void createsReportsFileInEncryptedFolderWhenAsync() throws IOException {
 		createsReportsFileInEncryptedFolder(new AsyncEncryptionFunction());
 	}
