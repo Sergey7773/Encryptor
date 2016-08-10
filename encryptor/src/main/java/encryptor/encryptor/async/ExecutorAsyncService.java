@@ -44,7 +44,7 @@ public class ExecutorAsyncService<T,S> {
 	public void execute(
 			Collection<S> initialReadJobs,
 			WriteJobFactory<T, S> writeJobFactory,
-			WriteJobPerformerFactory<S, T> performerFactory) throws FileNotFoundException {
+			WriteJobPerformerFactory<S, T> performerFactory)  {
 		readJobsQueue = new ArrayBlockingQueue<S>(JOB_QUEUE_SIZE);
 		readJobsQueue.addAll(initialReadJobs);
 		tasksToFinish =	new AtomicInteger(initialReadJobs.size());
