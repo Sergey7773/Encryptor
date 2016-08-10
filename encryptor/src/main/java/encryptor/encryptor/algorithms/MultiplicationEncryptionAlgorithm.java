@@ -1,6 +1,5 @@
 package encryptor.encryptor.algorithms;
 
-import java.util.Arrays;
 import java.util.function.Predicate;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,10 +10,8 @@ import lombok.ToString;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
-import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement

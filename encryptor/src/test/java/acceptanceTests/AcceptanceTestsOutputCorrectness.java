@@ -1,6 +1,6 @@
 package acceptanceTests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,12 +9,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -25,7 +21,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
 import dependencyInjection.DefaultEncryptionAlgorithmExecutorModule;
-import encryptor.encryptor.ConsolelUserDialogHandler;
 import encryptor.encryptor.EncryptionAlgorithmExecutor;
 import encryptor.encryptor.EncryptorApplication;
 import encryptor.encryptor.interfaces.UserDialogHandler;

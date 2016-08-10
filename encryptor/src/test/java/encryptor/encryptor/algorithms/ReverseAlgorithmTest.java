@@ -1,14 +1,12 @@
 package encryptor.encryptor.algorithms;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import encryptor.encryptor.SingleValueKey;
-import encryptor.encryptor.algorithms.EncryptionAlgorithm;
-import encryptor.encryptor.algorithms.ReverseAlgorithm;
 import encryptor.encryptor.interfaces.Key;
 
 public class ReverseAlgorithmTest {

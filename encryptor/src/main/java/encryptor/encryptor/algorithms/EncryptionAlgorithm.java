@@ -3,10 +3,7 @@ package encryptor.encryptor.algorithms;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
-import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -18,7 +15,6 @@ import com.google.inject.name.Named;
 
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
 import encryptor.encryptor.algorithms.appliers.ApplierFactory;
-import encryptor.encryptor.algorithms.appliers.AppliersClassLoader;
 import encryptor.encryptor.algorithms.appliers.DecryptionApplier;
 import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
 import encryptor.encryptor.interfaces.Key;

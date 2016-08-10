@@ -2,8 +2,6 @@ package dependencyInjection;
 
 import java.time.Clock;
 
-import org.apache.log4j.Logger;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 

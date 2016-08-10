@@ -1,14 +1,5 @@
 package encryptor.encryptor.algorithms;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -16,17 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import dependencyInjection.DefaultEncryptionAlgorithmModule;
 import encryptor.encryptor.CompositeKey;
-import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
-import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.algorithms.appliers.AppliersClassLoader;
-import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
 import encryptor.encryptor.algorithms.appliers.SplitDecryptionApplier;
 import encryptor.encryptor.algorithms.appliers.SplitEncryptionApplier;
 import encryptor.encryptor.interfaces.Key;

@@ -1,7 +1,5 @@
 package encryptor.encryptor;
 
-import lombok.NonNull;
-
 import org.apache.log4j.Logger;
 
 public class LoggingUtils {

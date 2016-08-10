@@ -1,6 +1,5 @@
 package encryptor.encryptor.algorithms;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -12,7 +11,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
-import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement

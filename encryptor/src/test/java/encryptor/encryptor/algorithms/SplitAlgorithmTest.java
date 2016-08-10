@@ -1,26 +1,22 @@
 package encryptor.encryptor.algorithms;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import encryptor.encryptor.CompositeKey;
 import encryptor.encryptor.SingleValueKey;
-import encryptor.encryptor.interfaces.Key;
 
 public class SplitAlgorithmTest {
 	private SplitAlgorithm $;

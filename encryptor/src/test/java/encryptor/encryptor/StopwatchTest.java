@@ -1,6 +1,6 @@
 package encryptor.encryptor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.time.Clock;
 import java.time.Instant;

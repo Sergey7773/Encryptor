@@ -10,7 +10,6 @@ import com.google.inject.name.Named;
 
 import encryptor.encryptor.SingleValueKey;
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
-import encryptor.encryptor.algorithms.appliers.ApplierFactory;
 import encryptor.encryptor.interfaces.Key;
 
 @XmlRootElement

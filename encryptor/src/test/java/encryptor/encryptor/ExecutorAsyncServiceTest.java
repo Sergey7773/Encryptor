@@ -1,6 +1,6 @@
 package encryptor.encryptor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;

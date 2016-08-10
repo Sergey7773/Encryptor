@@ -11,21 +11,18 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-
-
-
 import lombok.Cleanup;
 import lombok.NonNull;
+import reports.FailureReport;
+import reports.Report;
+import reports.Reports;
+import reports.SuccessReport;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import dependencyInjection.DefaultStopwatchModule;
-import reports.FailureReport;
-import reports.Report;
-import reports.Reports;
-import reports.SuccessReport;
 import encryptor.encryptor.algorithms.EncryptionAlgorithm;
 import encryptor.encryptor.async.AsyncJob;
 import encryptor.encryptor.async.ExecutorAsyncService;

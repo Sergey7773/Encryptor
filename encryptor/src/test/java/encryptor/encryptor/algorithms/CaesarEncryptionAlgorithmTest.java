@@ -1,14 +1,11 @@
 package encryptor.encryptor.algorithms;
 
-import static org.junit.Assert.*;
-
-import java.util.Random;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import encryptor.encryptor.SingleValueKey;
-import encryptor.encryptor.algorithms.CaesarEncryptionAlgorithm;
 
 public class CaesarEncryptionAlgorithmTest {
 	
