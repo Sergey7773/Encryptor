@@ -36,6 +36,7 @@ public class EncryptorApplicationTest {
 	private EncryptorApplication $;
 	private List<String> output;
 	private List<String> input;
+	private List<String> errors;
 	
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
@@ -61,6 +62,12 @@ public class EncryptorApplicationTest {
 			public String readLine() {
 				return input.remove(0);
 			}
+
+			@Override
+			public void writeError(String line) {
+				errors.add(line);
+				
+			}
 		};
 		
 		Injector injector = Guice.createInjector(new AbstractModule() {
@@ -77,6 +84,7 @@ public class EncryptorApplicationTest {
 		
 		input = new ArrayList<String>();
 		output = new ArrayList<String>();
+		errors = new ArrayList<String>();
 		
 		folder.create();
 	}
@@ -86,17 +94,21 @@ public class EncryptorApplicationTest {
 		folder.delete();
 	}
 	
-	@Test
+	@Test (expected = IllegalArgumentException.class)
 	public void printsErrorMessageWhenUsingWrongActionType() throws ClassNotFoundException, IOException {
 		input.add("not ENC or DEC");
 		$.run();
-		assertFalse(output.size()==0);
-		assertEquals(EncryptorApplication.BAD_PARAMS_STRING,output.get(1));
+		assertFalse(errors.size()==0);
+		assertEquals(EncryptorApplication.BAD_PARAMS_STRING,errors.get(0));
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void printsErrorMessageWhenUsingWrongActionType2() throws ClassNotFoundException, IOException {
 		
 		input.add("152");
 		$.run();
-		assertFalse(output.size()==0);
-		assertEquals(EncryptorApplication.BAD_PARAMS_STRING,output.get(1));
+		assertFalse(errors.size()==0);
+		assertEquals(EncryptorApplication.BAD_PARAMS_STRING,errors.get(1));
 	}
 	
 	@Test 
@@ -104,13 +116,11 @@ public class EncryptorApplicationTest {
 		
 		File tmpFile = folder.newFile();
 		Mockito.doNothing().when(mockExecutor).executeEncyption(Mockito.any(),Mockito.any());
-		input.addAll(Arrays.asList("ENC","not a file","C:\\not a file",tmpFile.getPath(),"y","n"));
+		input.addAll(Arrays.asList("ENC","not a file","C:\\not a file",tmpFile.getPath(),"y","n","n"));
 		$.run();
 		
-		
-		
-		assertEquals(EncryptorApplication.BAD_FILE,output.get(2));
-		assertEquals(EncryptorApplication.BAD_FILE,output.get(3));
+		assertEquals(EncryptorApplication.BAD_FILE,errors.get(0));
+		assertEquals(EncryptorApplication.BAD_FILE,errors.get(1));
 		
 	}
 	
@@ -124,7 +134,7 @@ public class EncryptorApplicationTest {
 		oos.writeObject(key);
 		oos.close();
 		
-		input.addAll(Arrays.asList("DEC",tmpKeyFile.getPath(),tmpFile.getPath(),"y","n"));
+		input.addAll(Arrays.asList("DEC",tmpKeyFile.getPath(),tmpFile.getPath(),"y","n","n"));
 		
 		$.run();
 		
@@ -135,7 +145,7 @@ public class EncryptorApplicationTest {
 	public void unmarshallsAlgorithmConfigurationFileIfChoseToLoadLastSavedAlgorithm() 
 			throws IOException, ClassNotFoundException {
 		File tmpFile = folder.newFile();
-		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"y","n"));
+		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"y","n","n"));
 		
 		$.run();
 		
@@ -147,7 +157,7 @@ public class EncryptorApplicationTest {
 	public void readsFromDifferentAlgorithmConfigurationFileIfRequested() throws IOException, ClassNotFoundException {
 		File tmpFile = folder.newFile();
 		File algFile = folder.newFile();
-		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"n","y",algFile.getPath(),"n"));
+		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"n","y",algFile.getPath(),"n","n"));
 		
 		$.run();
 		
@@ -157,7 +167,7 @@ public class EncryptorApplicationTest {
 	@Test
 	public void promptsToEnterAlgorithmIfNotLoadingFromFile() throws IOException, ClassNotFoundException {
 		File tmpFile = folder.newFile();
-		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"n","n","0","n","n"));
+		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"n","n","0","n","n","n"));
 		
 		$.run();
 		
@@ -167,7 +177,7 @@ public class EncryptorApplicationTest {
 	@Test
 	public void suggestToSaveNewlyEnteredAlgorithm() throws IOException, ClassNotFoundException {
 		File tmpFile = folder.newFile();
-		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"n","n","0","n","n"));
+		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"n","n","0","n","n","n"));
 		
 		$.run();
 		
@@ -177,7 +187,7 @@ public class EncryptorApplicationTest {
 	@Test
 	public void usesSyncronousFunctionsWhenRequested() throws IOException, ClassNotFoundException {
 		File tmpFile = folder.newFile();
-		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"y","n"));
+		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"y","n","n","n"));
 		EncryptionAlgorithm mockAlg = Mockito.mock(EncryptionAlgorithm.class);
 		Mockito.doReturn(mockAlg).when(mockParser).unmarshallEncryptionAlgorithm(Mockito.anyString());
 		$.run();
@@ -190,16 +200,17 @@ public class EncryptorApplicationTest {
 		oos.close();
 		
 		input.clear();
-		input.addAll(Arrays.asList("DEC",tmpKeyFile.getPath(),tmpFile.getPath(),"y","n"));
+		input.addAll(Arrays.asList("DEC",tmpKeyFile.getPath(),tmpFile.getPath(),"y","n","n"));
 		$.run();
 		
-		Mockito.verify(mockExecutor).executeDecryption(Mockito.eq(mockAlg), Mockito.eq(tmpFile), Mockito.eq(key));
+		Mockito.verify(mockExecutor).executeDecryption(Mockito.eq(mockAlg),
+				Mockito.eq(tmpFile), Mockito.eq(key));
 	}
 	
 	@Test
 	public void usesAsynchronousFunctionsWhenRequested() throws IOException, ClassNotFoundException {
 		File tmpFile = folder.newFile();
-		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"y","y"));
+		input.addAll(Arrays.asList("ENC",tmpFile.getPath(),"y","y","n"));
 		EncryptionAlgorithm mockAlg = Mockito.mock(EncryptionAlgorithm.class);
 		Mockito.doReturn(mockAlg).when(mockParser).unmarshallEncryptionAlgorithm(Mockito.anyString());
 		$.run();
@@ -212,10 +223,11 @@ public class EncryptorApplicationTest {
 		oos.close();
 		
 		input.clear();
-		input.addAll(Arrays.asList("DEC",tmpKeyFile.getPath(),tmpFile.getPath(),"y","y"));
+		input.addAll(Arrays.asList("DEC",tmpKeyFile.getPath(),tmpFile.getPath(),"y","y","n"));
 		$.run();
 		
-		Mockito.verify(mockExecutor).executeDecryptionAsync(Mockito.eq(mockAlg), Mockito.eq(tmpFile), Mockito.eq(key));
+		Mockito.verify(mockExecutor).executeDecryptionAsync(Mockito.eq(mockAlg), 
+				Mockito.eq(tmpFile), Mockito.eq(key));
 	}
 	
 	@Test
@@ -229,11 +241,11 @@ public class EncryptorApplicationTest {
 		oos.close();
 		
 		input.addAll(Arrays.asList(
-				"DEC","not a file","15","C:\\noFile",tmpKeyFile.getPath(),tmpFile.getPath(),"y","n"));
+				"DEC","not a file","15","C:\\noFile",tmpKeyFile.getPath(),tmpFile.getPath(),"y","n","n"));
 		
 		$.run();
-		for(int i=2;i<5;i++)
-			assertEquals(EncryptorApplication.BAD_FILE,output.get(i));
-		assertEquals(String.format(EncryptorApplication.FILEPATH_REQUEST_STRING,"decrypt"),output.get(5));
+		for(int i=0;i<3;i++)
+			assertEquals(EncryptorApplication.BAD_FILE,errors.get(i));
+		assertEquals(String.format(EncryptorApplication.FILEPATH_REQUEST_STRING,"decrypt"),output.get(2));
 	}
 }

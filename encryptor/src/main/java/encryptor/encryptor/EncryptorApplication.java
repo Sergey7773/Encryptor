@@ -104,7 +104,8 @@ public class EncryptorApplication {
 					} 
 				}
 			}
-			dialogHandler.writeLine(alg.toString());
+			if(alg!=null)
+				dialogHandler.writeLine(alg.toString());
 			dialogHandler.writeLine(ASYNC_MODE_OPTION);
 			if(parseYesNoAnswer()) {
 				if(action.equals(Action.ENCRYPT))
@@ -121,16 +122,9 @@ public class EncryptorApplication {
 		} while(parseYesNoAnswer());
 	}
 
-
-	private void onBadParams() {
-		//dialogHandler.writeLine(BAD_PARAMS_STRING);
-		System.err.println(BAD_PARAMS_STRING);
-		//throw new IllegalArgumentException();
-	}
-
 	private void onBadFile() {
-		//dialogHandler.writeLine(BAD_FILE);
-		System.err.println(BAD_FILE);
+		dialogHandler.writeError(BAD_FILE);
+		//System.err.println(BAD_FILE);
 	}
 
 	private Action parseActionParam(String action) {
@@ -138,8 +132,8 @@ public class EncryptorApplication {
 		toCompare = toCompare.replace("\r", "");
 		if(toCompare.equals(decryptionAction)) return Action.DECRYPT;
 		else if(toCompare.equals(encryptionAction)) return Action.ENCRYPT;
-		onBadParams();  //exit
-		return null;
+		dialogHandler.writeError(BAD_PARAMS_STRING);
+		throw new IllegalArgumentException(BAD_PARAMS_STRING);
 	}
 
 	private File parseFilepathFromCMD() {
@@ -153,8 +147,10 @@ public class EncryptorApplication {
 
 	private boolean parseYesNoAnswer() {
 		String response = dialogHandler.readLine();
-		if(!response.equals("y") && !response.equals("n"))
-			throw new IllegalArgumentException();
+		if(!response.equals("y") && !response.equals("n")) {
+			dialogHandler.writeError("answer must be 'y' or 'n'");
+			throw new IllegalArgumentException("answer must be 'y' or 'n'");
+		}
 		return response.equals("y");
 	}
 

@@ -65,6 +65,11 @@ public class AcceptanceTestsOutputCorrectness {
 				index+=1;
 				return providedInput.get(index-1);
 			}
+
+			@Override
+			public void writeError(String line) {
+				
+			}
 		};
 	}
 	

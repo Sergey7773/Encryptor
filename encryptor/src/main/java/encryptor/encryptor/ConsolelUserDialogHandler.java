@@ -59,4 +59,14 @@ public class ConsolelUserDialogHandler implements UserDialogHandler {
 		this.writeLine(String.format(line, args));
 	}
 
+	@Override
+	public void writeError(String line) {
+		if(System.console()==null) {
+			System.err.println(line);
+		} else {
+			System.console().format(line);
+		}
+		
+	}
+
 }
