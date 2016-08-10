@@ -3,6 +3,8 @@ package encryptor.encryptor.algorithms;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,10 +28,30 @@ import encryptor.encryptor.interfaces.Key;
 @ToString(exclude = {"encApplierFactory","decApplierFactory"})
 public abstract class EncryptionAlgorithm {
 	
-	
+	/**
+	 * encrypts a single byte with the given key, if the key is legal, and returns the result.
+	 * @param value
+	 * @param key
+	 * @return
+	 */
 	public abstract byte encrypt(byte value, Key key);
+	/**
+	 * decrypts a single byte with the given key, if the key is legal, and returns the result.
+	 * @param value
+	 * @param key
+	 * @return
+	 */
 	public abstract byte decrypt(byte value, Key key);
+	/**
+	 * 
+	 * @param key
+	 * @return true if the key is legal for this algoritm and false otherwise
+	 */
 	public abstract boolean isValidKey(Key key);
+	/**
+	 * 
+	 * @return a Key which is legal for this algorithm.
+	 */
 	public abstract Key generateKey();
 	
 	@XmlElement
@@ -50,14 +72,39 @@ public abstract class EncryptionAlgorithm {
 		this.decApplierFactory = decryptionApplierFactory;
 	}
 	
+	/**
+	 * reads from the given InputStream as long as possible, and decrypts every byte in the stream
+	 * by calling the decrypt(byte value,Key key) function.
+	 * @param is
+	 * @param os
+	 * @param key
+	 * @throws IOException
+	 */
 	public void decrypt(InputStream is,OutputStream os, Key key) throws IOException {
 		doAction(is, os,decApplierFactory.get(this), key);
 	}
 	
+	/**
+	 * reads from the given InputStream as long as possible, and encrypts every byte in the stream
+	 * by calling the encrypts(byte value,Key key) function.
+	 * @param is
+	 * @param os
+	 * @param key
+	 * @throws IOException
+	 */
 	public void encrypt(InputStream is,OutputStream os,Key key) throws IOException {
 		doAction(is, os, encApplierFactory.get(this), key);
 	}
 	
+	/**
+	 * reads from the given InputStream and writes to the OutputStream, while applying the ActionApplier function
+	 * on each byte.
+	 * @param is
+	 * @param os
+	 * @param function
+	 * @param key
+	 * @throws IOException
+	 */
 	private void doAction(InputStream is,OutputStream os,ActionApplier function,Key key) throws IOException {
 		byte plain[] = new byte[500];
 		byte cyphered[] = new byte[500];

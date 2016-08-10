@@ -28,21 +28,33 @@ public class CaesarEncryptionAlgorithm extends EncryptionAlgorithm {
 	}
 	
 	
+	/**
+	 * adds the value of the key to the byte (with overflow) and returns the result.
+	 */
 	public byte encrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();
 		return (byte)(value+valueOfKey);
 	}
-
+	
+	/**
+	 * substracts the value of the key to the byte (with overflow) and returns the result.
+	 */
 	public byte decrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();
 		return (byte)(value-valueOfKey);
 	}
 
+	/**
+	 * returns true if the given key is of type SingleValueKey
+	 */
 	public boolean isValidKey(Key key) {
-		return true;
+		return (key instanceof SingleValueKey);
 	}
 
 	@Override
+	/**
+	 * returns a new SingleValueKey
+	 */
 	public Key generateKey() {
 		return SingleValueKey.generate();
 	}

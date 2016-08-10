@@ -27,11 +27,17 @@ public class XorEncryptionAlgorithm extends EncryptionAlgorithm {
 	public XorEncryptionAlgorithm() {
 	}
 
+	/**
+	 * performs xor operation between value and the value of the key, and returns the result
+	 */
 	public byte encrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();
 		return xor(value,valueOfKey);
 	}
 
+	/**
+	 * performs xor operation between value and the value of the key, and returns the result
+	 */
 	public byte decrypt(byte value, Key key) {
 		byte valueOfKey = ((SingleValueKey)key).getValue();
 		return xor(value,valueOfKey);
@@ -41,11 +47,17 @@ public class XorEncryptionAlgorithm extends EncryptionAlgorithm {
 		return (byte) (val1 ^ val2);
 	}
 
+	/**
+	 * returns true if the given key is of type SingleValueKey and false otherwise
+	 */
 	public boolean isValidKey(Key key) {
-		return true;
+		return (key instanceof SingleValueKey);
 	}
 
 	@Override
+	/**
+	 * generates a SingleValueKey with a random value
+	 */
 	public Key generateKey() {
 		return SingleValueKey.generate();
 	}

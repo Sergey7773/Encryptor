@@ -110,10 +110,30 @@ public class SplitAlgorithmTest {
 	@Test
 	public void propagatesKeyValidityFromNestedAlgorithm() {
 		assertTrue($.isValidKey(testKey));
-		Mockito.verify(nestedAlgorithm).isValidKey(testKey);
-		Mockito.doReturn(false).when(nestedAlgorithm).isValidKey(Mockito.any());
+		Mockito.verify(nestedAlgorithm).isValidKey(firstSubKey);
+		Mockito.verify(nestedAlgorithm).isValidKey(secondSubKey);
+	}
+	
+	@Test
+	public void keyIsValidWhenBothSubKeysAreValidAccordingToNestedAlg() {
+		Mockito.doReturn(true).when(nestedAlgorithm).isValidKey(firstSubKey);
+		Mockito.doReturn(true).when(nestedAlgorithm).isValidKey(secondSubKey);
+		assertTrue($.isValidKey(testKey));
+	}
+	
+	@Test
+	public void keyIsInvalidWhenOneOfSubKeysIsInvalid() {
+		Mockito.doReturn(false).when(nestedAlgorithm).isValidKey(firstSubKey);
+		Mockito.doReturn(true).when(nestedAlgorithm).isValidKey(secondSubKey);
 		assertFalse($.isValidKey(testKey));
-		Mockito.verify(nestedAlgorithm, Mockito.times(2)).isValidKey(testKey);
+		
+		Mockito.doReturn(true).when(nestedAlgorithm).isValidKey(firstSubKey);
+		Mockito.doReturn(false).when(nestedAlgorithm).isValidKey(secondSubKey);
+		assertFalse($.isValidKey(testKey));
+		
+		Mockito.doReturn(false).when(nestedAlgorithm).isValidKey(firstSubKey);
+		Mockito.doReturn(false).when(nestedAlgorithm).isValidKey(secondSubKey);
+		assertFalse($.isValidKey(testKey));
 	}
 	
 	

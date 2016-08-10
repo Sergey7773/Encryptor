@@ -58,21 +58,40 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	}
 
 	@Override
+	/**
+	 * if the byte has an even index in the stream which we read, we will apply the encryption
+	 * function of the nested algorithm with the first sub key, otherwise we will apply the encryption
+	 * function with the second sub key
+	 */
 	public byte encrypt(byte value, Key key) {
 		return nestedAlgorithm.encrypt(value, key);
 	}
 
 	@Override
+	/**
+	 * if the byte has an even index in the stream which we read, we will apply the decryption
+	 * function of the nested algorithm with the first sub key, otherwise we will apply the decryption
+	 * function with the second sub key
+	 */
 	public byte decrypt(byte value, Key key) {
 		return nestedAlgorithm.decrypt(value, key);
 	}
 
 	@Override
+	/**
+	 * returns true if the key is of type CompositeKey and both sub keys are 
+	 * valid according to the nested algorithm
+	 */
 	public boolean isValidKey(Key key) {
-		return nestedAlgorithm.isValidKey(key);
+		if(!(key instanceof CompositeKey)) return false;
+		CompositeKey ck = ((CompositeKey)key);
+		return nestedAlgorithm.isValidKey(ck.getFirstKey()) && nestedAlgorithm.isValidKey(ck.getSecondKey());
 	}
 
 	@Override
+	/**
+	 * generates a composite key which consists of two sub keys which are valid according to the nested algorithm.
+	 */
 	public Key generateKey() {
 		return new CompositeKey(nestedAlgorithm.generateKey(), nestedAlgorithm.generateKey());
 	}
