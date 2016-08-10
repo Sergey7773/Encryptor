@@ -1,30 +1,39 @@
 package encryptor.encryptor;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
+import lombok.NonNull;
+
+import com.google.inject.Guice;
+
+import dependencyInjection.DefaultStopwatchModule;
+import encryptor.encryptor.interfaces.Observer;
 
 public class ActionObserver implements Observer {
 	
 	private String onActionStartMessage;
 	private String onActionEndMessage;
-	private Clock clock;
-	private Instant startingInstant;
+	private Stopwatch stopwatch;
 	
-	public ActionObserver(String onStartMessage, String onEndMessage, Clock measuringClock) {
+	public ActionObserver(@NonNull String onStartMessage,@NonNull String onEndMessage) {
 		this.onActionStartMessage = onStartMessage;
 		this.onActionEndMessage = onEndMessage;
-		clock = measuringClock;
+		stopwatch = Guice.createInjector(new DefaultStopwatchModule()).getInstance(Stopwatch.class);
 	}
 	
+	/**
+	 * prints the 'onStartMessage' which was passed as an argument to the constructor.
+	 */
 	public void onStart() {
 		System.out.println(onActionStartMessage);
-		startingInstant = clock.instant();
+		stopwatch.start();
 	}
 
+	/**
+	 * prints the 'onEndMessage' which was passed as an argument to the constructor, and the
+	 * time in seconds the action took.
+	 */
 	public void onEnd() {
 		System.out.println(onActionEndMessage);
 		System.out.println("The action took "+
-				Duration.between(clock.instant(), startingInstant).toMillis()/1000 + " seconds");
+				stopwatch.getElapsedTimeInSeconds() + " seconds");
 	}
 }

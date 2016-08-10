@@ -1,106 +1,154 @@
 package encryptor.encryptor.algorithms;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
-import encryptor.encryptor.ActionObserver;
-import encryptor.encryptor.Applier;
-import encryptor.encryptor.DecryptionApplier;
-import encryptor.encryptor.EncryptionApplier;
-import encryptor.encryptor.Key;
-import encryptor.encryptor.MillisClock;
-import encryptor.encryptor.Observer;
-import encryptor.encryptor.SingleValueKey;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
+import lombok.ToString;
+
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import encryptor.encryptor.algorithms.appliers.ActionApplier;
+import encryptor.encryptor.algorithms.appliers.ApplierFactory;
+import encryptor.encryptor.algorithms.appliers.DecryptionApplier;
+import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
+import encryptor.encryptor.interfaces.Key;
+
+@XmlRootElement
+@XmlType(name = "EncryptionAlgorithm")
+@ToString(exclude = {"encApplierFactory","decApplierFactory"})
 public abstract class EncryptionAlgorithm {
 	
-	private static final String ENCRYPTED_FORMAT = ".encrypted";
-	private static final String DECRYPTED_EXTENTION = "_decrypted";
+	/**
+	 * encrypts a single byte with the given key, if the key is legal, and returns the result.
+	 * @param value
+	 * @param key
+	 * @return
+	 */
+	public abstract byte encrypt(byte value, Key key);
+	/**
+	 * decrypts a single byte with the given key, if the key is legal, and returns the result.
+	 * @param value
+	 * @param key
+	 * @return
+	 */
+	public abstract byte decrypt(byte value, Key key);
+	/**
+	 * 
+	 * @param key
+	 * @return true if the key is legal for this algoritm and false otherwise
+	 */
+	public abstract boolean isValidKey(Key key);
+	/**
+	 * 
+	 * @return a Key which is legal for this algorithm.
+	 */
+	public abstract Key generateKey();
 	
-	protected List<Observer> encryptionObservers;
-	protected List<Observer> decryptionObservers;
+	public abstract ActionApplier getEncryptionApplier();
+	public abstract ActionApplier getDecryptionApplier();
+	
+	@XmlTransient
+	protected ApplierFactory encApplierFactory;
+	@XmlTransient
+	protected ApplierFactory decApplierFactory;
+	@XmlTransient
+	private ClassLoader classLoader;
+	
+	
+	private String encApplierClassName;
+	private String decApplierClassName;
+	
+	@Inject
+	public EncryptionAlgorithm(
+			@Named("encryptionApplierFactory")String encAppliercn,
+			@Named("decryptionApplierFactory")String decAppliercn,
+			ClassLoader classLoader){
+		encApplierClassName = encAppliercn;
+		decApplierClassName = decAppliercn;
+		this.classLoader = classLoader;
+		encApplierFactory = loadApplierFactory(encAppliercn);
+		decApplierFactory = loadApplierFactory(decAppliercn);	
+	}
 	
 	public EncryptionAlgorithm() {
-		encryptionObservers = new ArrayList<Observer>();
-		decryptionObservers = new ArrayList<Observer>();
-		
-		encryptionObservers.add(new ActionObserver("Encryption started.",
-				"Encryption ended.", new MillisClock()));
-		decryptionObservers.add(new ActionObserver("Decryption started",
-				"Decryption ended", new MillisClock()));
+		encApplierClassName = EncryptionApplier.class.getName();
+		decApplierClassName = DecryptionApplier.class.getName();
+		encApplierFactory = new ApplierFactory(EncryptionApplier.class);
+		decApplierFactory = new ApplierFactory(DecryptionApplier.class);
+	}
+
+	
+	/**
+	 * reads from the given InputStream as long as possible, and decrypts every byte in the stream
+	 * by calling the decrypt(byte value,Key key) function.
+	 * @param is
+	 * @param os
+	 * @param key
+	 * @throws IOException
+	 */
+	public void decrypt(InputStream is,OutputStream os, Key key) throws IOException {
+		doAction(is, os,getDecryptionApplier(), key);
 	}
 	
-	protected String appedEncryptedToFilename(File f) {
-		return f.getPath()+ENCRYPTED_FORMAT;
+	/**
+	 * reads from the given InputStream as long as possible, and encrypts every byte in the stream
+	 * by calling the encrypts(byte value,Key key) function.
+	 * @param is
+	 * @param os
+	 * @param key
+	 * @throws IOException
+	 */
+	public void encrypt(InputStream is,OutputStream os,Key key) throws IOException {
+		doAction(is, os, getEncryptionApplier(), key);
 	}
 	
-	private String appedDecryptedToFilename(File f) {
-		String $ = f.getPath();
-		$=$.replace(ENCRYPTED_FORMAT, "");
-		int lastDot = $.lastIndexOf('.');
-		if(lastDot==-1) return $+DECRYPTED_EXTENTION;
-		$=$.substring(0, lastDot)+DECRYPTED_EXTENTION+$.substring(lastDot, $.length());
-		return $;
-	}
-	
-	public void decrypt(File f, Key key) throws IOException {
-		File outputFile = new File(appedDecryptedToFilename(f));
-		notifyObserversOnStart(decryptionObservers);
-		doAction(f, outputFile, new DecryptionApplier(this, key));
-		notifyObserversOnEnd(decryptionObservers);
-	}
-	
-	public abstract byte encrypt(byte value, Key key);
-	public abstract byte decrypt(byte value, Key key);
-	public abstract boolean isValidKey(Key key);
-	
-	public void encrypt(File f) throws IOException {
-		SingleValueKey key = SingleValueKey.generate();
-		File keyFile = new File("key.bin");
-		if(!keyFile.exists()) {
-			keyFile.createNewFile();
+	/**
+	 * reads from the given InputStream and writes to the OutputStream, while applying the ActionApplier function
+	 * on each byte.
+	 * @param is
+	 * @param os
+	 * @param function
+	 * @param key
+	 * @throws IOException
+	 */
+	private void doAction(InputStream is,OutputStream os,ActionApplier function,Key key) throws IOException {
+		byte plain[] = new byte[500];
+		byte cyphered[] = new byte[500];
+		int read = 0;
+		while(is.available()>0) {
+			read = is.read(plain);
+			for(int i=0;i<500;i++)
+				cyphered[i]=function.apply(plain[i],key);
+			os.write(cyphered,0,read);
 		}
-		FileOutputStream fos = new FileOutputStream(keyFile);
-		ObjectOutputStream oos = new ObjectOutputStream(fos);
-		oos.writeObject(key);
-		oos.close();
-		
-		File outputFile = new File(appedEncryptedToFilename(f));
-		notifyObserversOnStart(encryptionObservers);
-		doAction(f, outputFile, new EncryptionApplier(this, key));
-		notifyObserversOnEnd(encryptionObservers);
+	}
+	public String getEncApplierClassName() {
+		return encApplierClassName;
+	}
+	public void setEncApplierClassName(String encApplierClassName) {
+		this.encApplierClassName = encApplierClassName;
+	}
+	public String getDecApplierClassName() {
+		return decApplierClassName;
+	}
+	public void setDecApplierClassName(String decApplierClassName) {
+		this.decApplierClassName = decApplierClassName;
 	}
 	
-	private void doAction(File f,File outputFile,Applier<Byte,Byte> function) throws IOException {
-		FileInputStream fis = new FileInputStream(f);
-		FileOutputStream fos = new FileOutputStream(outputFile);
-		
-		byte plain[] = new byte[1];
-		byte cyphered[] = new byte[1];
-		while(fis.available()>0) {
-			fis.read(plain);
-			cyphered[0]=function.apply(plain[0]);
-			fos.write(cyphered);
+	private ApplierFactory loadApplierFactory(String className) {
+		Class<ActionApplier> clz;
+		try {
+			clz = (Class<ActionApplier>)(classLoader.loadClass(className));
+			return new ApplierFactory(clz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
-		
-		fis.close();
-		fos.close();
-	}
-	
-	protected void notifyObserversOnStart(List<Observer> observers) {
-		for(Observer observer : observers) 
-			observer.onStart();
-	}
-	
-	protected void notifyObserversOnEnd(List<Observer> observers) {
-		for(Observer observer : observers) 
-			observer.onEnd();
+		return null;
 	}
 }
