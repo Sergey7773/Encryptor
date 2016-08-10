@@ -254,14 +254,24 @@ public class EncryptionAlgorithmExecutor {
 		ExecutorAsyncService<AsyncJob,Pair<File,FileInputStream>> service =
 				new ExecutorAsyncService<AsyncJob,Pair<File,FileInputStream>>();
 		List<Pair<File,FileInputStream>> initialReadJobs = new ArrayList<Pair<File,FileInputStream>>();
-		for(File f : filesInDir) initialReadJobs.add(new Pair<File,FileInputStream>(f, new FileInputStream(f)));
+		Reports reports = new Reports();
+		for(File f : filesInDir) {
+			try {
+				initialReadJobs.add(new Pair<File,FileInputStream>(f, new FileInputStream(f)));
+			} catch(Exception e) {
+				LoggingUtils.writeActionStart(getClass().getName(), actionType, f.getName());
+				reports.getReports().add(new FailureReport(f.getName(),e));
+				LoggingUtils.writeActionFinishedWithFailure(getClass().getName(), actionType, f.getName(), e);
+			}
+		}
 		service.execute(initialReadJobs,
 				new LoggedWriteJobFactory(fileActionTimers, actionType),
 				new LoggedWriteJobPerformerFactory(
 						fileActionTimers, algorithm, actionType, key, outputDir, reportsList));
-		Reports reports = new Reports();
 		reports.getReports().addAll(reportsList);
-		xmlParser.marshallReports(reports,inputDir.getParent()+"/reports.xml");
+		String reportsOutputDir = (actionType.equals(Action.ENCRYPT)) ? inputDir.getPath() : inputDir.getParent();
+		reportsOutputDir = reportsOutputDir +"/reports.xml";
+		xmlParser.marshallReports(reports,reportsOutputDir);
 	}
 
 	//Utility functions
