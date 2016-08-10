@@ -261,7 +261,7 @@ public class EncryptionAlgorithmExecutor {
 						fileActionTimers, algorithm, actionType, key, outputDir, reportsList));
 		Reports reports = new Reports();
 		reports.getReports().addAll(reportsList);
-		xmlParser.marshallReports(reports,inputDir.getPath()+"/reports.xml");
+		xmlParser.marshallReports(reports,inputDir.getParent()+"/reports.xml");
 	}
 
 	//Utility functions

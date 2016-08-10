@@ -155,51 +155,6 @@ public class EncryptorApplication {
 	}
 
 	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,
-			int depth,EncryptionAlgorithm parent) {
-		int index=Integer.parseInt(algorithmIndex);
-		if(index<0 || index>=algorithms.length) {
-			throw new IllegalArgumentException();
-		}
-		if(parent!=null)
-			dialogHandler.writeLine(parent.toString());
-		switch(index) {
-		case 0: return new CaesarEncryptionAlgorithm();
-		case 1: return new XorEncryptionAlgorithm();
-		case 2: return new MultiplicationEncryptionAlgorithm();
-		case 3: DoubleAlgorithm dAlg = new DoubleAlgorithm();
-		return parseBiArgAlgorithm(depth,dAlg);
-		case 4: ReverseAlgorithm rAlg = new ReverseAlgorithm();
-		parseSingleArgAlgorithm(index,depth,rAlg);
-		case 5:	SplitAlgorithm sAlg = new SplitAlgorithm(); 
-		return parseSingleArgAlgorithm(index,depth,sAlg);
-		default: return null;
-		}
-	}
-
-	private EncryptionAlgorithm parseBiArgAlgorithm(int depth,DoubleAlgorithm parent) {
-		dialogHandler.writeLine(parent.toString());
-		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the first algorithm.");
-		EncryptionAlgorithm first = parseAlgorithmSelection(dialogHandler.readLine(),depth+1,parent);
-		parent.setFirstAlgorithm(first);
-		dialogHandler.writeLine(parent.toString());
-		dialogHandler.writeLine("Depth: "+depth+". Please Enter the index of the second algorithm");
-		EncryptionAlgorithm second = parseAlgorithmSelection(dialogHandler.readLine(),depth+1,parent);
-		parent.setSecondAlgorithm(second);
-		return parent;
-	}
-
-	private EncryptionAlgorithm parseSingleArgAlgorithm(int index,int depth,EncryptionAlgorithm parent) {
-		dialogHandler.writeLine(parent.toString());
-		dialogHandler.writeLine("Depth: "+depth+". Please enter the index of the nested algorithm");
-		EncryptionAlgorithm nested = parseAlgorithmSelection(dialogHandler.readLine(),depth+1,parent);
-		switch(index) {
-		case 4: ((ReverseAlgorithm)parent).setNestedAlgorithm(nested);
-		case 5: ((SplitAlgorithm)parent).setNestedAlgorithm(nested);
-		}
-		return parent;
-	}
-
-	private EncryptionAlgorithm parseAlgorithmSelection(String algorithmIndex,
 			int depth) {
 		int index=Integer.parseInt(algorithmIndex);
 		if(index<0 || index>=algorithms.length) {
