@@ -69,53 +69,56 @@ public class EncryptorApplication {
 	 * @throws ClassNotFoundException
 	 */
 	public void run() throws IOException, ClassNotFoundException {
-		Key key = null;
-		EncryptionAlgorithm alg=null;
-		dialogHandler.writeLine(actionRequestString, encryptionAction, decryptionAction);
-		Action action = parseActionParam(dialogHandler.readLine());
-		if(action==null) return;
-		if(action.equals(Action.DECRYPT)) {
-			dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
-			File keyFile = parseFilepathFromCMD(); 			
-			key = readKeyFromFile(keyFile);
-		}
-
-		dialogHandler.writeLine(FILEPATH_REQUEST_STRING,
-				(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
-		File file = parseFilepathFromCMD();
-
-		dialogHandler.writeLine(LOAD_LAST_SAVED_OPTION);
-		if(parseYesNoAnswer()) {
-			alg = xmlParser.unmarshallEncryptionAlgorithm(
-					Main.class.getClassLoader().getResource("alg.xml").getPath());
-		} else {
-			dialogHandler.writeLine(IMPORT_FROM_FILE);
-			if(parseYesNoAnswer()) {
-				dialogHandler.writeLine(FILEPATH_FOR_CONF_FILE_PROMPT);
-				alg = xmlParser.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
-			} else {
-				dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING);
-				alg = parseAlgorithm();
-				dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
-				if(parseYesNoAnswer()) {
-					dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
-					xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
-				} 
+		do {
+			Key key = null;
+			EncryptionAlgorithm alg=null;
+			dialogHandler.writeLine(actionRequestString, encryptionAction, decryptionAction);
+			Action action = parseActionParam(dialogHandler.readLine());
+			if(action==null) return;
+			if(action.equals(Action.DECRYPT)) {
+				dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
+				File keyFile = parseFilepathFromCMD(); 			
+				key = readKeyFromFile(keyFile);
 			}
-		}
-		dialogHandler.writeLine(alg.toString());
-		dialogHandler.writeLine(ASYNC_MODE_OPTION);
-		if(parseYesNoAnswer()) {
-			if(action.equals(Action.ENCRYPT))
-				executor.executeEncryptionAsync(alg, file);
-			else
-				executor.executeDecryptionAsync(alg, file, key);
-		} else {
-			if(action.equals(Action.ENCRYPT)) 
-				executor.executeEncyption(alg, file);
-			else
-				executor.executeDecryption(alg, file, key);
-		}
+
+			dialogHandler.writeLine(FILEPATH_REQUEST_STRING,
+					(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
+			File file = parseFilepathFromCMD();
+
+			dialogHandler.writeLine(LOAD_LAST_SAVED_OPTION);
+			if(parseYesNoAnswer()) {
+				alg = xmlParser.unmarshallEncryptionAlgorithm(
+						Main.class.getClassLoader().getResource("alg.xml").getPath());
+			} else {
+				dialogHandler.writeLine(IMPORT_FROM_FILE);
+				if(parseYesNoAnswer()) {
+					dialogHandler.writeLine(FILEPATH_FOR_CONF_FILE_PROMPT);
+					alg = xmlParser.unmarshallEncryptionAlgorithm(dialogHandler.readLine());
+				} else {
+					dialogHandler.writeLine(ALGORITHM_INDEX_REQUEST_STRING);
+					alg = parseAlgorithm();
+					dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
+					if(parseYesNoAnswer()) {
+						dialogHandler.writeLine(KEY_FILE_REQUEST_STRING);
+						xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
+					} 
+				}
+			}
+			dialogHandler.writeLine(alg.toString());
+			dialogHandler.writeLine(ASYNC_MODE_OPTION);
+			if(parseYesNoAnswer()) {
+				if(action.equals(Action.ENCRYPT))
+					executor.executeEncryptionAsync(alg, file);
+				else
+					executor.executeDecryptionAsync(alg, file, key);
+			} else {
+				if(action.equals(Action.ENCRYPT)) 
+					executor.executeEncyption(alg, file);
+				else
+					executor.executeDecryption(alg, file, key);
+			}
+			dialogHandler.writeLine("would you like to do another action?");
+		} while(parseYesNoAnswer());
 	}
 
 
