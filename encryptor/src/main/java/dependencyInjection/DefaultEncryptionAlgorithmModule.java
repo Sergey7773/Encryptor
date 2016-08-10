@@ -6,6 +6,7 @@ import com.google.inject.name.Names;
 
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
 import encryptor.encryptor.algorithms.appliers.ApplierFactory;
+import encryptor.encryptor.algorithms.appliers.AppliersClassLoader;
 import encryptor.encryptor.algorithms.appliers.DecryptionApplier;
 import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
 
@@ -20,6 +21,8 @@ public class DefaultEncryptionAlgorithmModule extends AbstractModule{
 		bind(String.class)
 		.annotatedWith(Names.named("decryptionApplierFactory"))
 		.toInstance(DecryptionApplier.class.getName());
+		
+		bind(ClassLoader.class).to(AppliersClassLoader.class);
 	}
 	
 }

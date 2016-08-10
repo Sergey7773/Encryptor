@@ -18,6 +18,7 @@ import com.google.inject.name.Named;
 
 import encryptor.encryptor.algorithms.appliers.ActionApplier;
 import encryptor.encryptor.algorithms.appliers.ApplierFactory;
+import encryptor.encryptor.algorithms.appliers.AppliersClassLoader;
 import encryptor.encryptor.algorithms.appliers.DecryptionApplier;
 import encryptor.encryptor.algorithms.appliers.EncryptionApplier;
 import encryptor.encryptor.interfaces.Key;
@@ -57,14 +58,18 @@ public abstract class EncryptionAlgorithm {
 	private ApplierFactory encApplierFactory;
 	@XmlTransient
 	private ApplierFactory decApplierFactory;
-
+	@XmlTransient
+	@Inject
+	private ClassLoader classLoader;
+	
+	
 	private String encApplierClassName;
 	private String decApplierClassName;
 	
 	@Inject
 	public EncryptionAlgorithm(
 			@Named("encryptionApplierFactory")String encAppliercn,
-			@Named("decryptionApplierFactory")String decAppliercn) {
+			@Named("decryptionApplierFactory")String decAppliercn){
 		encApplierClassName = encAppliercn;
 		decApplierClassName = decAppliercn;
 		encApplierFactory = loadApplierFactory(encAppliercn);
@@ -139,8 +144,7 @@ public abstract class EncryptionAlgorithm {
 	private ApplierFactory loadApplierFactory(String className) {
 		Class<ActionApplier> clz;
 		try {
-			clz = (Class<ActionApplier>) ClassLoader.
-					getSystemClassLoader().loadClass(className);
+			clz = (Class<ActionApplier>)(classLoader.loadClass(className));
 			return new ApplierFactory(clz);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
