@@ -48,12 +48,11 @@ public class SplitAlgorithm extends EncryptionAlgorithm {
 	}
 
 	public SplitAlgorithm() {
-		super(SplitEncryptionApplier.class.getName(),SplitEncryptionApplier.class.getName());
-		this.nestedAlgorithm = null;
+		this(null);
 	}
 
 	public SplitAlgorithm(EncryptionAlgorithm nested) {
-		super(SplitEncryptionApplier.class.getName(),SplitEncryptionApplier.class.getName());
+		super(SplitEncryptionApplier.class.getName(),SplitDecryptionApplier.class.getName());
 		this.nestedAlgorithm = nested;
 	}
 

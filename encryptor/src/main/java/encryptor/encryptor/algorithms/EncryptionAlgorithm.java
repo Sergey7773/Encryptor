@@ -136,11 +136,11 @@ public abstract class EncryptionAlgorithm {
 		this.decApplierClassName = decApplierClassName;
 	}
 	
-	private ApplierFactory loadApplierFactory(String className) {
+	private ApplierFactory<ActionApplier> loadApplierFactory(String className) {
 		Class<ActionApplier> clz;
 		try {
 			clz = (Class<ActionApplier>) ClassLoader.
-					getSystemClassLoader().loadClass(EncryptionApplier.class.getName());
+					getSystemClassLoader().loadClass(className);
 			return new ApplierFactory<ActionApplier>(clz);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
