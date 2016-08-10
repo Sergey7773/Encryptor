@@ -26,7 +26,7 @@ public class EncryptorApplication {
 
 	public static final String IMPORT_FROM_FILE = "Would you like to import the algorithm from an xml configuration file? (y/n)";
 
-	public static final String LOAD_LAST_SAVED_OPTION = "Would you like to load the last saved encryption algorithm? (y/n)";
+	public static final String LOAD_DEFAULT_OPTION = "Would you like to load the default encryption algorithm? (y/n)";
 
 	public static final String SAVE_ALGORITHM_OPTION_STRING = "Would you like to export this algorithm to an xml configuration file? (y/n)";
 
@@ -72,6 +72,8 @@ public class EncryptorApplication {
 		do {
 			Key key = null;
 			EncryptionAlgorithm alg=null;
+			boolean saveAlg = false;
+			String saveAlgToFilepath ="";
 			dialogHandler.writeLine(actionRequestString, encryptionAction, decryptionAction);
 			Action action = parseActionParam(dialogHandler.readLine());
 			if(action==null) return;
@@ -85,7 +87,7 @@ public class EncryptorApplication {
 					(action.equals(Action.ENCRYPT)? "encrypt" : "decrypt"));
 			File file = parseFilepathFromCMD();
 
-			dialogHandler.writeLine(LOAD_LAST_SAVED_OPTION);
+			dialogHandler.writeLine(LOAD_DEFAULT_OPTION);
 			if(parseYesNoAnswer()) {
 				alg = xmlParser.unmarshallEncryptionAlgorithm(
 						Main.class.getClassLoader().getResource("alg.xml").getPath());
@@ -99,8 +101,9 @@ public class EncryptorApplication {
 					alg = parseAlgorithm();
 					dialogHandler.writeLine(SAVE_ALGORITHM_OPTION_STRING);
 					if(parseYesNoAnswer()) {
-						dialogHandler.writeLine(FILEPATH_REQUEST_STRING);
-						xmlParser.marshallEncryptionAlgorithm(alg, dialogHandler.readLine());
+						saveAlg = true;	
+						dialogHandler.writeLine("Please enter the filepath");
+						saveAlgToFilepath = dialogHandler.readLine();
 					} 
 				}
 			}
@@ -117,6 +120,11 @@ public class EncryptorApplication {
 					executor.executeEncyption(alg, file);
 				else
 					executor.executeDecryption(alg, file, key);
+			}
+			if(saveAlg) {
+				xmlParser.marshallEncryptionAlgorithm(alg, saveAlgToFilepath);
+				saveAlg = false;
+				saveAlgToFilepath = "";
 			}
 			dialogHandler.writeLine("would you like to do another action?");
 		} while(parseYesNoAnswer());
